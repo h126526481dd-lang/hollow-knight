@@ -13,19 +13,23 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
     T_status = []
 
     if object1.mask.overlap(object2.mask,offset):                                                 #偵測"當把mask2放在offset的位置時有無覆蓋
-        if not object1.mask.overlap(object2.mask,    (object2.x - object1.x, (object2.y + max(abs(object1.vy),31)) - object1.y) ) :    #若當前有碰撞，則偵測往上調整後是否還有碰撞  
+        if not object1.mask.overlap(object2.mask,    (object2.x - object1.x, (object2.y + max(abs(object1.vy),50    )) - object1.y) ) :    #若當前有碰撞，則偵測往上調整後是否還有碰撞  
             T_status.append ("1_D")                                                                                                    #若往上調沒碰撞，表示物件1的底部碰撞到了物件2(D=Down)，新增標籤到碰撞清單
+            f_NT_Test.append("1_D")
         #這行待修，很容易扎土豆
 
         if not object1.mask.overlap(object2.mask,    (object2.x - object1.x, (object2.y - max(abs(object1.vy),31)) - object1.y) ) :     #同理
-            T_status.append ("1_U")                
+            T_status.append ("1_U")
+            f_NT_Test.append("1_U")
 
-        if not object1.mask.overlap(object2.mask,    ((object2.x+abs(object1.vx)) - object1.x, object2.y - object1.y) ) :               #同理
-            T_status.append ("1_R")                
+        if not object1.mask.overlap(object2.mask,    ((object2.x+abs(object1.vx)
+                                                       ) - object1.x, object2.y - object1.y) ) :               #同理
+            T_status.append ("1_R") 
+            f_NT_Test.append("1_R")
 
         if not object1.mask.overlap(object2.mask,    ((object2.x-abs(object1.vx)) - object1.x, object2.y - object1.y) ) :               #同理
-            T_status.append ("1_L")                
-   
+            T_status.append ("1_L")
+            f_NT_Test.append("1_L")                
     return T_status                                                                                                                     #迴船碰撞清單
 
 
@@ -37,7 +41,7 @@ def show(scene,object,player):                          #繪製畫面(待修，�
     camera_x = player.x - adjust_x                              #把角色置中所需要的向量  
     camera_y = player.y - adjust_y
 
-    screen.blit(scene, (-camera_x, -camera_y))                  #繪製背景圖片(背景位置=原位置-置中向量)
+    screen.blit(scene, (-500-camera_x, -500-camera_y))                  #繪製背景圖片(背景位置=原位置-置中向量)
    
     for i in range(NT_object_num):                                 #繪製物件    (物件位置=原位置-置中向量)
         screen.blit(NT_object[i].surface, (NT_object[i].x-camera_x, NT_object[i].y-camera_y))
@@ -77,7 +81,7 @@ FPS = 60                                                        #設定每秒幀
 Main = player_class.player("BOBO",0,0)                #建立角色物件
 
 for i in range(5):                                                                                          #建立物件(地板)
-    NT_object.append(object_class.object(-100+200*i,500-100*i,pygame.image.load("floor.png"),0))
+    NT_object.append(object_class.object(-50+150*i,500+50*i,pygame.image.load("floor.png"),0))
     NT_object_num += 1
 
 print(pygame.display.get_active())                              #確認是否正確開啟
@@ -108,11 +112,14 @@ while True:                                                     #遊戲主迴圈
 
 
     NT_Test = []                                             #不可穿越物件 碰撞總清單
+    f_NT_Test=[]
+
 
     for i in range(NT_object_num):                                 #偵測角色和不可穿越物件的碰撞
-        NT_Test.append("".join(Touch(Main,NT_object[i])))
+        NT_Test.append(Touch(Main,NT_object[i]))
 
-    if NT_Test.count("1_D") > 0 :                                           #角色跟不可穿越物件的下碰撞偵測(檢測是否站地上)
+
+    if f_NT_Test.count("1_D") > 0 :                                           #角色跟不可穿越物件的下碰撞偵測(檢測是否站地上)
         Main.on_ground = True
     else:
         Main.on_ground = False
@@ -132,12 +139,12 @@ while True:                                                     #遊戲主迴圈
 
 
 
-    if NT_Test.count("1_L") >0 and Main.vx<0:               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
+    if f_NT_Test.count("1_L") >0 and Main.vx<0:               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
         Main.vx *= 0
-    elif NT_Test.count("1_R") >0 and Main.vx>0:             #角色跟不可穿越物件 的右碰撞(右阻擋)偵測
+    elif f_NT_Test.count("1_R") >0 and Main.vx>0:             #角色跟不可穿越物件 的右碰撞(右阻擋)偵測
         Main.vx *= 0
 
-    print(NT_Test)                                          #印出不可穿越物件的碰撞總清單(除錯用)
+    print(f_NT_Test)                                          #印出不可穿越物件的碰撞總清單(除錯用)
 
     Main.y += Main.vy                                       #更新角色位置
     Main.x += Main.vx
@@ -148,6 +155,9 @@ while True:                                                     #遊戲主迴圈
             pygame.quit()
             exit()
 
+    if Main.y>1800:
+        Main.y=0
+    
     show(scene[0],object,Main)
 
 
