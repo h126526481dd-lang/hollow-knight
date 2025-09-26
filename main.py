@@ -103,6 +103,7 @@ while True:                                                     #遊戲主迴圈
                 Main.L_move()
 
             else:                                                   #不移動時水平速度歸零(沒有慣性)
+                Main.idle()
                 Main.vx = 0
 
 

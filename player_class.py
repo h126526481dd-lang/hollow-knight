@@ -25,6 +25,7 @@ class player():
         self.vx = 0                                                   #角色速度
         self.vy = 0
         self.on_ground = False                                      #角色是否在地面上
+        self.anime_time = 0
 
         #匯入Walk.png圖片並切分成動畫
         self.Walk = split("Character\mainchacter\Walk.png", 8)  
@@ -38,9 +39,12 @@ class player():
            
     def R_move(self):                                               #角色移動
         self.vx = 10
-        self.image += 1
-        if self.image >= 8:
-            self.image = 0
+        self.anime_time += 1
+        if self.anime_time >=5:
+            self.image += 1
+            self.anime_time = 0
+            if self.image >= 8:
+                self.image = 0
         self.surface = self.Walk[self.image]
         self.mask = pygame.mask.from_surface(self.surface)
 
@@ -48,9 +52,12 @@ class player():
 
     def L_move(self):
         self.vx = -10
-        self.image += 1
-        if self.image >= 8:
-            self.image = 0
+        self.anime_time += 1
+        if self.anime_time >=5:
+            self.image += 1
+            self.anime_time = 0
+            if self.image >= 8:
+                self.image = 0
         self.surface = self.Walk[self.image]
         self.surface = pygame.transform.flip(self.surface, True, False)
         self.mask = pygame.mask.from_surface(self.surface)                  #也許不需要？
@@ -61,5 +68,7 @@ class player():
         if self.on_ground == True:
             self.vy = -30
     
-
+    def idle(self):
+        self.anime_time = 0
+        self.image = 0
     #def attack(self):
