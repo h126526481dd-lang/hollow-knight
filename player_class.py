@@ -39,12 +39,15 @@ class player():
            
     def R_move(self):                                               #角色移動
         self.vx = 10
-        self.anime_time += 1
+        '''self.anime_time += 1
         if self.anime_time >=5:
             self.image += 1
             self.anime_time = 0
             if self.image >= 8:
-                self.image = 0
+                self.image = 0'''
+        self.image += 1
+        if self.image >= 8:
+            self.image = 0
         self.surface = self.Walk[self.image]
         self.mask = pygame.mask.from_surface(self.surface)
 
@@ -58,6 +61,9 @@ class player():
             self.anime_time = 0
             if self.image >= 8:
                 self.image = 0
+        '''self.image += 1
+        if self.image >= 8:
+            self.image = 0'''
         self.surface = self.Walk[self.image]
         self.surface = pygame.transform.flip(self.surface, True, False)
         self.mask = pygame.mask.from_surface(self.surface)                  #也許不需要？
@@ -70,5 +76,8 @@ class player():
     
     def idle(self):
         self.anime_time = 0
-        self.image = 0
+        self.image = 6
+        self.surface = self.Walk[self.image]
+        self.mask = pygame.mask.from_surface(self.surface)
+
     #def attack(self):
