@@ -159,10 +159,3 @@ while True:                                                     #遊戲主迴圈
         Main.y=0
     
     show(scene[0],object,Main)
-
-
-
-
-
-
-
