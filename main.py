@@ -20,13 +20,13 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
         if not object1.mask.overlap(object2.mask,    (object2.x - object1.x, (object2.y - max(abs(object1.vy),31)) - object1.y) ) :     #同理
             T_status.append ("1_U")                
 
-        if not object1.mask.overlap(object2.mask,    ((object2.x+abs(object1.vx)) - object1.x, object2.y - object1.y) ) :               #同理
+        if not object1.mask.overlap(object2.mask,    ((object2.x + abs(object1.vx)) - object1.x, object2.y - object1.y) ) :               #同理
             T_status.append ("1_R")                
 
-        if not object1.mask.overlap(object2.mask,    ((object2.x-abs(object1.vx)) - object1.x, object2.y - object1.y) ) :               #同理
+        if not object1.mask.overlap(object2.mask,    ((object2.x - abs(object1.vx)) - object1.x, object2.y - object1.y) ) :               #同理
             T_status.append ("1_L")                
    
-    return T_status                                                                                                                     #迴船碰撞清單
+    return T_status                                                                                                                     #回傳碰撞清單
 
 
 
@@ -113,6 +113,7 @@ while True:                                                     #遊戲主迴圈
         NT_Test.append("".join(Touch(Main,NT_object[i])))
 
     if NT_Test.count("1_D") > 0 :                                           #角色跟不可穿越物件的下碰撞偵測(檢測是否站地上)
+
         Main.on_ground = True
     else:
         Main.on_ground = False
@@ -149,10 +150,3 @@ while True:                                                     #遊戲主迴圈
             exit()
 
     show(scene[0],object,Main)
-
-
-
-
-
-
-

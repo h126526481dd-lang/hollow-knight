@@ -4,9 +4,6 @@ import pygame
 
 
 
-
-
-
 class object():
              
     def __init__(self,x,y,IMG,can_be_through):                         #物件模型
