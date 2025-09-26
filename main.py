@@ -16,6 +16,12 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
         if not object1.mask.overlap(object2.mask,    (object2.x - object1.x, (object2.y + max(abs(object1.vy),50    )) - object1.y) ) :    #若當前有碰撞，則偵測往上調整後是否還有碰撞  
             T_status.append ("1_D")                                                                                                    #若往上調沒碰撞，表示物件1的底部碰撞到了物件2(D=Down)，新增標籤到碰撞清單
             f_NT_Test.append("1_D")
+            for i in range(max(abs(object1.vy),50)):                                                                                   #把物件1往上調整，直到不碰撞為止
+                object1.y -= 1                                                                                                         
+                offset = (object2.x - object1.x, object2.y - object1.y)                                                               #重新計算兩個物件的相對位置
+                if not object1.mask.overlap(object2.mask,offset):                                                                     #若不再碰撞，跳出迴圈
+                    object1.y += 1
+                    break
         #這行待修，很容易扎土豆
 
         if not object1.mask.overlap(object2.mask,    (object2.x - object1.x, (object2.y - max(abs(object1.vy),31)) - object1.y) ) :     #同理
@@ -81,7 +87,7 @@ FPS = 60                                                        #設定每秒幀
 Main = player_class.player("BOBO",0,0)                #建立角色物件
 
 for i in range(5):                                                                                          #建立物件(地板)
-    NT_object.append(object_class.object(-50+150*i,500+50*i,pygame.image.load("floor.png"),0))
+    NT_object.append(object_class.object(-50+120*i,500,pygame.image.load("floor.png"),0))
     NT_object_num += 1
 
 print(pygame.display.get_active())                              #確認是否正確開啟
@@ -113,7 +119,7 @@ while True:                                                     #遊戲主迴圈
 
     NT_Test = []                                             #不可穿越物件 碰撞總清單
     f_NT_Test=[]
-
+    up=0
 
     for i in range(NT_object_num):                                 #偵測角色和不可穿越物件的碰撞
         NT_Test.append(Touch(Main,NT_object[i]))
@@ -121,6 +127,8 @@ while True:                                                     #遊戲主迴圈
 
     if f_NT_Test.count("1_D") > 0 :                                           #角色跟不可穿越物件的下碰撞偵測(檢測是否站地上)
         Main.on_ground = True
+
+            
     else:
         Main.on_ground = False
 
