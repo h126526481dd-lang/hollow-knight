@@ -107,24 +107,23 @@ def anime_update(object, change_time ,flip , image_num, image_list):
     object.surface = image_list[object.image]
     if flip:
         object.surface = pygame.transform.flip(object.surface, True, False)
-    object.mask = pygame.mask.from_surface(object.surface)                  #也許不需要？
 
 
 
 def anime_update_click(object, change_time ,flip , image_num, image_list):
-    delay_counter = 0
-    image = 0
-    for i in range(image_num):
-        delay_counter += 1
-        if delay_counter >= change_time:
-            image+=1
-            delay_counter = 0
-        object.surface = image_list[image]
-        if flip:
-            object.surface = pygame.transform.flip(object.surface, True, False)
-        object.mask = pygame.mask.from_surface(object.surface)
-    '''for image in range(image_num):  
-        object.surface = image_list[image]'''
+    object.doing = True
+    object.anime_time += 1
+    if object.anime_time >= change_time:
+        object.image += 1
+        object.anime_time = 0
+        if object.image >= image_num:
+            object.image = 0
+            object.doing = False
+    
+    object.surface = image_list[object.image]
+    if flip:
+        object.surface = pygame.transform.flip(object.surface, True, False)
+    
     
 
 
@@ -135,6 +134,8 @@ class player():
         self.name = name                                              #角色名稱
         self.x = x                                                    #角色位置
         self.y = y
+        
+        self.doing=False
         
         self.HP = 5
         
@@ -201,7 +202,8 @@ class player():
 
 
     def attack(self):
-        anime_update_click(self,2,False,6,self.Attack1)
+        anime_update_click(self,0,False,5,self.Attack1)
+        
 
 
 class enemy():

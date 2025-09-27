@@ -56,6 +56,7 @@ FPS = 60                                                     #設定每秒幀數
 
 Main = player_class.player("BOBO",0,0)                #建立角色物件
 
+
 print(pygame.display.get_active())                              #確認是否正確開啟
 
 scene_ctrl = 10
@@ -119,7 +120,8 @@ match scene_ctrl:
                 elif keys[pygame.K_a]:                                #按下a鍵左移
                     Main.L_move()
 
-                elif keys[pygame.K_j]:
+                elif keys[pygame.K_j] or Main.doing == True:
+                    
                     Main.attack()
 
                 else:                                                   #不移動時水平速度歸零(沒有慣性)
