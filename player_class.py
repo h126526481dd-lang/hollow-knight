@@ -13,9 +13,9 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
         T_rect.y+=(max(abs(object1.vy),32))
         if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件二往下調整後是否還有碰撞  
                                             
-            object1.now_NT_Touch.append("1_D")      #若往下調沒碰撞，表示物件1的底部碰撞到了物件2(D=Down)，新增標籤到碰撞清單
 
             if object2.can_be_through == 0:          #若物件2是可穿越的，則不做調整
+                object1.now_NT_Touch.append("1_D")      #若往下調沒碰撞，表示物件1的底部碰撞到了物件2(D=Down)，新增標籤到碰撞清單
                 T_rect.y-=(max(abs(object1.vy),32))
 
                 for i in range(max(abs(object1.vy),32)):       #把物件1往上調整，直到不碰撞為止
@@ -37,9 +37,9 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
 
         if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件二往上調整後是否還有碰撞  
 
-            object1.now_NT_Touch.append("1_U")      #若往上調沒碰撞，表示物件1的頂部碰撞到了物件2(U=Up)，新增標籤到碰撞清單
 
-            if object2.can_be_through == 0 and object1.vy>0:               #角色跟不可穿越物件 的上碰撞(上阻擋)偵測                                                                                      #若物件2是可穿越的，則不做調整
+            if object2.can_be_through == 0:               #角色跟不可穿越物件 的上碰撞(上阻擋)偵測
+                object1.now_NT_Touch.append("1_U")      #若往上調沒碰撞，表示物件1的頂部碰撞到了物件2(U=Up)，新增標籤到碰撞清單
 
 
                 for i in range(max(abs(object1.vy),32)):                   #把物件1往下調整，直到不碰撞為止                                                                #把物件1往上調整，直到不碰撞為止
@@ -59,9 +59,9 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
         
         if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件2往右調整後是否還有碰撞  
 
-            object1.now_NT_Touch.append("1_R")      #若往右調沒碰撞，表示物件1的右部碰撞到了物件2，新增標籤到碰撞清單
 
-            if object2.can_be_through == 0 and object1.vx>0:               #角色跟不可穿越物件 的右碰撞(右阻擋)偵測
+            if object2.can_be_through == 0 :               #角色跟不可穿越物件 的右碰撞(右阻擋)偵測
+                object1.now_NT_Touch.append("1_R")      #若往右調沒碰撞，表示物件1的右部碰撞到了物件2，新增標籤到碰撞清單
                 object1.vx *= 0 
             return True
 
@@ -69,9 +69,9 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
         T_rect.x-=2*(max(abs(object1.vx),11))
         if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件2往左調整後是否還有碰撞  
 
-            object1.now_NT_Touch.append("1_L")      #若往左調沒碰撞，表示物件1的左部碰撞到了物件2，新增標籤到碰撞清單
 
-            if object2.can_be_through == 0 and object1.vx<0:               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
+            if object2.can_be_through == 0 :               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
+                object1.now_NT_Touch.append("1_L")      #若往左調沒碰撞，表示物件1的左部碰撞到了物件2，新增標籤到碰撞清單
                 object1.vx *= 0            
             return True
 
@@ -117,6 +117,9 @@ class player():
         self.name = name                                              #角色名稱
         self.x = x                                                    #角色位置
         self.y = y
+        
+        self.HP = 5
+        
         self.image = 0                                        #角色圖片
         self.vx = 0                                                   #角色速度
         self.vy = 0
@@ -184,18 +187,48 @@ class player():
 
 class enemy():
              
-    def __init__(self,name,x,y,vx,vy):                                    #敵人模型
+    def __init__(self,name,x,y,HP,type):                                    #敵人模型
         self.name = name                                              #敵人名稱
         self.x = x                                                    #敵人位置
         self.y = y
-
-        self.vx = vx                                                 #敵人速度
-        self.vy = vy
-
-
+        self.now_NT_Touch = []                                      #敵人目前碰撞清單
+        self.type = type
         self.image = 0                                        #敵人圖片
         self.vx = 0                                                   #敵人速度
         self.vy = 0
         self.on_ground = False                                      #敵人是否在地面上
+        self.HP = HP
         
         self.rect = self.surface.get_rect(topleft=(self.x, self.y))
+        
+    def Move(self,NT_object):
+        
+        match self.type:
+            
+            case 1:    
+                pass
+            
+            
+            case 2:    
+                pass
+            
+            
+            case 3:    
+                pass
+            
+            
+            case _:     
+                for obj in NT_object:
+                    Touch(self, obj)
+                    if "1_D" in self.now_NT_Touch:
+                        self.on_ground = True
+                
+                if self.on_ground :
+                    self.vy = 0
+                    self.vx = 5
+                    self.x += self.vx
+                    self.rect.x += self.vx
+                else:
+                    self.vy+=1
+                    self.y += self.vy
+                    self.rect.y += self.vy  

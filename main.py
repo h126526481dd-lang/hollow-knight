@@ -76,6 +76,7 @@ match scene_ctrl:
         scene = []
         NT_object = []
         CT_object = []
+        Enemy = []
 
         scene.append(pygame.image.load("IMG_2794.jpg"))                  #導入背景圖片
         scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
@@ -147,6 +148,11 @@ match scene_ctrl:
             if Main.y>1800:
                 Main.y=0
                 Main.rect.y=50
+                
+            for enemy in Enemy:
+                if player_class.Touch(Main,enemy):
+                    Main.HP -= 1
+                    print(Main.HP)
                             
             show(scene[0],object,Main)
 #=======================================================================================================
