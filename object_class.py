@@ -19,4 +19,5 @@ class object():
         self.vy = 0
         self.can_be_through = can_be_through                          #物件是否可通過(布林值)
         self.mask = pygame.mask.from_surface(self.surface)               #物件碰撞盒(不規則)
-
+        
+        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
