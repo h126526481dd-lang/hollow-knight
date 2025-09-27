@@ -7,7 +7,7 @@ import math
 
 
 
-def show(scene,object,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
+def show(scene,NT_object,CT_object,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     adjust_y = screen_height//2                                 #螢幕中心座標
     adjust_x = screen_width//2
@@ -66,10 +66,7 @@ scene_ctrl = 10
 match scene_ctrl:
     
     case 10:                                                             #場景0
-        
-        NT_object_num = 0
-        CT_object_num = 0
-        object_num = 0
+
         scene = []
         NT_object = []
         CT_object = []
@@ -80,9 +77,12 @@ match scene_ctrl:
         
         
         for i in range(10):                                                                                          #建立物件(地板)
-            NT_object.append(object_class.object(-50+120*i,500,pygame.image.load("floor.png"),0))
-            NT_object.append(object_class.object(1000+120*i,750,pygame.image.load("floor.png"),0))
-            NT_object_num += 1
+            NT_object.append(object_class.object(-50+120*i,500,pygame.image.load("floor.png"),"wall"))
+            NT_object.append(object_class.object(1000+120*i,750,pygame.image.load("floor.png"),"wall"))
+        
+        CT_object.append(object_class.object(300,600,pygame.image.load("door.png"),"door"))
+
+        
         
         while scene_ctrl == 10:                                                     #遊戲主迴圈
         
@@ -149,13 +149,22 @@ match scene_ctrl:
             if Main.y>1800:
                 Main.y=0
                 Main.rect.y=50
-                
+            
+            
+            
+            
             for enemy in Enemy:
                 if player_class.Touch(Main,enemy):
                     Main.HP -= 1
                     print(Main.HP)
-                            
-            show(scene[0],object,Main)
+            
+            for obj in CT_object:
+                if obj.type=="door":
+                    if player_class.Touch(Main,obj):
+                        scene_ctrl=11
+            
+            
+            show(scene[0],NT_object,CT_object,Main)
 #=======================================================================================================
 
     case 11:                                                             #場景1
