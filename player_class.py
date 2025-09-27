@@ -37,14 +37,15 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
             T_status.append ("1_U")
             object1.now_Touch.append("1_U")
 
-
+            if object2.can_be_through == 0 and object1.vy<0:               #角色跟不可穿越物件 的上碰撞(上阻擋)偵測
+                object1.vx *= 0
 
         if not object1.mask.overlap(object2.mask,    ((object2.x+abs(object1.vx)
                                                        ) - object1.x, object2.y - object1.y) ) :               #同理
             T_status.append ("1_R") 
             object1.now_Touch.append("1_R")
             
-            if object2.can_be_through == 0 and object1.vx>0:               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
+            if object2.can_be_through == 0 and object1.vx>0:               #角色跟不可穿越物件 的右碰撞(右阻擋)偵測
                 object1.vx *= 0 
 
 
@@ -56,7 +57,7 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
             if object2.can_be_through == 0 and object1.vx<0:               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
                 object1.vx *= 0            
 
-    print(object1.now_Touch)                                          #印出不可穿越物件的碰撞總清單(除錯用)
+    #print(object1.now_Touch)                                          #印出不可穿越物件的碰撞總清單(除錯用)
 
     return T_status
 
@@ -73,6 +74,35 @@ def split(picture, times):              #切割圖片(圖片, 切割次數)
     #導入圖片(八張合一起)，分割開後存進List  
     return frames  
 
+'''
+        self.vx = -10
+        self.anime_time += 1
+        if self.anime_time >= 5:
+            self.image += 1
+            self.anime_time = 0
+            if self.image >= 8:
+                self.image = 0
+        self.surface = self.Walk[self.image]
+        self.surface = pygame.transform.flip(self.surface, True, False)
+        self.mask = pygame.mask.from_surface(self.surface)
+'''
+
+def anime_update(object, change_time ,flip , image_num, image_list):
+    object.anime_time += 1
+    if object.anime_time >= change_time:
+        object.image += 1
+        object.anime_time = 0
+        if object.image >= image_num:
+            object.image = 0
+    
+    object.surface = image_list[object.image]
+    if flip:
+        object.surface = pygame.transform.flip(object.surface, True, False)
+    object.mask = pygame.mask.from_surface(object.surface)                  #也許不需要？
+    
+    
+
+
 class player():
              
     def __init__(self,name,x,y):                         #角色模型
@@ -84,6 +114,7 @@ class player():
         self.vy = 0
         self.on_ground = False                                      #角色是否在地面上
         self.anime_time = 0
+        self.flip = False
 
         self.now_Touch = []                                      #角色目前碰撞清單
 
@@ -100,34 +131,16 @@ class player():
            
     def R_move(self):                                               #角色移動
         self.vx = 10
-        '''self.anime_time += 1
-        if self.anime_time >=5:
-            self.image += 1
-            self.anime_time = 0
-            if self.image >= 8:
-                self.image = 0'''
-        self.image += 1
-        if self.image >= 8:
-            self.image = 0
-        self.surface = self.Walk[self.image]
-        self.mask = pygame.mask.from_surface(self.surface)
+        self.flip = False
+        anime_update(self,5,False,8,self.Walk)
+
 
 
 
     def L_move(self):
         self.vx = -10
-        self.anime_time += 1
-        if self.anime_time >=5:
-            self.image += 1
-            self.anime_time = 0
-            if self.image >= 8:
-                self.image = 0
-        '''self.image += 1
-        if self.image >= 8:
-            self.image = 0'''
-        self.surface = self.Walk[self.image]
-        self.surface = pygame.transform.flip(self.surface, True, False)
-        self.mask = pygame.mask.from_surface(self.surface)                  #也許不需要？
+        self.flip = True
+        anime_update(self,5,True,8,self.Walk)
 
 
 
@@ -135,11 +148,17 @@ class player():
         if self.on_ground == True:
             self.vy = -30
     
+
+
     def idle(self):
         self.anime_time = 0
         self.image = 6
         self.surface = self.Walk[self.image]
+        if self.flip:
+            self.surface = pygame.transform.flip(self.surface, True, False)
         self.mask = pygame.mask.from_surface(self.surface)
+
+
 
     #def attack(self):
 

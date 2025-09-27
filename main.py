@@ -26,7 +26,11 @@ def show(scene,object,player):                          #繪製畫面(待修，�
 
     pygame.display.update()
 
+
+
 #=======================================================================================================
+
+
 
 pygame.init()                                                   #初始化
 Info = pygame.display.Info()                                      #偵測用戶顯示參數
@@ -53,9 +57,12 @@ FPS = 60                                                        #設定每秒幀
 
 Main = player_class.player("BOBO",0,0)                #建立角色物件
 
-for i in range(20):                                                                                          #建立物件(地板)
-    NT_object.append(object_class.object(-50+120*i,500,pygame.image.load("floor.png"),0))
+for i in range(10):                                                                                          #建立物件(地板)
+    NT_object.append(object_class.object(-50+120*i,500,pygame.image.load("floor2.png"),0))
     NT_object_num += 1
+NT_object.append(object_class.object(300,300,pygame.image.load("floor.png"),0))
+NT_object_num += 1
+
 
 print(pygame.display.get_active())                              #確認是否正確開啟
 
@@ -68,34 +75,34 @@ while True:                                                     #遊戲主迴圈
    
     clock.tick(FPS)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
 
-
-    keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
-   
-    for i in range(1):                                          #避免同時按兩個方向鍵
-        if keys[pygame.K_d] and keys[pygame.K_a]:
-           
-            continue
-       
-        else:
-       
-            if keys[pygame.K_d]:                                #按下d鍵右移
-                Main.R_move()
-
-            elif keys[pygame.K_a]:                              #按下a鍵左移
-                Main.L_move()
-
-            else:                                                   #不移動時水平速度歸零(沒有慣性)
-                Main.idle()
-                Main.vx = 0
-
-
-
     Main.now_Touch = []                                      #角色目前碰撞清單
-    
-    
+    keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
+
+    if keys[pygame.K_d] and keys[pygame.K_a]:                #避免同時按兩個方向鍵
+           
+        pass
+       
+    else:
+       
+        if keys[pygame.K_d]:                                #按下d鍵右移
+            Main.R_move()
+
+        elif keys[pygame.K_a]:                              #按下a鍵左移
+            Main.L_move()
+
+        else:                                                   #不移動時水平速度歸零(沒有慣性)
+            Main.idle()
+            Main.vx = 0
+
+
+
 
     for i in range(NT_object_num):                                 #偵測角色和不可穿越物件的碰撞
         player_class.Touch(Main,NT_object[i])
+
+
+                                           
+
 
     if not "1_D" in Main.now_Touch :                                           #若沒有站地上，則設為False
         Main.on_ground = False
@@ -109,11 +116,9 @@ while True:                                                     #遊戲主迴圈
 
 
 
-    if keys[pygame.K_SPACE]:                                #按下空白鍵跳躍
+    if keys[pygame.K_SPACE] and not "1_U" in Main.now_Touch:                                #按下空白鍵跳躍
         Main.jump()
 
-
-    print(Main.on_ground)                                           #印出角色垂直速度(除錯用)
     Main.y += Main.vy                                       #更新角色位置
     Main.x += Main.vx
 
