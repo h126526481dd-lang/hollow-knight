@@ -62,13 +62,13 @@ Main = player_class.player("BOBO",0,0)                #建立角色物件
 
 print(pygame.display.get_active())                              #確認是否正確開啟
 
-scene_ctrl = 0
+scene_ctrl = 10
 #=======================================================================================================
 
 
 match scene_ctrl:
     
-    case 0:                                                             #場景0
+    case 10:                                                             #場景0
         
         NT_object_num = 0
         CT_object_num = 0
@@ -87,7 +87,7 @@ match scene_ctrl:
             NT_object.append(object_class.object(1000+120*i,750,pygame.image.load("floor.png"),0))
             NT_object_num += 1
         
-        while scene_ctrl == 0:                                                     #遊戲主迴圈
+        while scene_ctrl == 10:                                                     #遊戲主迴圈
         
             clock.tick(FPS)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
 
@@ -157,7 +157,7 @@ match scene_ctrl:
             show(scene[0],object,Main)
 #=======================================================================================================
 
-    case 1:                                                             #場景1
-        while scene_ctrl == 1:                                                     #遊戲主迴圈
+    case 11:                                                             #場景1
+        while scene_ctrl == 11:                                                     #遊戲主迴圈
         
             pass
