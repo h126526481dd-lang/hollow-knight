@@ -25,7 +25,7 @@ def show(scene,object,player):                          #繪製畫面(待修，�
         pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1)
                  
     screen.blit(player.surface, ( player.x-camera_x,player.y-camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
-    pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.x - camera_x,player.y - camera_y, player.rect.width, player.rect.height),1)
+    pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
     
     
     pygame.display.update()
@@ -132,8 +132,8 @@ while True:                                                     #遊戲主迴圈
 
     if Main.y>1800:
         Main.y=0
-        Main.rect.y=0
+        Main.rect.y=50
     print(Main.now_Touch)                                          #印出不可穿越物件的碰撞總清單(除錯用)
     object = NT_object + CT_object
-
+    print(Main.rect)
     show(scene[0],object,Main)

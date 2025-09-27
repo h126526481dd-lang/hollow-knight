@@ -119,7 +119,12 @@ class player():
         self.surface = self.Walk[self.image]
         self.mask = pygame.mask.from_surface(self.surface)
         
-        self.rect = self.surface.get_rect(topleft=(self.x, self.y))
+        self.rect = self.surface.get_rect(topleft=(self.x, self.y+50))
+        
+        self.rect.x += 50
+        
+        self.rect.width -= 100
+        self.rect.height -= 50
 
         #匯入Attack_1.png圖片並切分成動畫
         self.Attack1 = split("Character\mainchacter\Attack_1.png", 6) 
