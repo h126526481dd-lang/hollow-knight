@@ -70,7 +70,7 @@ print(pygame.display.get_active())                              #確認是否正
 #=======================================================================================================
 
 
-
+attacking = False
 while True:                                                     #遊戲主迴圈
    
     clock.tick(FPS)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
@@ -83,30 +83,29 @@ while True:                                                     #遊戲主迴圈
         pass
        
     else:
-       
-        if keys[pygame.K_d]:                                #按下d鍵右移
-            Main.R_move()
+        if not attacking:
+            if keys[pygame.K_d]:                                #按下d鍵右移
+                Main.R_move()
 
-        elif keys[pygame.K_a]:                              #按下a鍵左移
-            Main.L_move()
+            elif keys[pygame.K_a]:                              #按下a鍵左移
+                Main.L_move()
 
-        else:                                                   #不移動時水平速度歸零(沒有慣性)
-            Main.idle()
-            Main.vx = 0
+            elif keys[pygame.K_j]:                              #按下j鍵攻擊
+                Main.attack()
 
-
+            else:                                                   #不移動時水平速度歸零(沒有慣性)
+                Main.idle()
+                Main.vx = 0
+ 
 
 
     for i in range(NT_object_num):                                 #偵測角色和不可穿越物件的碰撞
         player_class.Touch(Main,NT_object[i])
-
-
-                                           
+                                  
 
 
     if not "1_D" in Main.now_Touch :                                           #若沒有站地上，則設為False
         Main.on_ground = False
-
 
     if Main.on_ground == False and Main.vy <= 30:           #重力加速度(有設上限)
         Main.vy += 1

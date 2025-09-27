@@ -74,19 +74,9 @@ def split(picture, times):              #切割圖片(圖片, 切割次數)
     #導入圖片(八張合一起)，分割開後存進List  
     return frames  
 
-'''
-        self.vx = -10
-        self.anime_time += 1
-        if self.anime_time >= 5:
-            self.image += 1
-            self.anime_time = 0
-            if self.image >= 8:
-                self.image = 0
-        self.surface = self.Walk[self.image]
-        self.surface = pygame.transform.flip(self.surface, True, False)
-        self.mask = pygame.mask.from_surface(self.surface)
-'''
 
+
+#播放動畫(物件, 幾偵動一下, 是否翻轉, 圖片數, 圖片清單)
 def anime_update(object, change_time ,flip , image_num, image_list):
     object.anime_time += 1
     if object.anime_time >= change_time:
@@ -99,7 +89,24 @@ def anime_update(object, change_time ,flip , image_num, image_list):
     if flip:
         object.surface = pygame.transform.flip(object.surface, True, False)
     object.mask = pygame.mask.from_surface(object.surface)                  #也許不需要？
-    
+
+
+
+def anime_update_click(object, change_time ,flip , image_num, image_list):
+    '''delay_counter = 0
+    image = 0
+    for i in range(image_num):
+        delay_counter += 1
+        if delay_counter >= change_time:
+            image+=1
+            delay_counter = 0
+        object.surface = image_list[image]
+        if flip:
+            object.surface = pygame.transform.flip(object.surface, True, False)
+        object.mask = pygame.mask.from_surface(object.surface)'''
+    for image in range(image_num):  
+        object.surface = image_list[image]
+        object.mask = pygame.mask.from_surface(object.surface)
     
 
 
@@ -126,6 +133,8 @@ class player():
 
         #匯入Attack_1.png圖片並切分成動畫
         self.Attack1 = split("Character\mainchacter\Attack_1.png", 6) 
+        self.Attack2 = split("Character\mainchacter\Attack_2.png", 4) 
+        self.Attack3 = split("Character\mainchacter\Attack_3.png", 3) 
            
            
            
@@ -152,7 +161,7 @@ class player():
 
     def idle(self):
         self.anime_time = 0
-        self.image = 6
+        self.image = 0
         self.surface = self.Walk[self.image]
         if self.flip:
             self.surface = pygame.transform.flip(self.surface, True, False)
@@ -160,8 +169,8 @@ class player():
 
 
 
-    #def attack(self):
-
+    def attack(self):
+        anime_update(self,2,False,6,self.Attack1)
 
 
 class enemy():
