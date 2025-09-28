@@ -110,22 +110,6 @@ def anime_update(object, change_time ,flip , image_num, image_list):
 
 
 
-def anime_update_click(object, change_time ,flip , image_num, image_list):
-    object.doing = True
-    object.anime_time += 1
-    if object.anime_time >= change_time:
-        object.image += 1
-        object.anime_time = 0
-        if object.image >= image_num:
-            object.image = 0
-            object.doing = False
-    
-    object.surface = image_list[object.image]
-    if flip:
-        object.surface = pygame.transform.flip(object.surface, True, False)
-
-
-
 def start_animation(state, image_list, change_time, flip, loop):
     state["playing"] = True
     state["current_frame"] = 0
@@ -139,7 +123,7 @@ def start_animation(state, image_list, change_time, flip, loop):
 
 def update_animation(obj, state):
     if not state.get("playing", False):
-        return
+        return False
 
     state["timer"] += 1
     if state["timer"] >= state["change_time"]:
@@ -153,12 +137,12 @@ def update_animation(obj, state):
             else:
                 state["current_frame"] = len(state["image_list"]) - 1
                 state["playing"] = False
-        print("attackDown")
+                return True
 
     # 更新圖片
     frame = state["image_list"][state["current_frame"]]
     obj.surface = pygame.transform.flip(frame, True, False) if state["flip"] else frame
-    
+    return False
 
 
 class player():
@@ -168,7 +152,6 @@ class player():
         self.name = name                                              #角色名稱
         self.x = x                                                    #角色位置
         self.y = y
-        self.attacking=False
         self.HP = 5
         self.image = 0                                        #角色圖片
         self.vx = 0                                                   #角色速度
@@ -176,9 +159,12 @@ class player():
         self.on_ground = False                                      #角色是否在地面上
         self.anime_time = 0
         self.flip = False
-        self.attack_state = {}
         self.now_NT_Touch = []                                      #角色目前碰撞清單
 
+        self.attack_state = {}
+        self.attack_state["playing"] = False
+        self.atk_procedure = 0
+        self.atk_next = 0
 
         #匯入Walk.png圖片並切分成動畫
         self.Walk = split("Character\mainchacter\Walk.png", 8)  
@@ -201,7 +187,10 @@ class player():
            
     def R_move(self):                                               #角色移動
         if not "1_R" in self.now_NT_Touch:   #若有右碰撞，則不移動
-            self.vx = 10
+            if self.attack_state["playing"]:
+                self.vx = 5
+            else:
+                self.vx = 10
             self.flip = False
             anime_update(self,5,False,8,self.Walk)
 
@@ -209,8 +198,10 @@ class player():
 
     def L_move(self):
         if not "1_L" in self.now_NT_Touch :   #若有左碰撞，則不移動
-
-            self.vx = -10
+            if self.attack_state["playing"]:
+                self.vx = -5
+            else:
+                self.vx = -10
             self.flip = True
             anime_update(self,5,True,8,self.Walk)
 
@@ -233,8 +224,22 @@ class player():
 
 
     def attack(self):
-        self.attack_state = {}
-        start_animation(self.attack_state, self.Attack1, 3, False, False)
+        if self.atk_next > 0:  # 在緩衝時間內
+            if self.atk_procedure == 0:
+                start_animation(self.attack_state, self.Attack2, 5, self.flip, False)
+                self.atk_procedure = 1
+            elif self.atk_procedure == 1:
+                start_animation(self.attack_state, self.Attack3, 7, self.flip, False)
+                self.atk_procedure = 2
+            else:
+                # 已經是最後一段，回到第一段
+                start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
+                self.atk_procedure = 0
+            self.atk_next = 0  # 用掉緩衝
+        else:
+            # 沒有緩衝 → 從頭開始
+            start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
+            self.atk_procedure = 0
         
 
 

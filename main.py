@@ -125,13 +125,17 @@ match scene_ctrl:
                     Main.idle()
                     Main.vx = 0
                 
-                if keys[pygame.K_j] and not pre_keys[pygame.K_j]:
-                    print("attacking")
+                if keys[pygame.K_j] and not Main.attack_state["playing"]:
                     Main.attack()
 
-                player_class.update_animation(Main, Main.attack_state)
-            pre_keys = keys
-
+                finished = player_class.update_animation(Main, Main.attack_state)
+                if finished and Main.atk_next == 0:
+                    print("reset")
+                    Main.atk_next = 20                              #此段攻擊結束需多久接下一段
+                if Main.atk_next > 0:
+                    print("minus")
+                    Main.atk_next -= 1
+                
 
             if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch :                                #按下空白鍵跳躍
                 Main.jump()
