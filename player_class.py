@@ -123,7 +123,41 @@ def anime_update_click(object, change_time ,flip , image_num, image_list):
     object.surface = image_list[object.image]
     if flip:
         object.surface = pygame.transform.flip(object.surface, True, False)
-    
+
+
+
+def start_animation(state, image_list, change_time, flip, loop):
+    state["playing"] = True
+    state["current_frame"] = 0
+    state["timer"] = 0
+    state["image_list"] = image_list
+    state["change_time"] = change_time
+    state["flip"] = flip
+    state["loop"] = loop
+
+
+
+def update_animation(obj, state):
+    if not state.get("playing", False):
+        return
+
+    state["timer"] += 1
+    if state["timer"] >= state["change_time"]:
+        state["timer"] = 0
+        state["current_frame"] += 1
+
+        # 播放結束判斷
+        if state["current_frame"] >= len(state["image_list"]):
+            if state["loop"]:
+                state["current_frame"] = 0
+            else:
+                state["current_frame"] = len(state["image_list"]) - 1
+                state["playing"] = False
+        print("attackDown")
+
+    # 更新圖片
+    frame = state["image_list"][state["current_frame"]]
+    obj.surface = pygame.transform.flip(frame, True, False) if state["flip"] else frame
     
 
 
@@ -134,18 +168,15 @@ class player():
         self.name = name                                              #角色名稱
         self.x = x                                                    #角色位置
         self.y = y
-        
-        self.doing=False
-        
+        self.attacking=False
         self.HP = 5
-        
         self.image = 0                                        #角色圖片
         self.vx = 0                                                   #角色速度
         self.vy = 0
         self.on_ground = False                                      #角色是否在地面上
         self.anime_time = 0
         self.flip = False
-
+        self.attack_state = {}
         self.now_NT_Touch = []                                      #角色目前碰撞清單
 
 
@@ -202,7 +233,8 @@ class player():
 
 
     def attack(self):
-        anime_update_click(self,0,False,5,self.Attack1)
+        self.attack_state = {}
+        start_animation(self.attack_state, self.Attack1, 3, False, False)
         
 
 

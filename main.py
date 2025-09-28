@@ -105,8 +105,9 @@ match scene_ctrl:
         
             elif Main.on_ground == True:                            #觸地垂直速度歸零
                 Main.vy = 0
-            keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
+            keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
+            
 
             if keys[pygame.K_d] and keys[pygame.K_a]:                #避免同時按兩個方向鍵
                 
@@ -120,14 +121,16 @@ match scene_ctrl:
                 elif keys[pygame.K_a]:                                #按下a鍵左移
                     Main.L_move()
 
-                elif keys[pygame.K_j] or Main.doing == True:
-                    
-                    Main.attack()
-
                 else:                                                   #不移動時水平速度歸零(沒有慣性)
                     Main.idle()
                     Main.vx = 0
                 
+                if keys[pygame.K_j] and not pre_keys[pygame.K_j]:
+                    print("attacking")
+                    Main.attack()
+
+                player_class.update_animation(Main, Main.attack_state)
+            pre_keys = keys
 
 
             if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch :                                #按下空白鍵跳躍
