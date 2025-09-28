@@ -26,8 +26,6 @@ class object():
             case "door":
                 self.can_be_through = 1                                         #物件是否可通過(布林值)        
                 self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
-                
-                pass
             
             
             case "path":

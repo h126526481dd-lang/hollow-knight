@@ -62,115 +62,122 @@ print(pygame.display.get_active())                              #確認是否正
 scene_ctrl = 10
 #=======================================================================================================
 
-
-match scene_ctrl:
-    
-    case 10:                                                             #場景0
-
-        scene = []
-        NT_object = []
-        CT_object = []
-        Enemy = []
-
-        scene.append(pygame.image.load("IMG_2794.jpg"))                  #導入背景圖片
-        scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
+while True:
+    match scene_ctrl:
         
-        
-        for i in range(10):                                                                                          #建立物件(地板)
-            NT_object.append(object_class.object(-50+120*i,500,pygame.image.load("floor.png"),"wall"))
-            NT_object.append(object_class.object(1000+120*i,750,pygame.image.load("floor.png"),"wall"))
-        
-        CT_object.append(object_class.object(300,600,pygame.image.load("door.png"),"door"))
+        case 10:                                                             #場景0
 
-        
-        
-        while scene_ctrl == 10:                                                     #遊戲主迴圈
-        
-            clock.tick(FPS)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
+            scene = []
+            NT_object = []
+            CT_object = []
+            Enemy = []
 
-            Main.now_NT_Touch = []                                      #角色目前碰撞清單
-            for obj in NT_object:
-                player_class.Touch(Main,obj)
+            scene.append(pygame.image.load("IMG_2794.jpg"))                  #導入背景圖片
+            scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
+            
+            
+            for i in range(10):                                                                                          #建立物件(地板)
+                NT_object.append(object_class.object(-50+120*i,500,pygame.image.load("floor.png"),"wall"))
+                NT_object.append(object_class.object(1000+120*i,750,pygame.image.load("floor.png"),"wall"))
+            door = pygame.image.load("door.png")
+            door = pygame.transform.scale(door, (200, 200))  # 調整大小
+            CT_object.append(object_class.object(600,600,door,"door"))
+
+            
+            
+            while scene_ctrl == 10:                                                     #遊戲主迴圈
+            
+                clock.tick(FPS)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
+
+                Main.now_NT_Touch = []                                      #角色目前碰撞清單
+                for obj in NT_object:
+                    player_class.Touch(Main,obj)
 
 
+                        
+                if not "1_D" in Main.now_NT_Touch :                                           #若沒有站地上，則設為False
+                    Main.on_ground = False
                     
-            if not "1_D" in Main.now_NT_Touch :                                           #若沒有站地上，則設為False
-                Main.on_ground = False
+                if "1_U" in Main.now_NT_Touch and Main.vy < 0:                                           #若沒有站地上，則設為False
+                    Main.vy = 0 
+                    
+                if Main.on_ground == False and Main.vy <= 30:           #重力加速度(有設上限)
+                    Main.vy += 1
+            
+                elif Main.on_ground == True:                            #觸地垂直速度歸零
+                    Main.vy = 0
+
+                keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
                 
-            if "1_U" in Main.now_NT_Touch and Main.vy < 0:                                           #若沒有站地上，則設為False
-                Main.vy = 0 
+
+                if keys[pygame.K_d] and keys[pygame.K_a]:                #避免同時按兩個方向鍵
+                    
+                    pass
                 
-            if Main.on_ground == False and Main.vy <= 30:           #重力加速度(有設上限)
-                Main.vy += 1
-        
-            elif Main.on_ground == True:                            #觸地垂直速度歸零
-                Main.vy = 0
-
-            keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
-            
-
-            if keys[pygame.K_d] and keys[pygame.K_a]:                #避免同時按兩個方向鍵
+                else:
                 
-                pass
-            
-            else:
-            
-                if keys[pygame.K_d]:                                #按下d鍵右移
-                    Main.R_move()
+                    if keys[pygame.K_d]:                                #按下d鍵右移
+                        Main.R_move()
 
-                elif keys[pygame.K_a]:                                #按下a鍵左移
-                    Main.L_move()
+                    elif keys[pygame.K_a]:                                #按下a鍵左移
+                        Main.L_move()
 
-                else:                                                   #不移動時水平速度歸零(沒有慣性)
-                    Main.idle()
-                    Main.vx = 0
+                    else:                                                   #不移動時水平速度歸零(沒有慣性)
+                        Main.idle() and not Main.attack_state["playing"]
+                        Main.vx = 0
+                    
+                    if keys[pygame.K_j] and not Main.attack_state["playing"]:
+                        Main.attack()
+
+                    finished = player_class.update_animation(Main, Main.attack_state)
+                    if finished and Main.atk_next == 0:
+                        print("reset")
+                        Main.atk_next = 20                              #此段攻擊結束需多久接下一段
+                    if Main.atk_next > 0:
+                        print("minus")
+                        Main.atk_next -= 1
+                    
+
+                if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch :                                #按下空白鍵跳躍
+                    Main.jump()
+
+                Main.y += Main.vy                                       #更新角色位置
+                Main.x += Main.vx
+
+                Main.rect.x += Main.vx
+                Main.rect.y += Main.vy
+
+
+                for event in pygame.event.get():                               #偵測事件
                 
-                if keys[pygame.K_j] and not pre_keys[pygame.K_j]:
-                    print("attacking")
-                    Main.attack()
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
 
-                player_class.update_animation(Main, Main.attack_state)
-            pre_keys = keys
-
-
-            if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch :                                #按下空白鍵跳躍
-                Main.jump()
-
-            Main.y += Main.vy                                       #更新角色位置
-            Main.x += Main.vx
-
-            Main.rect.x += Main.vx
-            Main.rect.y += Main.vy
-
-
-            for event in pygame.event.get():                               #偵測事件
-            
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    exit()
-
-            if Main.y>1800:
-                Main.y=0
-                Main.rect.y=50
-            
-            
-            
-            
-            for enemy in Enemy:
-                if player_class.Touch(Main,enemy):
-                    Main.HP -= 1
-                    print(Main.HP)
-            
-            for obj in CT_object:
-                if obj.type=="door":
-                    if player_class.Touch(Main,obj):
-                        scene_ctrl=11
-            
-            
-            show(scene[0],NT_object,CT_object,Main)
+                if Main.y>1800:
+                    Main.y=0
+                    Main.rect.y=50
+                
+                
+                
+                
+                for enemy in Enemy:
+                    if player_class.Touch(Main,enemy):
+                        Main.HP -= 1
+                        print(Main.HP)
+                
+                for obj in CT_object:
+                    if obj.type=="door":
+                        if player_class.Touch(Main,obj):
+                            scene_ctrl=11
+                
+                
+                show(scene[0],NT_object,CT_object,Main)
 #=======================================================================================================
 
-    case 11:                                                             #場景1
-        while scene_ctrl == 11:                                                     #遊戲主迴圈
-        
-            pass
+        case 11:                                                             #場景1
+            while scene_ctrl == 11:                                                     #遊戲主迴圈
+            
+                print("go")
+                pygame.quit()
+                exit()
