@@ -1,160 +1,15 @@
 import random
 import os
 import pygame
-
-
-
-def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞偵測
-    
-    T_rect = object2.surface.get_rect(topleft=(object2.x, object2.y))
-  #物件2的碰撞盒複製(調整用)
-
-    
-    if object1.rect.colliderect(object2.rect):
-        T_rect.y+=(max(abs(object1.vy),32))
-        if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件二往下調整後是否還有碰撞  
-                                            
-
-            if object2.can_be_through == 0:          #若物件2是可穿越的，則不做調整
-                object1.now_NT_Touch.append("1_D")      #若往下調沒碰撞，表示物件1的底部碰撞到了物件2(D=Down)，新增標籤到碰撞清單
-                T_rect.y-=(max(abs(object1.vy),32))
-
-                for i in range(max(abs(object1.vy),32)):       #把物件1往上調整，直到不碰撞為止
-                    object1.y -= 1
-                    object1.rect.y-=1    
-                                                                                                    
-                    
-                    if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測往上調整後是否還有碰撞  
-                        object1.y += 1
-                        object1.rect.y+=1
-                        break
-
-                object1.on_ground = True
-            return True
-
-        T_rect.y-=2*(max(abs(object1.vy),32))
-
-
-
-        if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件二往上調整後是否還有碰撞  
-
-
-            if object2.can_be_through == 0:               #角色跟不可穿越物件 的上碰撞(上阻擋)偵測
-                object1.now_NT_Touch.append("1_U")      #若往上調沒碰撞，表示物件1的頂部碰撞到了物件2(U=Up)，新增標籤到碰撞清單
-
-
-                for i in range(max(abs(object1.vy),32)):                   #把物件1往下調整，直到不碰撞為止                                                                #把物件1往上調整，直到不碰撞為止
-                    object1.y += 1
-                    object1.rect.y+=1    
-
-                    
-                    if not object1.rect.colliderect(T_rect) :    
-                        object1.y -= 1
-                        object1.rect.y-=1
-                        break
-
-            return True
-
-        T_rect.y+=(max(abs(object1.vy),32))
-        T_rect.x+=(max(abs(object1.vx),11))
-        
-        if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件2往右調整後是否還有碰撞  
-
-
-            if object2.can_be_through == 0 :               #角色跟不可穿越物件 的右碰撞(右阻擋)偵測
-                object1.now_NT_Touch.append("1_R")      #若往右調沒碰撞，表示物件1的右部碰撞到了物件2，新增標籤到碰撞清單
-                object1.vx *= 0 
-            return True
-
-
-        T_rect.x-=2*(max(abs(object1.vx),11))
-        if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件2往左調整後是否還有碰撞  
-
-
-            if object2.can_be_through == 0 :               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
-                object1.now_NT_Touch.append("1_L")      #若往左調沒碰撞，表示物件1的左部碰撞到了物件2，新增標籤到碰撞清單
-                object1.vx *= 0            
-            return True
-
-        return True
-    else:
-        return False
+import tool
 
 
 
 
-def split(picture, times):              #切割圖片(圖片, 切割次數)
-    frames = []
-    sprite_sheet = pygame.image.load(picture).convert_alpha()
-    frame_width = sprite_sheet.get_width() // times
-    frame_height = sprite_sheet.get_height()
-    for i in range(times):
-        frame = sprite_sheet.subsurface((i * frame_width, 0, frame_width, frame_height))
-        frames.append(frame)
-    #導入圖片(八張合一起)，分割開後存進List  
-    return frames  
-
-def HRZ_combine(picture, times):
-    sprite_sheet = pygame.image.load(picture).convert_alpha()
-    w , h = sprite_sheet.get_size()
-    big_surface = pygame.Surface((w*times, h), pygame.SRCALPHA)         #導入圖片(八張合一起)，分割開後存進List 
-
-    for i in range(times):
-        big_surface.blit(sprite_sheet, (w*i, 0))
-
-    return   big_surface
 
 
 
 
-#播放動畫(物件, 幾偵動一下, 是否翻轉, 圖片數, 圖片清單)
-def anime_update(object, change_time ,flip , image_num, image_list):
-    object.anime_time += 1
-    if object.anime_time >= change_time:
-        object.image += 1
-        object.anime_time = 0
-        if object.image >= image_num:
-            object.image = 0
-    
-    object.surface = image_list[object.image]
-    if flip:
-        object.surface = pygame.transform.flip(object.surface, True, False)
-
-
-
-def start_animation(state, image_list, change_time, flip, loop):                #初始化動畫設定
-    state["playing"] = True
-    state["current_frame"] = 0
-    state["timer"] = 0
-    state["image_list"] = image_list
-    state["change_time"] = change_time
-    state["flip"] = flip
-    state["loop"] = loop
-
-
-
-def update_animation(obj, state):
-    if not state.get("playing", False):
-        return False
-
-    state["timer"] += 1
-    if state["timer"] >= state["change_time"]:
-        state["timer"] = 0
-        state["current_frame"] += 1
-
-        # 播放結束判斷
-        if state["current_frame"] >= len(state["image_list"]):
-            if state["loop"]:
-                state["current_frame"] = 0
-            else:
-                state["current_frame"] = len(state["image_list"]) - 1
-                state["playing"] = False
-                return True
-
-    # 更新圖片
-    frame = state["image_list"][state["current_frame"]]
-    obj.surface = pygame.transform.flip(frame, True, False) if state["flip"] else frame
-    return False
 
 
 class player():
@@ -182,13 +37,13 @@ class player():
 
         self.now_NT_Touch = []                                      #角色目前碰撞清單
 
-        self.attack_state = {}
+        self.attack_state = {}                                      #attack字典用以紀錄attack動畫狀態
         self.attack_state["playing"] = False
 
         self.atk_procedure = 0
         self.atk_next = 0
                             
-        self.Walk = split("Character\mainchacter\Walk.png", 8)   #匯入Walk.png圖片並切分成動畫
+        self.Walk = tool.split("Character\mainchacter\Walk.png", 8)   #匯入Walk.png圖片並切分成動畫
         self.surface = self.Walk[self.image]
         
         self.rect = self.surface.get_rect(topleft=(self.x, self.y+50))
@@ -198,11 +53,11 @@ class player():
         self.rect.width -= 100
         self.rect.height -= 50
 
-        self.Attack1 = split("Character\mainchacter\Attack_1.png", 6)         #匯入Attack_1.png圖片並切分成動畫
-        self.Attack2 = split("Character\mainchacter\Attack_2.png", 4) 
-        self.Attack3 = split("Character\mainchacter\Attack_3.png", 3) 
+        self.Attack1 = tool.split("Character\mainchacter\Attack_1.png", 6)         #匯入Attack_1.png圖片並切分成動畫
+        self.Attack2 = tool.split("Character\mainchacter\Attack_2.png", 4) 
+        self.Attack3 = tool.split("Character\mainchacter\Attack_3.png", 3) 
            
-        self.Jump = split("Character\mainchacter\Jump.png", 12)
+        self.Jump = tool.split("Character\mainchacter\Jump.png", 12)
         
            
     def R_move(self):                                               #角色移動
@@ -212,7 +67,7 @@ class player():
             else:
                 self.vx = 10
             self.flip = False
-            anime_update(self,5,False,8,self.Walk)
+            tool.anime_update(self,5,False,8,self.Walk)
 
 
 
@@ -223,7 +78,7 @@ class player():
             else:
                 self.vx = -10
             self.flip = True
-            anime_update(self,5,True,8,self.Walk)
+            tool.anime_update(self,5,True,8,self.Walk)
 
 
 
@@ -243,20 +98,25 @@ class player():
 
     def attack(self):
         if self.atk_next > 0:  # 在緩衝時間內
+            print(self.atk_procedure)
             if self.atk_procedure == 0:
-                start_animation(self.attack_state, self.Attack2, 5, self.flip, False)
+                tool.start_animation(self.attack_state, self.Attack2, 5, self.flip, False)   #第二段攻擊
                 self.atk_procedure = 1
             elif self.atk_procedure == 1:
-                start_animation(self.attack_state, self.Attack3, 7, self.flip, False)
+                tool.start_animation(self.attack_state, self.Attack3, 7, self.flip, False)   #第三段攻擊會向前滑行
+                if self.flip:
+                    self.vx = -35
+                else:
+                    self.vx = 35
                 self.atk_procedure = 2
             else:
                 # 已經是最後一段，回到第一段
-                start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
+                tool.start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
                 self.atk_procedure = 0
             self.atk_next = 0  # 用掉緩衝
         else:
             # 沒有緩衝 → 從頭開始
-            start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
+            tool.start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
             self.atk_procedure = 0
         
 
@@ -349,7 +209,7 @@ class enemy():
 
 
                 for obj in NT_object:
-                    Touch(self, obj)
+                    tool.Touch(self, obj)
                     if self.Test_rect.colliderect(obj.rect):
                         self.back_check += 1
 
