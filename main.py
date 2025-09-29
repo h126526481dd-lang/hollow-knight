@@ -123,9 +123,7 @@ while True:
 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
                 
-                print(Main.attack_state["playing"])
-                print(Main.atk_procedure)
-                if not Main.attack_state["playing"] or Main.atk_procedure != 2:
+                if not Main.attack_state["playing"] or Main.atk_procedure != 2:     #如果不是第三段攻擊
                     if keys[pygame.K_d] and keys[pygame.K_a]:                #避免同時按兩個方向鍵
                         
                         pass
@@ -141,7 +139,12 @@ while True:
                         else:                                                   #不移動時水平速度歸零(沒有慣性)
                             Main.idle() 
                             Main.vx = 0
-                    
+                elif abs(Main.vx) > 0:
+                    if Main.flip:
+                        Main.vx += 2
+                    else:
+                        Main.vx -= 2
+
                 if keys[pygame.K_j] and not Main.attack_state["playing"]:
                     Main.attack()
                     print(Main.attack_state["playing"])

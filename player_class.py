@@ -245,16 +245,14 @@ class player():
         if self.atk_next > 0:  # 在緩衝時間內
             print(self.atk_procedure)
             if self.atk_procedure == 0:
-                start_animation(self.attack_state, self.Attack2, 5, self.flip, False)
+                start_animation(self.attack_state, self.Attack2, 5, self.flip, False)   #第二段攻擊
                 self.atk_procedure = 1
             elif self.atk_procedure == 1:
-                start_animation(self.attack_state, self.Attack3, 7, self.flip, False)
+                start_animation(self.attack_state, self.Attack3, 7, self.flip, False)   #第三段攻擊會向前滑行
                 if self.flip:
-                    print("vx-10")
-                    self.vx = -10
+                    self.vx = -35
                 else:
-                    print("vx+10")
-                    self.vx = 10
+                    self.vx = 35
                 self.atk_procedure = 2
             else:
                 # 已經是最後一段，回到第一段
