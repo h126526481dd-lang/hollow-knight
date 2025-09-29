@@ -6,7 +6,8 @@ import pygame
 
 def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞偵測
     
-    T_rect = object2.rect   #物件2的碰撞盒複製(調整用)
+    T_rect = object2.surface.get_rect(topleft=(object2.x, object2.y))
+  #物件2的碰撞盒複製(調整用)
 
     
     if object1.rect.colliderect(object2.rect):
@@ -228,7 +229,7 @@ class player():
 
     def jump(self):
         if self.on_ground == True:
-            self.vy = -20
+            self.vy = -30
     
 
 
@@ -374,6 +375,7 @@ class enemy():
                     self.x += self.vx
                     self.rect.x += self.vx
                 else:
+                    
                     self.vy+=1
                     self.y += self.vy
                     self.rect.y += self.vy  

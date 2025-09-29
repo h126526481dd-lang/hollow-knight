@@ -87,7 +87,7 @@ while True:
 
             door = pygame.image.load("door.png")
             door = pygame.transform.scale(door, (200, 200))  # 調整大小
-            CT_object.append(object_class.object(1200,500,door,"door"))
+            CT_object.append(object_class.object(1600,500,door,"door"))
 
             Enemy.append(player_class.enemy("The_First",1200,0,10,"zombie"))
             
@@ -102,8 +102,7 @@ while True:
 
                 for enemy in Enemy:
                     player_class.enemy.Move(enemy,NT_object)
-                    print(NT_object[0].x)
-                    print(NT_object[0].y)
+
                     if player_class.Touch(Main,enemy):
                         Main.HP -= 1
                        # print(Main.HP)
