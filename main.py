@@ -138,10 +138,8 @@ while True:
 
                     finished = player_class.update_animation(Main, Main.attack_state)
                     if finished and Main.atk_next == 0:
-                        print("reset")
                         Main.atk_next = 20                              #此段攻擊結束需多久接下一段
                     if Main.atk_next > 0:
-                        print("minus")
                         Main.atk_next -= 1
 
 
@@ -172,9 +170,7 @@ while True:
                     Main.y=0
                     Main.rect.y=50
                 
-                
-                
-                
+  
                 for enemy in Enemy:
                     if player_class.Touch(Main,enemy):
                         Main.HP -= 1
