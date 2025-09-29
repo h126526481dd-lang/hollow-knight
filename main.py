@@ -63,6 +63,7 @@ while True:
             while scene_ctrl == 10:                                                     #遊戲主迴圈
             
                 clock.tick(FPS)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
+                print("FPS:", clock.get_fps())
 
                 Main.now_NT_Touch = []                                      #角色目前碰撞清單
                 for obj in NT_object:
@@ -70,8 +71,7 @@ while True:
 
                 for enemy in Enemy:
                     player_class.enemy.Move(enemy,NT_object)
-                    #print(NT_object[0].x)
-                    #print(NT_object[0].y)
+
                     if tool.Touch(Main,enemy):
                         Main.HP -= 1
                        # print(Main.HP)
@@ -127,7 +127,7 @@ while True:
                 if keys[pygame.K_w]:                                #按下w進門
                     for obj in CT_object:
                         if obj.type=="door":
-                            if player_class.Touch(Main,obj):
+                            if tool.Touch(Main,obj):
                                 scene_ctrl=11
                     
 

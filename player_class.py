@@ -98,7 +98,6 @@ class player():
 
     def attack(self):
         if self.atk_next > 0:  # 在緩衝時間內
-            print(self.atk_procedure)
             if self.atk_procedure == 0:
                 tool.start_animation(self.attack_state, self.Attack2, 5, self.flip, False)   #第二段攻擊
                 self.atk_procedure = 1
