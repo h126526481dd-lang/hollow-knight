@@ -6,7 +6,7 @@ import pygame
 
 def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞偵測
     
-    T_rect = object2.surface.get_rect(topleft=(object2.x, object2.y))   #物件2的碰撞盒複製(調整用)
+    T_rect = object2.rect   #物件2的碰撞盒複製(調整用)
 
     
     if object1.rect.colliderect(object2.rect):
@@ -262,7 +262,7 @@ class player():
 
 class enemy():
              
-    def __init__(self,name,x,y,HP,image_List,type):                                    #敵人模型
+    def __init__(self,name,x,y,HP,type):                                    #敵人模型
         self.name = name                                              #敵人名稱
         self.x = x                                                    #敵人位置
         self.y = y
@@ -273,22 +273,11 @@ class enemy():
         self.vy = 0
         self.on_ground = False                                      #敵人是否在地面上
         self.HP = HP
-        self.image_List = image_List
-        
-        self.rect = self.surface.get_rect(topleft=(self.x, self.y))
-        self.right_down = (self.x,self.y)+self.rect.get_size()
+        self.can_be_through = 1
+        self.back = 1
+        self.back_check=0
+        self.back_cd = 0
 
-        self.T_rect = pygame.rect.Rect(self.right_down-(20,20),self.right_down)
-
-
-
-
-
-
-
-
-    def Move(self,NT_object):
-        
         match self.type:
             
             case 1:    
@@ -303,18 +292,89 @@ class enemy():
                 pass
             
             
-            case _:     
+            case _: 
+        
+
+                self.surface =pygame.image.load("zombie.png")
+                self.rect = self.surface.get_rect(topleft=(self.x, self.y))
+
+
+
+                self.right_down_x = self.x+self.rect.width
+                self.right_down_y = self.y+self.rect.height
+
+                self.Test_rect = pygame.rect.Rect(self.right_down_x-20,self.right_down_y,20,20)
+
+
+
+
+
+
+
+
+    def Move(self,NT_object):
+        
+
+        match self.type:
+            
+            case 1:    
+                pass
+            
+            
+            case 2:    
+                pass
+            
+            
+            case 3:    
+                pass
+            
+            
+            case _: 
+                
+                self.now_NT_Touch=[]
+                self.back_check=0
+
+                if self.back==1:
+                    self.right_down_x = self.x+self.rect.width
+                    self.right_down_y = self.y+self.rect.height
+                    self.Test_rect.x = self.x+self.rect.width
+                    self.Test_rect.y = self.y+self.rect.height
+                else:
+                    self.right_down_x = self.x-10
+                    self.right_down_y = self.y+self.rect.height
+                    self.Test_rect.x = self.x-10
+                    self.Test_rect.y = self.y+self.rect.height
+
+
+
                 for obj in NT_object:
                     Touch(self, obj)
-                    if "1_D" in self.now_NT_Touch:
-                        self.on_ground = True
+                    if self.Test_rect.colliderect(obj.rect):
+                        self.back_check += 1
+
+                if self.back_check == 0 and self.back_cd == 0:
+                    self.back *= -1
+                    self.back_check=0
+                    self.back_cd =1
+                    self.surface = pygame.transform.flip(self.surface, True, False)
+
+
+                if self.back_check > 0:
+                    self.back_cd =0
+
+
+                if "1_D" in self.now_NT_Touch:
+                    self.on_ground = True
+                else:
+                    self.on_ground =False
                 
                 if self.on_ground :
                     self.vy = 0
-                    self.vx = 5
+                    self.vx = 5*self.back
                     self.x += self.vx
                     self.rect.x += self.vx
                 else:
                     self.vy+=1
                     self.y += self.vy
                     self.rect.y += self.vy  
+

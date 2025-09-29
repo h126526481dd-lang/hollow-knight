@@ -7,7 +7,7 @@ import math
 
 
 
-def show(scene,NT_object,CT_object,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
+def show(scene,NT_object,CT_object,Enemy,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     adjust_y = screen_height//2                                 #螢幕中心座標
     adjust_x = screen_width//2
@@ -33,7 +33,7 @@ def show(scene,NT_object,CT_object,player):                          #繪製畫�
         if camera_rect.colliderect(enemy.rect):
             screen.blit(enemy.surface, (enemy.x-camera_x, enemy.y-camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.x - camera_x, enemy.y - camera_y, enemy.rect.width, enemy.rect.height),1)
-            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down-(camera_x,camera_y)-(enemy.T_rect.width,enemy.T_rect.height), enemy.T_rect.width, enemy.T_rect.height),1)
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down_x-enemy.Test_rect.width-camera_x,  enemy.right_down_y-camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
 
     screen.blit(player.surface, ( player.x-camera_x,player.y-camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
@@ -89,7 +89,7 @@ while True:
             door = pygame.transform.scale(door, (200, 200))  # 調整大小
             CT_object.append(object_class.object(1200,500,door,"door"))
 
-#            player_class.enemy("The_First",1200,700,10,)
+            Enemy.append(player_class.enemy("The_First",1200,0,10,"zombie"))
             
             
             while scene_ctrl == 10:                                                     #遊戲主迴圈
@@ -100,6 +100,13 @@ while True:
                 for obj in NT_object:
                     player_class.Touch(Main,obj)
 
+                for enemy in Enemy:
+                    player_class.enemy.Move(enemy,NT_object)
+                    print(NT_object[0].x)
+                    print(NT_object[0].y)
+                    if player_class.Touch(Main,enemy):
+                        Main.HP -= 1
+                       # print(Main.HP)
 
                         
                 if not "1_D" in Main.now_NT_Touch :                                           #若沒有站地上，則設為False
@@ -170,16 +177,15 @@ while True:
                     Main.y=0
                     Main.rect.y=50
                 
-  
-                for enemy in Enemy:
-                    if player_class.Touch(Main,enemy):
-                        Main.HP -= 1
-                        print(Main.HP)
+                
+                
+                
+
                 
 
                 
                 
-                show(scene[0],NT_object,CT_object,Main)
+                show(scene[0],NT_object,CT_object,Enemy,Main)
 #=======================================================================================================
 
         case 11:                                                             #場景1
