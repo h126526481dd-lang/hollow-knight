@@ -93,6 +93,17 @@ def split(picture, times):              #切割圖片(圖片, 切割次數)
     #導入圖片(八張合一起)，分割開後存進List  
     return frames  
 
+def HRZ_combine(picture, times):
+    sprite_sheet = pygame.image.load(picture).convert_alpha()
+    w , h = sprite_sheet.get_size()
+    big_surface = pygame.Surface((w*times, h), pygame.SRCALPHA)         #導入圖片(八張合一起)，分割開後存進List 
+
+    for i in range(times):
+        big_surface.blit(sprite_sheet, (w*i, 0))
+
+    return   big_surface
+
+
 
 
 #播放動畫(物件, 幾偵動一下, 是否翻轉, 圖片數, 圖片清單)
@@ -227,8 +238,6 @@ class player():
         self.surface = self.Walk[self.image]
         if self.flip:
             self.surface = pygame.transform.flip(self.surface, True, False)
-        self.mask = pygame.mask.from_surface(self.surface)
-
 
 
     def attack(self):
@@ -267,8 +276,17 @@ class enemy():
         self.image_List = image_List
         
         self.rect = self.surface.get_rect(topleft=(self.x, self.y))
-#        self.rect_test = pygame.rect.Rect()                        #偵測方向的碰撞箱(不會寫，還沒想法)
-        
+        self.right_down = (self.x,self.y)+self.rect.get_size()
+
+        self.T_rect = pygame.rect.Rect(self.right_down-(20,20),self.right_down)
+
+
+
+
+
+
+
+
     def Move(self,NT_object):
         
         match self.type:

@@ -28,7 +28,13 @@ def show(scene,NT_object,CT_object,player):                          #繪製畫�
         if camera_rect.colliderect(obj.rect):
             screen.blit(obj.surface, (obj.x-camera_x, obj.y-camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1)
-                    
+    
+    for enemy in Enemy:
+        if camera_rect.colliderect(enemy.rect):
+            screen.blit(enemy.surface, (enemy.x-camera_x, enemy.y-camera_y))
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.x - camera_x, enemy.y - camera_y, enemy.rect.width, enemy.rect.height),1)
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down-(camera_x,camera_y)-(enemy.T_rect.width,enemy.T_rect.height), enemy.T_rect.width, enemy.T_rect.height),1)
+
     screen.blit(player.surface, ( player.x-camera_x,player.y-camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
     
@@ -75,14 +81,15 @@ while True:
             scene.append(pygame.image.load("IMG_2794.jpg"))                  #導入背景圖片
             scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
             
-            
-            for i in range(10):                                                                                          #建立物件(地板)
-                NT_object.append(object_class.object(-50+120*i,500,pygame.image.load("floor.png"),"wall"))
-                NT_object.append(object_class.object(1000+120*i,750,pygame.image.load("floor.png"),"wall"))
+            NT_object.append(object_class.object(1200,800,player_class.HRZ_combine("floor.png",10),"wall"))
+            NT_object.append(object_class.object(-50,400,player_class.HRZ_combine("floor.png",10),"wall"))
+
+
             door = pygame.image.load("door.png")
             door = pygame.transform.scale(door, (200, 200))  # 調整大小
-            CT_object.append(object_class.object(600,600,door,"door"))
+            CT_object.append(object_class.object(1200,500,door,"door"))
 
+#            player_class.enemy("The_First",1200,700,10,)
             
             
             while scene_ctrl == 10:                                                     #遊戲主迴圈
@@ -136,6 +143,13 @@ while True:
                     if Main.atk_next > 0:
                         print("minus")
                         Main.atk_next -= 1
+
+
+                    if keys[pygame.K_w]:                                #按下w進門
+                        for obj in CT_object:
+                            if obj.type=="door":
+                                if player_class.Touch(Main,obj):
+                                    scene_ctrl=11
                     
 
                 if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch :                                #按下空白鍵跳躍
@@ -166,10 +180,7 @@ while True:
                         Main.HP -= 1
                         print(Main.HP)
                 
-                for obj in CT_object:
-                    if obj.type=="door":
-                        if player_class.Touch(Main,obj):
-                            scene_ctrl=11
+
                 
                 
                 show(scene[0],NT_object,CT_object,Main)
