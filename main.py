@@ -178,12 +178,11 @@ while True:
                     Main.y=0
                     Main.rect.y=50
                 
+                if Main.HP <=0:
+                    print("死")
+                    pygame.quit()
+                    exit()
                 
-                
-                
-
-                
-
                 
                 
                 show(scene[0],NT_object,CT_object,Enemy,Main)
