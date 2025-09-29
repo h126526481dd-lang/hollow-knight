@@ -102,8 +102,8 @@ while True:
 
                 for enemy in Enemy:
                     player_class.enemy.Move(enemy,NT_object)
-                    print("enemy",enemy.now_NT_Touch)
-                    print("player",Main.now_NT_Touch)
+                    print(NT_object[0].x)
+                    print(NT_object[0].y)
                     if player_class.Touch(Main,enemy):
                         Main.HP -= 1
                        # print(Main.HP)
