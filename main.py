@@ -87,7 +87,7 @@ while True:
 
             door = pygame.image.load("door.png")
             door = pygame.transform.scale(door, (200, 200))  # 調整大小
-            CT_object.append(object_class.object(1200,500,door,"door"))
+            CT_object.append(object_class.object(1600,500,door,"door"))
 
             Enemy.append(player_class.enemy("The_First",1200,0,10,"zombie"))
             
@@ -102,8 +102,8 @@ while True:
 
                 for enemy in Enemy:
                     player_class.enemy.Move(enemy,NT_object)
-                    print(NT_object[0].x)
-                    print(NT_object[0].y)
+                    #print(NT_object[0].x)
+                    #print(NT_object[0].y)
                     if player_class.Touch(Main,enemy):
                         Main.HP -= 1
                        # print(Main.HP)
@@ -123,38 +123,41 @@ while True:
 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
                 
-
-                if keys[pygame.K_d] and keys[pygame.K_a]:                #避免同時按兩個方向鍵
+                print(Main.attack_state["playing"])
+                print(Main.atk_procedure)
+                if not Main.attack_state["playing"] or Main.atk_procedure != 2:
+                    if keys[pygame.K_d] and keys[pygame.K_a]:                #避免同時按兩個方向鍵
+                        
+                        pass
                     
-                    pass
-                
-                else:
-                
-                    if keys[pygame.K_d]:                                #按下d鍵右移
-                        Main.R_move()
-
-                    elif keys[pygame.K_a]:                                #按下a鍵左移
-                        Main.L_move()
-
-                    else:                                                   #不移動時水平速度歸零(沒有慣性)
-                        Main.idle() and not Main.attack_state["playing"]
-                        Main.vx = 0
+                    else:
                     
-                    if keys[pygame.K_j] and not Main.attack_state["playing"]:
-                        Main.attack()
+                        if keys[pygame.K_d]:                                #按下d鍵右移
+                            Main.R_move()
 
-                    finished = player_class.update_animation(Main, Main.attack_state)
-                    if finished and Main.atk_next == 0:
-                        Main.atk_next = 20                              #此段攻擊結束需多久接下一段
-                    if Main.atk_next > 0:
-                        Main.atk_next -= 1
+                        elif keys[pygame.K_a]:                                #按下a鍵左移
+                            Main.L_move()
+
+                        else:                                                   #不移動時水平速度歸零(沒有慣性)
+                            Main.idle() 
+                            Main.vx = 0
+                    
+                if keys[pygame.K_j] and not Main.attack_state["playing"]:
+                    Main.attack()
+                    print(Main.attack_state["playing"])
+
+                finished = player_class.update_animation(Main, Main.attack_state)
+                if finished and Main.atk_next == 0:
+                    Main.atk_next = 20                              #此段攻擊結束需多久接下一段
+                if Main.atk_next > 0:
+                    Main.atk_next -= 1
 
 
-                    if keys[pygame.K_w]:                                #按下w進門
-                        for obj in CT_object:
-                            if obj.type=="door":
-                                if player_class.Touch(Main,obj):
-                                    scene_ctrl=11
+                if keys[pygame.K_w]:                                #按下w進門
+                    for obj in CT_object:
+                        if obj.type=="door":
+                            if player_class.Touch(Main,obj):
+                                scene_ctrl=11
                     
 
                 if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch :                                #按下空白鍵跳躍
@@ -177,13 +180,7 @@ while True:
                     Main.y=0
                     Main.rect.y=50
                 
-                
-                
-                
 
-                
-
-                
                 
                 show(scene[0],NT_object,CT_object,Enemy,Main)
 #=======================================================================================================

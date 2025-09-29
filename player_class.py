@@ -6,7 +6,8 @@ import pygame
 
 def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞偵測
     
-    T_rect = object2.rect   #物件2的碰撞盒複製(調整用)
+    T_rect = object2.surface.get_rect(topleft=(object2.x, object2.y))
+  #物件2的碰撞盒複製(調整用)
 
     
     if object1.rect.colliderect(object2.rect):
@@ -181,7 +182,7 @@ class player():
 
         self.now_NT_Touch = []                                      #角色目前碰撞清單
 
-        self.attack_state = {}
+        self.attack_state = {}                                      #attack字典用以紀錄attack動畫狀態
         self.attack_state["playing"] = False
 
         self.atk_procedure = 0
@@ -228,7 +229,7 @@ class player():
 
     def jump(self):
         if self.on_ground == True:
-            self.vy = -20
+            self.vy = -30
     
 
 
@@ -242,11 +243,18 @@ class player():
 
     def attack(self):
         if self.atk_next > 0:  # 在緩衝時間內
+            print(self.atk_procedure)
             if self.atk_procedure == 0:
                 start_animation(self.attack_state, self.Attack2, 5, self.flip, False)
                 self.atk_procedure = 1
             elif self.atk_procedure == 1:
                 start_animation(self.attack_state, self.Attack3, 7, self.flip, False)
+                if self.flip:
+                    print("vx-10")
+                    self.vx = -10
+                else:
+                    print("vx+10")
+                    self.vx = 10
                 self.atk_procedure = 2
             else:
                 # 已經是最後一段，回到第一段
@@ -374,6 +382,7 @@ class enemy():
                     self.x += self.vx
                     self.rect.x += self.vx
                 else:
+                    
                     self.vy+=1
                     self.y += self.vy
                     self.rect.y += self.vy  
