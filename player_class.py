@@ -85,6 +85,7 @@ class player():
     def jump(self):
         if self.on_ground == True:
             self.vy = -30
+            
     
 
 
@@ -173,7 +174,6 @@ class enemy():
 
 
     def Move(self,NT_object):
-        
 
         match self.type:
             

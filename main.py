@@ -155,7 +155,9 @@ while True:
                     print("死")
                     pygame.quit()
                     exit()
-                
+                for enemy in Enemy:
+                    if enemy.HP<=0:
+                        Enemy.remove(enemy)
                 
                 
                 tool.show(screen,scene[0],NT_object,CT_object,Enemy,Main)
