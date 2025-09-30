@@ -33,13 +33,22 @@ Main = player_class.player("BOBO",0,0)                #建立角色物件
 
 print(pygame.display.get_active())                              #確認是否正確開啟
 
-scene_ctrl = 10
+scene_ctrl = 0
 #=======================================================================================================
 
 while True:
     match scene_ctrl:
         
-        case 10:                                                             #場景0
+        case 0:                                                              #場景0
+            scene = []
+            scene.append(pygame.image.load("white.jpg"))                  #導入背景圖片
+            scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
+
+            tool.show(screen,scene[0],0,0,0,0)
+            pass
+#=======================================================================================================
+
+        case 10:                                                             #場景10
 
             scene = []
             NT_object = []
