@@ -2,13 +2,7 @@ import random
 import os
 import pygame
 import tool
-
-
-
-
-
-
-
+import object_class
 
 
 
@@ -23,6 +17,7 @@ class player():
         self.y = y
 
         self.HP = 5
+        self.ATK=5
 
         self.image = 0                                        #角色圖片
 
@@ -36,6 +31,8 @@ class player():
         self.flip = False
 
         self.now_NT_Touch = []                                      #角色目前碰撞清單
+        self.now_CT_Touch = []                                      #角色目前碰撞清單
+
 
         self.attack_state = {}                                      #attack字典用以紀錄attack動畫狀態
         self.attack_state["playing"] = False
@@ -56,9 +53,15 @@ class player():
         self.Attack1 = tool.split("Character\mainchacter\Attack_1.png", 6)         #匯入Attack_1.png圖片並切分成動畫
         self.Attack2 = tool.split("Character\mainchacter\Attack_2.png", 4) 
         self.Attack3 = tool.split("Character\mainchacter\Attack_3.png", 3) 
-           
+        
+        self.blade1 = [pygame.image.load("Character\mainchacter\\blade1_start.png"),pygame.image.load("Character\mainchacter\\blade1_end.png")]
+        self.blade_state={}
+        self.blade_state["playing"]=False
+        
         self.Jump = tool.split("Character\mainchacter\Jump.png", 12)
         
+        self.unhurtable_cd =0
+
            
     def R_move(self):                                               #角色移動
         if not "1_R" in self.now_NT_Touch:   #若有右碰撞，則不移動
@@ -85,6 +88,7 @@ class player():
     def jump(self):
         if self.on_ground == True:
             self.vy = -30
+            
     
 
 
@@ -96,9 +100,19 @@ class player():
             self.surface = pygame.transform.flip(self.surface, True, False)
 
 
+    def get_hit(self):
+        if self.unhurtable_cd <=0:
+            self.HP -= 1  
+            if self.HP <=0:
+                print("死")
+                pygame.quit()
+                exit()   
+            self.unhurtable_cd = 120
+            print(self.HP)
+
+
     def attack(self):
         if self.atk_next > 0:  # 在緩衝時間內
-            print(self.atk_procedure)
             if self.atk_procedure == 0:
                 tool.start_animation(self.attack_state, self.Attack2, 5, self.flip, False)   #第二段攻擊
                 self.atk_procedure = 1
@@ -117,6 +131,7 @@ class player():
         else:
             # 沒有緩衝 → 從頭開始
             tool.start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
+            tool.start_animation(self.blade_state, self.blade1, 60, self.flip, False)
             self.atk_procedure = 0
         
 
@@ -128,6 +143,9 @@ class enemy():
         self.x = x                                                    #敵人位置
         self.y = y
         self.now_NT_Touch = []                                      #敵人目前碰撞清單
+        self.now_CT_Touch = []                                   
+        self.unhurtable_cd = 0
+
         self.type = type
         self.image = 0                                        #敵人圖片
         self.vx = 0                                                   #敵人速度
@@ -168,13 +186,7 @@ class enemy():
 
 
 
-
-
-
-
-
     def Move(self,NT_object):
-        
 
         match self.type:
             

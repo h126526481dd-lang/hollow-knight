@@ -8,9 +8,6 @@ import tool
 
 
 
-
-
-
 #=======================================================================================================
 
 
@@ -34,47 +31,80 @@ Main = player_class.player("BOBO",0,0)                #建立角色物件
 print(pygame.display.get_active())                              #確認是否正確開啟
 
 scene_ctrl = 10
+pre_keys=[]
 #=======================================================================================================
 
 while True:
     match scene_ctrl:
         
-        case 10:                                                             #場景0
+        case 0:                                                              #場景0
+            scene = []
+            scene.append(pygame.image.load("white.jpg"))                  #導入背景圖片
+            scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
+
+            tool.show(screen,scene[0],0,0,0,0)
+            pass
+#=======================================================================================================
+
+        case 10:                                                             #場景10
 
             scene = []
             NT_object = []
             CT_object = []
             Enemy = []
+            ATKs_AL=[]
+            ATKs_EN=[]
 
             scene.append(pygame.image.load("IMG_2794.jpg"))                  #導入背景圖片
             scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
             
-            NT_object.append(object_class.object(1200,800,tool.HRZ_combine("floor.png",10),"wall"))
-            NT_object.append(object_class.object(-50,400,tool.HRZ_combine("floor.png",10),"wall"))
+            NT_object.append(object_class.object(1200,800,tool.HRZ_combine("floor.png",10),"wall",0,0,0))
+            NT_object.append(object_class.object(-50,400,tool.HRZ_combine("floor.png",10),"wall",0,0,0))
 
 
             door = pygame.image.load("door.png")
             door = pygame.transform.scale(door, (200, 200))  # 調整大小
-            CT_object.append(object_class.object(1600,500,door,"door"))
+            CT_object.append(object_class.object(1600,500,door,"door",0,0,0))
 
-            Enemy.append(player_class.enemy("The_First",1200,0,10,"zombie"))
+            Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
             
             
             while scene_ctrl == 10:                                                     #遊戲主迴圈
             
                 clock.tick(FPS)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
+                #print("FPS:", clock.get_fps())
 
                 Main.now_NT_Touch = []                                      #角色目前碰撞清單
+
+                for enemy in Enemy:
+                    if enemy.unhurtable_cd > 0:
+                        enemy.unhurtable_cd -= 3
+                    enemy.now_CT_Touch = []
+                    for atk_al in ATKs_AL:
+                        if enemy.unhurtable_cd <= 0:
+                            if tool.Touch(enemy,atk_al):
+                                if atk_al.rect.x-enemy.rect.x < 0:
+                                    enemy.HP-=atk_al.ATK
+                                    enemy.x+=atk_al.KB
+                                    enemy.unhurtable_cd = 30
+                                else:
+                                    enemy.HP-=atk_al.ATK
+                                    enemy.x-=atk_al.KB
+                                    enemy.unhurtable_cd = 30
+
+                    if enemy.HP<=0:
+                        Enemy.remove(enemy)
+
                 for obj in NT_object:
                     tool.Touch(Main,obj)
 
+                Main.unhurtable_cd -=1
                 for enemy in Enemy:
                     player_class.enemy.Move(enemy,NT_object)
-                    #print(NT_object[0].x)
-                    #print(NT_object[0].y)
+
                     if tool.Touch(Main,enemy):
-                        Main.HP -= 1
-                       # print(Main.HP)
+                        Main.get_hit()
+
 
                         
                 if not "1_D" in Main.now_NT_Touch :                                           #若沒有站地上，則設為False
@@ -113,9 +143,31 @@ while True:
                     else:
                         Main.vx -= 2
 
-                if keys[pygame.K_j] and not Main.attack_state["playing"]:
+                
+                if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j]:
+                    if Main.flip==0:
+                        match Main.atk_procedure:
+                            case 0:
+                                ATKs_AL.append(object_class.object(Main.x+50,Main.y,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,Main.blade1))
+                            case 1:
+                                pass
+                            case 2:
+                                pass
+                        
+                    else:
+                        match Main.atk_procedure:
+                            case 0:
+                                pass
+                            case 1:
+                                pass
+                            case 2:
+                                pass
                     Main.attack()
-                    print(Main.attack_state["playing"])
+                    print(Main.blade_state["playing"])
+
+                for atk_AL in ATKs_AL:
+                    tool.update_animation(atk_AL, Main.blade_state)
+                    
 
                 finished = tool.update_animation(Main, Main.attack_state)
                 if finished and Main.atk_next == 0:
@@ -127,12 +179,14 @@ while True:
                 if keys[pygame.K_w]:                                #按下w進門
                     for obj in CT_object:
                         if obj.type=="door":
-                            if player_class.Touch(Main,obj):
+                            if tool.Touch(Main,obj):
                                 scene_ctrl=11
                     
 
                 if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch :                                #按下空白鍵跳躍
                     Main.jump()
+
+                pre_keys = keys
 
                 Main.y += Main.vy                                       #更新角色位置
                 Main.x += Main.vx
@@ -155,10 +209,10 @@ while True:
                     print("死")
                     pygame.quit()
                     exit()
+
                 
                 
-                
-                tool.show(screen,scene[0],NT_object,CT_object,Enemy,Main)
+                tool.show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)
 #=======================================================================================================
 
         case 11:                                                             #場景1
