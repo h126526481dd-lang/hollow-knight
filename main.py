@@ -33,7 +33,7 @@ Main = player_class.player("BOBO",0,0)                #建立角色物件
 
 print(pygame.display.get_active())                              #確認是否正確開啟
 
-scene_ctrl = 0
+scene_ctrl = 10
 #=======================================================================================================
 
 while True:
@@ -54,7 +54,8 @@ while True:
             NT_object = []
             CT_object = []
             Enemy = []
-            ATKs=[]
+            ATKs_AL=[]
+            ATKs_EN=[]
 
             scene.append(pygame.image.load("IMG_2794.jpg"))                  #導入背景圖片
             scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
@@ -67,7 +68,7 @@ while True:
             door = pygame.transform.scale(door, (200, 200))  # 調整大小
             CT_object.append(object_class.object(1600,500,door,"door",0,0,0))
 
-            Enemy.append(player_class.enemy("The_First",1200,0,10,"zombie"))
+            Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
             
             
             while scene_ctrl == 10:                                                     #遊戲主迴圈
@@ -76,6 +77,25 @@ while True:
                 print("FPS:", clock.get_fps())
 
                 Main.now_NT_Touch = []                                      #角色目前碰撞清單
+
+                for enemy in Enemy:
+                    enemy.unhurtable_cd -= 3
+                    enemy.now_CT_Touch = []
+                    for atk_al in ATKs_AL:
+                        if enemy.unhurtable_cd <= 0:
+                            if tool.Touch(enemy,atk_al):
+                                if abs(atk_al.rect.x-enemy.rect.x) > atk_al.rect.width//2:
+                                    enemy.HP-=atk_al.ATK
+                                    enemy.x+=atk_al.KB
+                                    enemy.unhurtable_cd += 30
+                                else:
+                                    enemy.HP-=atk_al.ATK
+                                    enemy.x-=atk_al.KB
+                                    enemy.unhurtable_cd += 30
+
+                    if enemy.HP<=0:
+                        Enemy.remove(enemy)
+
                 for obj in NT_object:
                     tool.Touch(Main,obj)
 
@@ -84,7 +104,7 @@ while True:
 
                     if tool.Touch(Main,enemy):
                         Main.HP -= 1
-                       # print(Main.HP)
+                        print(Main.HP)
 
                         
                 if not "1_D" in Main.now_NT_Touch :                                           #若沒有站地上，則設為False
@@ -127,8 +147,8 @@ while True:
                     if Main.flip==0:
                         match Main.atk_procedure:
                             case 0:
-                                ATKs.append(object_class.object(Main.x+50,Main.y,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,Main.blade1))
-                                tool.update_animation(Main, Main.attack_state)
+                                ATKs_AL.append(object_class.object(Main.x+50,Main.y,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,Main.blade1))
+                                tool.update_animation(ATKs_AL[0], Main.blade_state)
                             case 1:
                                 pass
                             case 2:
@@ -143,7 +163,7 @@ while True:
                             case 2:
                                 pass
                     Main.attack()
-                    print(Main.attack_state["playing"])
+                    print(Main.blade_state["playing"])
 
                 finished = tool.update_animation(Main, Main.attack_state)
                 if finished and Main.atk_next == 0:
@@ -183,12 +203,10 @@ while True:
                     print("死")
                     pygame.quit()
                     exit()
-                for enemy in Enemy:
-                    if enemy.HP<=0:
-                        Enemy.remove(enemy)
+
                 
                 
-                tool.show(screen,scene[0],NT_object,CT_object,Enemy,ATKs,Main)
+                tool.show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)
 #=======================================================================================================
 
         case 11:                                                             #場景1

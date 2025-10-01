@@ -3,7 +3,7 @@ import os
 import pygame
 import math
 
-def show(screen,scene,NT_object,CT_object,Enemy,ATKs,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
+def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     Info = pygame.display.Info()                                      #偵測用戶顯示參數
     screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
@@ -34,11 +34,15 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs,player):                   
             screen.blit(enemy.surface, (enemy.x-camera_x, enemy.y-camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.x - camera_x, enemy.y - camera_y, enemy.rect.width, enemy.rect.height),1)
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down_x-enemy.Test_rect.width-camera_x,  enemy.right_down_y-camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
-    for atk in ATKs:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
+    for atk in ATKs_AL:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(atk.rect):
             screen.blit(atk.surface, (atk.x-camera_x, atk.y-camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
     
+    for atk in ATKs_EN:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
+        if camera_rect.colliderect(atk.rect):
+            screen.blit(atk.surface, (atk.x-camera_x, atk.y-camera_y))
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
     screen.blit(player.surface, ( player.x-camera_x,player.y-camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
     
@@ -73,7 +77,9 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                         break
 
                 object1.on_ground = True
-            return True
+            
+            
+                return True
 
         T_rect.y-=2*(max(abs(object1.vy),32))
 
@@ -96,7 +102,7 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                         object1.rect.y-=1
                         break
 
-            return True
+                return True
 
         T_rect.y+=(max(abs(object1.vy),32))
         T_rect.x+=(max(abs(object1.vx),11))
@@ -107,6 +113,8 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
             if object2.can_be_through == 0 :               #角色跟不可穿越物件 的右碰撞(右阻擋)偵測
                 object1.now_NT_Touch.append("1_R")      #若往右調沒碰撞，表示物件1的右部碰撞到了物件2，新增標籤到碰撞清單
                 object1.vx *= 0 
+            else:
+                object1.now_CT_Touch.append("1_R")      
             return True
 
 
@@ -116,13 +124,24 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
 
             if object2.can_be_through == 0 :               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
                 object1.now_NT_Touch.append("1_L")      #若往左調沒碰撞，表示物件1的左部碰撞到了物件2，新增標籤到碰撞清單
-                object1.vx *= 0            
+                object1.vx *= 0
+            else:
+                object1.now_CT_Touch.append("1_L")                
             return True
 
         return True
     else:
         return False
     
+
+
+
+
+
+
+
+
+
 
 def split(picture, times):              #切割圖片(圖片, 切割次數)
     frames = []

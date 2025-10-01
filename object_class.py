@@ -16,6 +16,9 @@ class object():
         self.y = y
         self.surface=IMG                                        #物件圖片
         self.ani=ani
+        self.now_NT_Touch = []                                      
+        self.now_CT_Touch = []                                      
+
         
         match type:
             case "wall":

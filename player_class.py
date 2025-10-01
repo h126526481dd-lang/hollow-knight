@@ -37,6 +37,8 @@ class player():
         self.flip = False
 
         self.now_NT_Touch = []                                      #角色目前碰撞清單
+        self.now_CT_Touch = []                                      #角色目前碰撞清單
+
 
         self.attack_state = {}                                      #attack字典用以紀錄attack動畫狀態
         self.attack_state["playing"] = False
@@ -64,6 +66,8 @@ class player():
         
         self.Jump = tool.split("Character\mainchacter\Jump.png", 12)
         
+        self.unhurtable_cd =0
+
            
     def R_move(self):                                               #角色移動
         if not "1_R" in self.now_NT_Touch:   #若有右碰撞，則不移動
@@ -122,7 +126,7 @@ class player():
         else:
             # 沒有緩衝 → 從頭開始
             tool.start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
-            tool.start_animation(self.blade_state, self.blade1, 2, self.flip, False)
+            tool.start_animation(self.blade_state, self.blade1, 60, self.flip, False)
             self.atk_procedure = 0
         
 
@@ -134,6 +138,9 @@ class enemy():
         self.x = x                                                    #敵人位置
         self.y = y
         self.now_NT_Touch = []                                      #敵人目前碰撞清單
+        self.now_CT_Touch = []                                   
+        self.unhurtable_cd = 0
+
         self.type = type
         self.image = 0                                        #敵人圖片
         self.vx = 0                                                   #敵人速度
