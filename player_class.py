@@ -2,7 +2,7 @@ import random
 import os
 import pygame
 import tool
-
+import object_class
 
 
 
@@ -23,6 +23,7 @@ class player():
         self.y = y
 
         self.HP = 5
+        self.ATK=5
 
         self.image = 0                                        #角色圖片
 
@@ -56,7 +57,11 @@ class player():
         self.Attack1 = tool.split("Character\mainchacter\Attack_1.png", 6)         #匯入Attack_1.png圖片並切分成動畫
         self.Attack2 = tool.split("Character\mainchacter\Attack_2.png", 4) 
         self.Attack3 = tool.split("Character\mainchacter\Attack_3.png", 3) 
-           
+        
+        self.blade1 = [pygame.image.load("Character\mainchacter\\blade1_start.png"),pygame.image.load("Character\mainchacter\\blade1_end.png")]
+        self.blade_state={}
+        self.blade_state["playing"]=False
+        
         self.Jump = tool.split("Character\mainchacter\Jump.png", 12)
         
            
@@ -117,6 +122,7 @@ class player():
         else:
             # 沒有緩衝 → 從頭開始
             tool.start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
+            tool.start_animation(self.blade_state, self.blade1, 2, self.flip, False)
             self.atk_procedure = 0
         
 

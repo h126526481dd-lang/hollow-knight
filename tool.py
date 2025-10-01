@@ -3,7 +3,7 @@ import os
 import pygame
 import math
 
-def show(screen,scene,NT_object,CT_object,Enemy,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
+def show(screen,scene,NT_object,CT_object,Enemy,ATKs,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     Info = pygame.display.Info()                                      #偵測用戶顯示參數
     screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
@@ -34,7 +34,11 @@ def show(screen,scene,NT_object,CT_object,Enemy,player):                        
             screen.blit(enemy.surface, (enemy.x-camera_x, enemy.y-camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.x - camera_x, enemy.y - camera_y, enemy.rect.width, enemy.rect.height),1)
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down_x-enemy.Test_rect.width-camera_x,  enemy.right_down_y-camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
-
+    for atk in ATKs:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
+        if camera_rect.colliderect(atk.rect):
+            screen.blit(atk.surface, (atk.x-camera_x, atk.y-camera_y))
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
+    
     screen.blit(player.surface, ( player.x-camera_x,player.y-camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
     
