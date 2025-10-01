@@ -9,15 +9,15 @@ import player_class
 
 class object():
              
-    def __init__(self,x,y,IMG,type,ATK,KB,ani):                         #物件模型
+    def __init__(self,x,y,IMG,type,ATK,KB,dif,flip):                         #物件模型
 
         self.type=type
         self.x = x                                                    #物件位置
         self.y = y
         self.surface=IMG                                        #物件圖片
-        self.ani=ani
         self.now_NT_Touch = []                                      
-        self.now_CT_Touch = []                                      
+        self.now_CT_Touch = []                   
+        self.flip=flip
         
 
         
@@ -35,12 +35,23 @@ class object():
                 pass
             
             case "dangerous":
-                self.vx=0
-                self.vy=0
-                self.can_be_through = 1                                         #物件是否可通過(布林值)        
-                self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
-                self.ATK=ATK
-                self.KB=KB
+                
+                
+                match dif:
+                    
+                    case "blade1":
+                        self.vx=0
+                        self.vy=0
+                        self.can_be_through = 1                                         #物件是否可通過(布林值)  
+                        self.dur = 20 
+                        self.surface= pygame.transform.scale(self.surface,(100,100))
+                        self.frames = [pygame.transform.scale(pygame.image.load("Character\mainchacter\\blade1_start.png"), (100, 100)),pygame.transform.scale(pygame.image.load("Character\mainchacter\\blade1_end.png"), (100, 100))]
+
+                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
+                        self.ATK=ATK
+                        self.KB=KB
+                        self.state={}
+                        self.state["playing"]=False
                 
 
 

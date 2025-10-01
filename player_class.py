@@ -54,9 +54,7 @@ class player():
         self.Attack2 = tool.split("Character\mainchacter\Attack_2.png", 4) 
         self.Attack3 = tool.split("Character\mainchacter\Attack_3.png", 3) 
         
-        self.blade1 = [pygame.image.load("Character\mainchacter\\blade1_start.png"),pygame.image.load("Character\mainchacter\\blade1_end.png")]
-        self.blade_state={}
-        self.blade_state["playing"]=False
+
         
         self.Jump = tool.split("Character\mainchacter\Jump.png", 12)
         
@@ -113,26 +111,25 @@ class player():
 
     def attack(self):
         if self.atk_next > 0:  # 在緩衝時間內
-            if self.atk_procedure == 0:
+            if self.atk_procedure == 1:
                 tool.start_animation(self.attack_state, self.Attack2, 5, self.flip, False)   #第二段攻擊
-                self.atk_procedure = 1
-            elif self.atk_procedure == 1:
+                self.atk_procedure = 2
+            elif self.atk_procedure == 2:
                 tool.start_animation(self.attack_state, self.Attack3, 7, self.flip, False)   #第三段攻擊會向前滑行
                 if self.flip:
                     self.vx = -35
                 else:
                     self.vx = 35
-                self.atk_procedure = 2
+                self.atk_procedure = 0
             else:
                 # 已經是最後一段，回到第一段
                 tool.start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
-                self.atk_procedure = 0
+                self.atk_procedure = 1
             self.atk_next = 0  # 用掉緩衝
         else:
             # 沒有緩衝 → 從頭開始
             tool.start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
-            tool.start_animation(self.blade_state, self.blade1, 60, self.flip, False)
-            self.atk_procedure = 0
+            self.atk_procedure = 1
         
 
 

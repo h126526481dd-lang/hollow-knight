@@ -58,13 +58,13 @@ while True:
             scene.append(pygame.image.load("IMG_2794.jpg"))                  #導入背景圖片
             scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
             
-            NT_object.append(object_class.object(1200,800,tool.HRZ_combine("floor.png",10),"wall",0,0,0))
-            NT_object.append(object_class.object(-50,400,tool.HRZ_combine("floor.png",10),"wall",0,0,0))
+            NT_object.append(object_class.object(1200,800,tool.HRZ_combine("floor.png",10),"wall",0,0,0,0))
+            NT_object.append(object_class.object(-50,400,tool.HRZ_combine("floor.png",10),"wall",0,0,0,1))
 
 
             door = pygame.image.load("door.png")
             door = pygame.transform.scale(door, (200, 200))  # 調整大小
-            CT_object.append(object_class.object(1600,500,door,"door",0,0,0))
+            CT_object.append(object_class.object(1600,500,door,"door",0,0,0,0))
 
             Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
             
@@ -95,6 +95,13 @@ while True:
                     if enemy.HP<=0:
                         Enemy.remove(enemy)
 
+                for atk_al in ATKs_AL:
+                    if atk_al.state["playing"]==False:
+                        tool.start_animation(atk_al.state, atk_al.frames, 15, atk_al.flip, False)
+                    if atk_al.dur<=0:
+                        ATKs_AL.remove(atk_AL)
+                    atk_AL.dur-=1    
+
                 for obj in NT_object:
                     tool.Touch(Main,obj)
 
@@ -121,7 +128,7 @@ while True:
 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
                 
-                if not Main.attack_state["playing"] or Main.atk_procedure != 2:     #如果不是第三段攻擊
+                if not Main.attack_state["playing"] or Main.atk_procedure != 0:     #如果不是第三段攻擊
                     if keys[pygame.K_d] and keys[pygame.K_a]:                #避免同時按兩個方向鍵
                         
                         pass
@@ -145,28 +152,30 @@ while True:
 
                 
                 if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j]:
-                    if Main.flip==0:
+                    if Main.atk_next <= 0:
+                        Main.atk_procedure = 0
+                    if Main.flip == False:
                         match Main.atk_procedure:
                             case 0:
-                                ATKs_AL.append(object_class.object(Main.x+50,Main.y,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,Main.blade1))
+                                ATKs_AL.append(object_class.object(Main.x+100,Main.y+30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0))
                             case 1:
                                 pass
                             case 2:
                                 pass
+
                         
                     else:
                         match Main.atk_procedure:
                             case 0:
-                                pass
+                                ATKs_AL.append(object_class.object(Main.x-70,Main.y+30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",1))
                             case 1:
                                 pass
                             case 2:
                                 pass
                     Main.attack()
-                    print(Main.blade_state["playing"])
 
                 for atk_AL in ATKs_AL:
-                    tool.update_animation(atk_AL, Main.blade_state)
+                    tool.update_animation(atk_AL, atk_AL.state)
                     
 
                 finished = tool.update_animation(Main, Main.attack_state)
@@ -183,7 +192,7 @@ while True:
                                 scene_ctrl=11
                     
 
-                if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch :                                #按下空白鍵跳躍
+                if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE]:                                #按下空白鍵跳躍
                     Main.jump()
 
                 pre_keys = keys
