@@ -36,6 +36,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
             screen.blit(enemy.surface, (enemy.x-camera_x, enemy.y-camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.x - camera_x, enemy.y - camera_y, enemy.rect.width, enemy.rect.height),1)
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down_x-enemy.Test_rect.width-camera_x,  enemy.right_down_y-camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
+    
     for atk in ATKs_AL:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(atk.rect):
             screen.blit(atk.surface, (atk.x-camera_x, atk.y-camera_y))
@@ -45,6 +46,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
         if camera_rect.colliderect(atk.rect):
             screen.blit(atk.surface, (atk.x-camera_x, atk.y-camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
+    
     screen.blit(player.surface, ( player.x-camera_x,player.y-camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
     
@@ -165,7 +167,6 @@ def HRZ_combine(picture, times):
         big_surface.blit(sprite_sheet, (w*i, 0))
 
     return   big_surface
-
 
 
 
@@ -380,23 +381,23 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     
 #============================================================以上是移動、撞牆判定以及攻擊區
 
-    if Main.skill_key[6]==2:
-        if Main.skill6_time >=10:
-            if Main.flip==False:
-                Main.vx+=3
+    if Main.skill_key[6] == 2:
+        if Main.skill6_time >= 10:
+            if Main.flip == False:
+                Main.vx += 3
             else:
-                Main.vx-=3
-        elif Main.skill6_time >0:
-            if Main.flip==False:
-                Main.vx-=3
+                Main.vx -= 3
+        elif Main.skill6_time > 0:
+            if Main.flip == False:
+                Main.vx -= 3
             else:
-                Main.vx+=3
-        elif Main.skill6_time==0:
-            Main.skill_key[6]=1
+                Main.vx += 3
+        elif Main.skill6_time == 0:
+            Main.skill_key[6] = 1
             Main.inertia = 0
-            Main.move_lock=0
-        Main.skill6_time-=1
-        Main.vy=0
+            Main.move_lock = 0
+        Main.skill6_time -= 1
+        Main.vy = 0
 
 
 #============================================================以上是角色發動技能區
