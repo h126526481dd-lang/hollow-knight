@@ -36,6 +36,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
             screen.blit(enemy.surface, (enemy.x-camera_x, enemy.y-camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.x - camera_x, enemy.y - camera_y, enemy.rect.width, enemy.rect.height),1)
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down_x-enemy.Test_rect.width-camera_x,  enemy.right_down_y-camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
+    
     for atk in ATKs_AL:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(atk.rect):
             screen.blit(atk.surface, (atk.x-camera_x, atk.y-camera_y))
@@ -45,6 +46,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
         if camera_rect.colliderect(atk.rect):
             screen.blit(atk.surface, (atk.x-camera_x, atk.y-camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
+    
     screen.blit(player.surface, ( player.x-camera_x,player.y-camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
     
@@ -168,7 +170,6 @@ def HRZ_combine(picture, times):
 
 
 
-
 #播放動畫(物件, 幾偵動一下, 是否翻轉, 圖片數, 圖片清單)
 def anime_update(object, change_time ,flip , image_num, image_list):
     object.anime_time += 1
@@ -259,38 +260,41 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if enemy.unhurtable_cd <= 0:
                             
                 if Touch(enemy,atk_al):
-                    if atk_al.rect.x-enemy.rect.x < 0:
-                        enemy.HP-=atk_al.ATK
-                        enemy.x+=atk_al.KB
-                        enemy.rect.x+=atk_al.KB
+                    if atk_al.rect.x - enemy.rect.x < 0:
+                        enemy.HP -= atk_al.ATK
+                        enemy.x += atk_al.KB
+                        enemy.rect.x += atk_al.KB
                         enemy.unhurtable_cd = 60
                     else:
-                        enemy.HP-=atk_al.ATK
-                        enemy.x-=atk_al.KB
-                        enemy.rect.x-=atk_al.KB
+                        enemy.HP -= atk_al.ATK
+                        enemy.x -= atk_al.KB
+                        enemy.rect.x -= atk_al.KB
                         enemy.unhurtable_cd = 60
 
-        if enemy.HP<=0:
+        if enemy.HP <= 0:
             Enemy.remove(enemy)
 
 #=====================================================以上是碰撞清單清除、傷害判定以及敵人區
-    if Main.skill_key[6]==2:
-        if Main.skill6_time >=10:
-            if Main.flip==False:
-                Main.vx+=3
+    if Main.skill_key[6] == 2:
+        if Main.skill6_time >= 10:
+            if Main.flip == False:
+                Main.vx += 3
             else:
                 Main.vx-=3
-        elif Main.skill6_time >0 and abs(Main.vx)>3:
-            if Main.flip==False:
-                Main.vx-=3
+
+        elif Main.skill6_time > 0 and abs(Main.vx) > 3:
+            if Main.flip == False:
+                Main.vx -= 3
             else:
-                Main.vx+=3
-        elif Main.skill6_time==0:
-            Main.skill_key[6]=1
+                Main.vx += 3
+
+        elif Main.skill6_time == 0:
+            Main.skill_key[6] = 1
             Main.inertia = 0
-            Main.move_lock=0
-        Main.skill6_time-=1
-        Main.vy=0
+            Main.move_lock = 0
+
+        Main.skill6_time -= 1
+        Main.vy = 0
 
 
 #============================================================以上是角色發動技能區
@@ -302,10 +306,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     
     if "1_U" in Main.now_NT_Touch and Main.vy < 0:                          
         Main.vy = 0 
-                    
+
     if Main.on_ground == False and Main.vy <= 30 and not Main.skill_key[6]==2:           #重力加速度(有設上限)
         Main.vy += 1
-            
+
     elif Main.on_ground == True:                            #觸地垂直速度歸零
         Main.vy = 0
 
@@ -340,7 +344,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j]:
             if Main.atk_next <= 0:
                 Main.atk_procedure = 0
-            if Main.flip == False:
+            if not Main.flip:
                 match Main.atk_procedure:
                     case 0:
                         ATKs_AL.append(object_class.object(Main.x+100,Main.y+30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0))
@@ -375,12 +379,12 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
     for atk_al in ATKs_AL:
-        if atk_al.dif=="blade1":
-            if Main.flip==False:
-                atk_al.x=Main.x+100
-                atk_al.y=Main.y+30
-                atk_al.rect.x=atk_al.x
-                atk_al.rect.y=atk_al.y
+        if atk_al.dif == "blade1":
+            if atk_al.flip == False:
+                atk_al.x = Main.x + 100
+                atk_al.y = Main.y + 30
+                atk_al.rect.x = atk_al.x
+                atk_al.rect.y = atk_al.y
             else:
                 atk_al.x=Main.x-100
                 atk_al.y=Main.y+30
@@ -407,10 +411,30 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE]:                                #按下空白鍵跳躍
         Main.jump()
                     
-                    
+
 #============================================================以上是移動、撞牆判定以及攻擊區
 
 
+    if Main.skill_key[6] == 2:
+        if Main.skill6_time >= 10:
+            if Main.flip == False:
+                Main.vx += 3
+            else:
+                Main.vx -= 3
+        elif Main.skill6_time > 0:
+            if Main.flip == False:
+                Main.vx -= 3
+            else:
+                Main.vx += 3
+        elif Main.skill6_time == 0:
+            Main.skill_key[6] = 1
+            Main.inertia = 0
+            Main.move_lock = 0
+        Main.skill6_time -= 1
+        Main.vy = 0
+
+
+#============================================================以上是角色發動技能區
 
 
     Main.y += Main.vy                                       #更新角色位置
