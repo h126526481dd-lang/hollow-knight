@@ -18,7 +18,7 @@ class object():
         self.now_NT_Touch = []                                      
         self.now_CT_Touch = []                   
         self.flip=flip
-        
+        self.dif=dif
 
         
         match type:
