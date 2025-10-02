@@ -193,7 +193,7 @@ def start_animation(state, image_list, change_time, flip, loop):                
     state["flip"] = flip
     state["loop"] = loop
 
-
+#123
 
 def update_animation(obj, state):
     if not state.get("playing", False):
