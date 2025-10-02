@@ -303,7 +303,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if "1_U" in Main.now_NT_Touch and Main.vy < 0:                          
         Main.vy = 0 
                     
-    if Main.on_ground == False and Main.vy <= 30:           #重力加速度(有設上限)
+    if Main.on_ground == False and Main.vy <= 30 and not Main.skill_key[6]==2:           #重力加速度(有設上限)
         Main.vy += 1
             
     elif Main.on_ground == True:                            #觸地垂直速度歸零
@@ -313,8 +313,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if Main.is_hurt == 0:
 
         if not Main.attack_state["playing"] or Main.atk_procedure != 0 :     #如果不是第三段攻擊
-            if keys[pygame.K_d] and keys[pygame.K_a]:                       #避免同時按兩個方向鍵
-                            
+            if keys[pygame.K_d] and keys[pygame.K_a] and Main.move_lock==0:                       #避免同時按兩個方向鍵
+                Main.vx=0
                 pass
                         
             else:
