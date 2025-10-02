@@ -19,35 +19,35 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
     camera_rect = pygame.Rect(camera_x,camera_y,screen_width,screen_height)  #攝影機碰撞盒(只顯示在螢幕中的物件)
     
 
-    screen.blit(scene, (-500-camera_x, -500-camera_y))                  #繪製背景圖片(背景位置=原位置-置中向量)
+    screen.blit(scene, (-500-camera_x, -500 - camera_y))                  #繪製背景圖片(背景位置=原位置-置中向量)
    
     for obj in NT_object:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(obj.rect):
-            screen.blit(obj.surface, (obj.x-camera_x, obj.y-camera_y))
+            screen.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1) 
             
     for obj in CT_object:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(obj.rect):
-            screen.blit(obj.surface, (obj.x-camera_x, obj.y-camera_y))
+            screen.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1)
     
     for enemy in Enemy:
         if camera_rect.colliderect(enemy.rect):
-            screen.blit(enemy.surface, (enemy.x-camera_x, enemy.y-camera_y))
+            screen.blit(enemy.surface, (enemy.x - camera_x, enemy.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.x - camera_x, enemy.y - camera_y, enemy.rect.width, enemy.rect.height),1)
-            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down_x-enemy.Test_rect.width-camera_x,  enemy.right_down_y-camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down_x - enemy.Test_rect.width - camera_x,  enemy.right_down_y - camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
     
     for atk in ATKs_AL:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(atk.rect):
-            screen.blit(atk.surface, (atk.x-camera_x, atk.y-camera_y))
+            screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
     
     for atk in ATKs_EN:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(atk.rect):
-            screen.blit(atk.surface, (atk.x-camera_x, atk.y-camera_y))
+            screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
     
-    screen.blit(player.surface, ( player.x-camera_x,player.y-camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
+    screen.blit(player.surface, ( player.x - camera_x,player.y - camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
     
     
@@ -57,12 +57,12 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
 
 def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞偵測
     
-    T_rect = object2.surface.get_rect(topleft=(object2.x, object2.y))
+    T_rect = object2.surface.get_rect(topleft = (object2.x, object2.y))
   #物件2的碰撞盒複製(調整用)
 
     
     if object1.rect.colliderect(object2.rect):
-        T_rect.y+=(max(abs(object1.vy),32))
+        T_rect.y += (max(abs(object1.vy),32))
         if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件二往下調整後是否還有碰撞  
                                             
 
@@ -72,16 +72,15 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
 
                 for i in range(max(abs(object1.vy),32)):       #把物件1往上調整，直到不碰撞為止
                     object1.y -= 1
-                    object1.rect.y-=1    
+                    object1.rect.y -= 1    
                                                                                                     
                     
                     if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測往上調整後是否還有碰撞  
                         object1.y += 1
-                        object1.rect.y+=1
+                        object1.rect.y += 1
                         break
 
                 object1.on_ground = True
-            
             
                 return True
 
@@ -98,21 +97,20 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
 
                 for i in range(max(abs(object1.vy),32)):                   #把物件1往下調整，直到不碰撞為止                                                                #把物件1往上調整，直到不碰撞為止
                     object1.y += 1
-                    object1.rect.y+=1    
+                    object1.rect.y += 1    
 
                     
                     if not object1.rect.colliderect(T_rect) :    
                         object1.y -= 1
-                        object1.rect.y-=1
+                        object1.rect.y -= 1
                         break
 
                 return True
 
-        T_rect.y+=(max(abs(object1.vy),32))
-        T_rect.x+=(max(abs(object1.vx),11))
+        T_rect.y += (max(abs(object1.vy),32))
+        T_rect.x += (max(abs(object1.vx),11))
         
         if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件2往右調整後是否還有碰撞  
-
 
             if object2.can_be_through == 0 :               #角色跟不可穿越物件 的右碰撞(右阻擋)偵測
                 object1.now_NT_Touch.append("1_R")      #若往右調沒碰撞，表示物件1的右部碰撞到了物件2，新增標籤到碰撞清單
@@ -121,12 +119,11 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                 object1.now_CT_Touch.append("1_R")      
             return True
 
+        T_rect.x -= 2*(max(abs(object1.vx),11))
+        if not object1.rect.colliderect(T_rect):    #若當前有碰撞，則偵測物件2往左調整後是否還有碰撞  
 
-        T_rect.x-=2*(max(abs(object1.vx),11))
-        if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件2往左調整後是否還有碰撞  
 
-
-            if object2.can_be_through == 0 :               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
+            if object2.can_be_through == 0:               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
                 object1.now_NT_Touch.append("1_L")      #若往左調沒碰撞，表示物件1的左部碰撞到了物件2，新增標籤到碰撞清單
                 object1.vx *= 0
             else:
@@ -136,14 +133,6 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
         return True
     else:
         return False
-    
-
-
-
-
-
-
-
 
 
 
@@ -157,6 +146,8 @@ def split(picture, times):              #切割圖片(圖片, 切割次數)
         frames.append(frame)
     #導入圖片(八張合一起)，分割開後存進List  
     return frames  
+
+
 
 def HRZ_combine(picture, times):
     sprite_sheet = pygame.image.load(picture).convert_alpha()
@@ -225,7 +216,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
     Main.now_NT_Touch = []                                      #角色目前碰撞清單
-    Main.unhurtable_cd -=1
+    Main.unhurtable_cd -= 1
 
     for enemy in Enemy:
                     
@@ -238,21 +229,21 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         player_class.enemy.Move(enemy,NT_object)
 
         if Touch(Main,enemy):
-            if Main.unhurtable_cd<=0:
+            if Main.unhurtable_cd <= 0:
                                 
                 if Main.rect.x-enemy.rect.x > 0:
-                    Main.vx=10
-                    Main.y-=10
-                    Main.rect.y-=10
-                    Main.vy=-15
-                    Main.is_hurt=30
+                    Main.vx = 10
+                    Main.y -= 10
+                    Main.rect.y -= 10
+                    Main.vy = -15
+                    Main.is_hurt = 30
                     Main.get_hit()
                 else:
-                    Main.vx=-10
-                    Main.y-=10
-                    Main.rect.y-=10
-                    Main.vy=-15
-                    Main.is_hurt=30
+                    Main.vx =- 10
+                    Main.y -= 10
+                    Main.rect.y -= 10
+                    Main.vy = -15
+                    Main.is_hurt = 30
                     Main.get_hit()
                         
         for atk_al in ATKs_AL:
@@ -280,7 +271,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if Main.flip == False:
                 Main.vx += 3
             else:
-                Main.vx-=3
+                Main.vx -= 3
 
         elif Main.skill6_time > 0 and abs(Main.vx) > 3:
             if Main.flip == False:
@@ -307,7 +298,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if "1_U" in Main.now_NT_Touch and Main.vy < 0:                          
         Main.vy = 0 
 
-    if Main.on_ground == False and Main.vy <= 30 and not Main.skill_key[6]==2:           #重力加速度(有設上限)
+    if Main.on_ground == False and Main.vy <= 30 and not Main.skill_key[6] == 2:           #重力加速度(有設上限)
         Main.vy += 1
 
     elif Main.on_ground == True:                            #觸地垂直速度歸零
@@ -317,20 +308,20 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if Main.is_hurt == 0:
 
         if not Main.attack_state["playing"] or Main.atk_procedure != 0 :     #如果不是第三段攻擊
-            if keys[pygame.K_d] and keys[pygame.K_a] and Main.move_lock==0:                       #避免同時按兩個方向鍵
+            if keys[pygame.K_d] and keys[pygame.K_a] and Main.move_lock == 0:                       #避免同時按兩個方向鍵
                 Main.vx=0
                 pass
                         
             else:
                         
-                if keys[pygame.K_d] and Main.move_lock==0:                                        #按下d鍵右移
+                if keys[pygame.K_d] and Main.move_lock == 0:                                        #按下d鍵右移
                     Main.R_move()
 
-                elif keys[pygame.K_a] and Main.move_lock==0:                                      #按下a鍵左移
+                elif keys[pygame.K_a] and Main.move_lock == 0:                                      #按下a鍵左移
                     Main.L_move()
 
                 else:                                                       #不移動時水平速度歸零(沒有慣性)
-                    if  Main.inertia ==0:
+                    if  Main.inertia == 0:
                         Main.idle() 
                         Main.vx = 0
                                 
@@ -347,7 +338,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if not Main.flip:
                 match Main.atk_procedure:
                     case 0:
-                        ATKs_AL.append(object_class.object(Main.x+100,Main.y+30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0))
+                        ATKs_AL.append(object_class.object(Main.x + 100,Main.y + 30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0))
                     case 1:
                         pass
                     case 2:
@@ -356,7 +347,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             else:
                 match Main.atk_procedure:
                     case 0:
-                        ATKs_AL.append(object_class.object(Main.x-70,Main.y+30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",1))
+                        ATKs_AL.append(object_class.object(Main.x - 70,Main.y + 30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",1))
                     case 1:
                         pass
                     case 2:
@@ -365,12 +356,12 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
         if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground==True or (Main.on_ground==False and Main.skill_key[5]==1)):
-            Main.vx=0
-            Main.unhurtable_cd=20
-            Main.skill_key[6]=2
-            Main.skill6_time=20
+            Main.vx = 0
+            Main.unhurtable_cd = 20
+            Main.skill_key[6] = 2
+            Main.skill6_time = 20
             Main.inertia = 1
-            Main.move_lock=1
+            Main.move_lock = 1
 
 
 
@@ -386,15 +377,15 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 atk_al.rect.x = atk_al.x
                 atk_al.rect.y = atk_al.y
             else:
-                atk_al.x=Main.x-100
-                atk_al.y=Main.y+30
-                atk_al.rect.x=atk_al.x
-                atk_al.rect.y=atk_al.y
-        if atk_al.state["playing"]==False:
+                atk_al.x = Main.x - 100
+                atk_al.y = Main.y+30
+                atk_al.rect.x = atk_al.x
+                atk_al.rect.y = atk_al.y
+        if atk_al.state["playing"] == False:
             start_animation(atk_al.state, atk_al.frames, 15, atk_al.flip, False)
-        if atk_al.dur<=0:
+        if atk_al.dur <= 0:
             ATKs_AL.remove(atk_al)
-        atk_al.dur-=1    
+        atk_al.dur -= 1    
         update_animation(atk_al, atk_al.state)
                     
 
@@ -410,32 +401,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE]:                                #按下空白鍵跳躍
         Main.jump()
-                    
 
 #============================================================以上是移動、撞牆判定以及攻擊區
-
-
-    if Main.skill_key[6] == 2:
-        if Main.skill6_time >= 10:
-            if Main.flip == False:
-                Main.vx += 3
-            else:
-                Main.vx -= 3
-        elif Main.skill6_time > 0:
-            if Main.flip == False:
-                Main.vx -= 3
-            else:
-                Main.vx += 3
-        elif Main.skill6_time == 0:
-            Main.skill_key[6] = 1
-            Main.inertia = 0
-            Main.move_lock = 0
-        Main.skill6_time -= 1
-        Main.vy = 0
-
-
-#============================================================以上是角色發動技能區
-
 
     Main.y += Main.vy                                       #更新角色位置
     Main.x += Main.vx
@@ -450,11 +417,11 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             pygame.quit()
             exit()
 
-    if Main.y>1800:
-        Main.y=0
-        Main.rect.y=50
+    if Main.y > 1800:
+        Main.y = 0
+        Main.rect.y = 50
                 
-    if Main.HP <=0:
+    if Main.HP <= 0:
         print("死")
         pygame.quit()
         exit()

@@ -72,8 +72,8 @@ while True:
 
                 clock.tick(FPS)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
 
-                if Main.is_hurt>20:
-                    Main.is_hurt-=1
+                if Main.is_hurt > 20:
+                    Main.is_hurt -= 1
                     continue
                     
                 print("FPS:", clock.get_fps())
@@ -82,9 +82,9 @@ while True:
 
                 if keys[pygame.K_w]:                                #按下w進門
                     for obj in CT_object:
-                        if obj.type=="door":
+                        if obj.type == "door":
                             if tool.Touch(Main,obj):
-                                scene_ctrl=11
+                                scene_ctrl = 11
                                 
                 tool.tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys)
                 print(Main.vx)
