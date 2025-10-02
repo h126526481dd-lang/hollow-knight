@@ -76,7 +76,7 @@ while True:
                     Main.is_hurt-=1
                     continue
                     
-               # print("FPS:", clock.get_fps())
+                print("FPS:", clock.get_fps())
                 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
@@ -87,7 +87,7 @@ while True:
                                 scene_ctrl=11
                                 
                 tool.tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys)
-                print(Main.inertia)
+                print(Main.vx)
 
 
                 pre_keys = keys

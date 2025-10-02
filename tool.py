@@ -260,38 +260,41 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if enemy.unhurtable_cd <= 0:
                             
                 if Touch(enemy,atk_al):
-                    if atk_al.rect.x-enemy.rect.x < 0:
-                        enemy.HP-=atk_al.ATK
-                        enemy.x+=atk_al.KB
-                        enemy.rect.x+=atk_al.KB
+                    if atk_al.rect.x - enemy.rect.x < 0:
+                        enemy.HP -= atk_al.ATK
+                        enemy.x += atk_al.KB
+                        enemy.rect.x += atk_al.KB
                         enemy.unhurtable_cd = 60
                     else:
-                        enemy.HP-=atk_al.ATK
-                        enemy.x-=atk_al.KB
-                        enemy.rect.x-=atk_al.KB
+                        enemy.HP -= atk_al.ATK
+                        enemy.x -= atk_al.KB
+                        enemy.rect.x -= atk_al.KB
                         enemy.unhurtable_cd = 60
 
-        if enemy.HP<=0:
+        if enemy.HP <= 0:
             Enemy.remove(enemy)
 
 #=====================================================以上是碰撞清單清除、傷害判定以及敵人區
-    if Main.skill_key[6]==2:
-        if Main.skill6_time >=10:
-            if Main.flip==False:
-                Main.vx+=3
+    if Main.skill_key[6] == 2:
+        if Main.skill6_time >= 10:
+            if Main.flip == False:
+                Main.vx += 3
             else:
                 Main.vx-=3
-        elif Main.skill6_time >0 and abs(Main.vx)>3:
-            if Main.flip==False:
-                Main.vx-=3
+
+        elif Main.skill6_time > 0 and abs(Main.vx) > 3:
+            if Main.flip == False:
+                Main.vx -= 3
             else:
-                Main.vx+=3
-        elif Main.skill6_time==0:
-            Main.skill_key[6]=1
+                Main.vx += 3
+
+        elif Main.skill6_time == 0:
+            Main.skill_key[6] = 1
             Main.inertia = 0
-            Main.move_lock=0
-        Main.skill6_time-=1
-        Main.vy=0
+            Main.move_lock = 0
+
+        Main.skill6_time -= 1
+        Main.vy = 0
 
 
 #============================================================以上是角色發動技能區
@@ -303,10 +306,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     
     if "1_U" in Main.now_NT_Touch and Main.vy < 0:                          
         Main.vy = 0 
-                    
+
     if Main.on_ground == False and Main.vy <= 30 and not Main.skill_key[6]==2:           #重力加速度(有設上限)
         Main.vy += 1
-            
+
     elif Main.on_ground == True:                            #觸地垂直速度歸零
         Main.vy = 0
 
@@ -408,7 +411,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE]:                                #按下空白鍵跳躍
         Main.jump()
                     
-                    
+
 #============================================================以上是移動、撞牆判定以及攻擊區
 
 
