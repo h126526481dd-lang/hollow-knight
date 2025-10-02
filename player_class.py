@@ -121,6 +121,7 @@ class player():
                 else:
                     self.vx = 35
                 self.atk_procedure = 0
+                self.unhurtable_cd = 20
             else:
                 # 已經是最後一段，回到第一段
                 tool.start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
