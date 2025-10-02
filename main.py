@@ -87,7 +87,7 @@ while True:
                                 scene_ctrl=11
                                 
                 tool.tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys)
-                print(Main.inertia)
+                print(Main.vx)
 
 
                 pre_keys = keys
