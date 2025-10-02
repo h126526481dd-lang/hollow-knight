@@ -201,7 +201,6 @@ class enemy():
             
             case _: 
                 
-                self.now_NT_Touch=[]
                 self.back_check=0
 
                 if self.back==1:
