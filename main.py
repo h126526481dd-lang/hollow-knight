@@ -68,11 +68,15 @@ while True:
 
             Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
             
-            
             while scene_ctrl == 10:                                                     #遊戲主迴圈
 
                 clock.tick(FPS)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
-                print("FPS:", clock.get_fps())
+
+                if Main.is_hurt>20:
+                    Main.is_hurt-=1
+                    continue
+                    
+               # print("FPS:", clock.get_fps())
                 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
@@ -83,6 +87,7 @@ while True:
                                 scene_ctrl=11
                                 
                 tool.tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys)
+              #  print(Main.skill_key)
 
 
                 pre_keys = keys

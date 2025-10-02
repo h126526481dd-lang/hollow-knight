@@ -15,6 +15,7 @@ class player():
 
         self.x = x                                                    #角色位置
         self.y = y
+        self.move_lock=0
 
         self.HP = 5
         self.ATK=5
@@ -57,8 +58,40 @@ class player():
 
         
         self.Jump = tool.split("Character\mainchacter\Jump.png", 12)
-        
+        self.is_hurt =0
         self.unhurtable_cd =0
+
+        self.inertia =0
+        self.skill_key=[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0]        #18招，0是未獲取，1是可發動，2是發動中
+
+        # [0]不須佩劍
+        # [1]水上漂
+        # [2]劍氣：長k
+        self.skill2_time=0
+        # [3]瞬移路徑斬：a or d+ Lshift+t+ 長J
+        self.skill3_time=0
+        # [4]二段跳：double space
+        # [5]下劈重製跳躍並上彈+蹬牆跳+可在空中使用步法(閃避或疾跑)
+        # [6]閃避：Lshift
+        self.skill6_time=0
+        # [7]下衝：空中+s+長J
+        self.skill7_time=0
+        # [8]上斬：w + 長J
+        self.skill8_time=0
+        # [9]彈反：L
+        self.skill9_time=0
+        #[10]砍半無敵幀：長J
+        self.skill10_time=0
+        #[11]可裝備雙刀，改變普攻
+        #[12]小怪不以你為目標
+        #[13]疾跑：double a or d
+        self.skill13_time=0
+        #[14]指定敵怪閃現貼臉：Tab選取+Lshift+長K
+        self.skill4_time=0
+        #[15]強化普攻命中僵直：w+長K
+        #[16]強化普攻命中觸發特殊對話(類似夢釘)：s+長K
+        #[17]佩刀可切換刀背，傷害砍半斬擊不致死，敵怪剩餘1HP視作擊敗(劇情用)
+
 
            
     def R_move(self):                                               #角色移動
@@ -180,7 +213,7 @@ class enemy():
                 self.right_down_x = self.x+self.rect.width
                 self.right_down_y = self.y+self.rect.height
 
-                self.Test_rect = pygame.rect.Rect(self.right_down_x-20,self.right_down_y,20,20)
+                self.Test_rect = pygame.rect.Rect(self.right_down_x,self.right_down_y,20,20)
 
 
 
@@ -210,9 +243,9 @@ class enemy():
                     self.Test_rect.x = self.x+self.rect.width
                     self.Test_rect.y = self.y+self.rect.height
                 else:
-                    self.right_down_x = self.x-10
+                    self.right_down_x = self.x
                     self.right_down_y = self.y+self.rect.height
-                    self.Test_rect.x = self.x-10
+                    self.Test_rect.x = self.x
                     self.Test_rect.y = self.y+self.rect.height
 
 
