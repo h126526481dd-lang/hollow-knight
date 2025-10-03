@@ -26,22 +26,26 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
             screen.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1) 
             
+            
     for obj in CT_object:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(obj.rect):
             screen.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1)
     
+
     for enemy in Enemy:
         if camera_rect.colliderect(enemy.rect):
             screen.blit(enemy.surface, (enemy.x - camera_x, enemy.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.x - camera_x, enemy.y - camera_y, enemy.rect.width, enemy.rect.height),1)
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down_x - enemy.Test_rect.width - camera_x,  enemy.right_down_y - camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
     
+
     for atk in ATKs_AL:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(atk.rect):
             screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
     
+
     for atk in ATKs_EN:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(atk.rect):
             screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))

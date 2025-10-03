@@ -31,7 +31,7 @@ Main = player_class.player("BOBO",0,0)                #建立角色物件
 print(pygame.display.get_active())                              #確認是否正確開啟
 
 scene_ctrl = 10
-pre_keys=[]
+pre_keys = []
 #=======================================================================================================
 
 while True:
@@ -52,8 +52,8 @@ while True:
             NT_object = []
             CT_object = []
             Enemy = []
-            ATKs_AL=[]
-            ATKs_EN=[]
+            ATKs_AL = []
+            ATKs_EN = []
 
             scene.append(pygame.image.load("IMG_2794.jpg"))                  #導入背景圖片
             scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
@@ -86,9 +86,7 @@ while True:
                             if tool.Touch(Main,obj):
                                 scene_ctrl = 11
                                 
-                tool.tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys)
-                print(Main.vx)
-
+                tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys)
 
                 pre_keys = keys
 
