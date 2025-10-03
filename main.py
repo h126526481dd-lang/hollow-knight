@@ -76,7 +76,7 @@ while True:
                     Main.is_hurt-=1
                     continue
                     
-               # print("FPS:", clock.get_fps())
+               # print("FPS:", clock.get_fps())ㄎ
                 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
@@ -84,7 +84,7 @@ while True:
                     for obj in CT_object:
                         if obj.type=="door":
                             if tool.Touch(Main,obj):
-                                scene_ctrl=11
+                                scene_ctrl=11 
                                 
                 tool.tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys)
               #  print(Main.skill_key)
