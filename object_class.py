@@ -9,7 +9,7 @@ import player_class
 
 class object():
              
-    def __init__(self,x,y,IMG,type,ATK,KB,dif,flip):                         #物件模型
+    def __init__(self,x,y,IMG,type,ATK,KB,dif,num,flip):                         #物件模型
 
         self.type=type
         self.x = x                                                    #物件位置
@@ -18,7 +18,7 @@ class object():
         self.now_NT_Touch = []                                      
         self.now_CT_Touch = []                   
         self.flip=flip
-        
+        self.dif=dif
 
         
         match type:
@@ -30,6 +30,10 @@ class object():
                 self.can_be_through = 1                                         #物件是否可通過(布林值)        
                 self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
             
+            case "skill":
+                self.can_be_through = 1
+                self.rect = self.surface.get_rect(topleft=(self.x, self.y))
+                self.num=num
             
             case "path":
                 pass

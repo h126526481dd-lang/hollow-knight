@@ -8,93 +8,103 @@ import object_class
 
 class player():
 
-             
-    def __init__(self,name,x,y):                         #角色模型
+    #角色模型
+    def __init__(self,name,x,y):
 
-        self.name = name                                              #角色名稱
+        #角色名稱
+        self.name = name                                              
 
-        self.x = x                                                    #角色位置
+        #角色位置
+        self.x = x
         self.y = y
-        self.move_lock=0
+        self.move_lock = 0
 
         self.HP = 5
-        self.ATK=5
+        self.ATK = 5
 
-        self.image = 0                                        #角色圖片
+        #角色圖片
+        self.image = 0                                        
 
-        self.vx = 0                                                   #角色速度
+        #角色速度
+        self.vx = 0                                                   
         self.vy = 0
 
-        self.on_ground = False                                      #角色是否在地面上
+        #角色是否在地面上
+        self.on_ground = False                                      
 
         self.anime_time = 0
 
         self.flip = False
 
-        self.now_NT_Touch = []                                      #角色目前碰撞清單
-        self.now_CT_Touch = []                                      #角色目前碰撞清單
+        #角色目前碰撞清單
+        self.now_NT_Touch = []
+        self.now_CT_Touch = []
 
-
-        self.attack_state = {}                                      #attack字典用以紀錄attack動畫狀態
+        #attack字典用以紀錄attack動畫狀態
+        self.attack_state = {}
         self.attack_state["playing"] = False
-
         self.atk_procedure = 0
         self.atk_next = 0
-                            
-        self.Walk = tool.split("Character\mainchacter\Walk.png", 8)   #匯入Walk.png圖片並切分成動畫
+
+        #匯入Walk.png圖片並切分成動畫       
+        self.Walk = tool.split("Character\mainchacter\Walk.png", 8)
         self.surface = self.Walk[self.image]
-        
+
         self.rect = self.surface.get_rect(topleft=(self.x, self.y+50))
-        
         self.rect.x += 50
-        
+
         self.rect.width -= 100
         self.rect.height -= 50
 
-        self.Attack1 = tool.split("Character\mainchacter\Attack_1.png", 6)         #匯入Attack_1.png圖片並切分成動畫
+        #匯入3張Attack.png圖片並切分成動畫
+        self.Attack1 = tool.split("Character\mainchacter\Attack_1.png", 6)
         self.Attack2 = tool.split("Character\mainchacter\Attack_2.png", 4) 
         self.Attack3 = tool.split("Character\mainchacter\Attack_3.png", 3) 
         
-
-        
+        #匯入jump.png圖片並切分成動畫
         self.Jump = tool.split("Character\mainchacter\Jump.png", 12)
-        self.is_hurt =0
-        self.unhurtable_cd =0
+        
+        self.is_hurt = 0
+        self.unhurtable_cd = 0
 
-        self.inertia =0
-        self.skill_key=[0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0]        #18招，0是未獲取，1是可發動，2是發動中
-
+        #慣性
+        self.inertia = 0
+        
+        #18招，0是未獲取，1是可發動，2是發動中
+        self.skill_key = [0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0]
         # [0]不須佩劍
         # [1]水上漂
         # [2]劍氣：長k
-        self.skill2_time=0
+        self.skill2_time = 0
         # [3]瞬移路徑斬：a or d+ Lshift+t+ 長J
-        self.skill3_time=0
+        self.skill3_time = 0
         # [4]二段跳：double space
         # [5]下劈重製跳躍並上彈+蹬牆跳+可在空中使用步法(閃避或疾跑)
         # [6]閃避：Lshift
-        self.skill6_time=0
+        self.skill6_time = 0
         # [7]下衝：空中+s+長J
-        self.skill7_time=0
+        self.skill7_time = 0
         # [8]上斬：w + 長J
-        self.skill8_time=0
+        self.skill8_time = 0
         # [9]彈反：L
-        self.skill9_time=0
+        self.skill9_time = 0
         #[10]砍半無敵幀：長J
-        self.skill10_time=0
+        self.skill10_time = 0
         #[11]可裝備雙刀，改變普攻
         #[12]小怪不以你為目標
         #[13]疾跑：double a or d
-        self.skill13_time=0
+        self.skill13_time = 0
         #[14]指定敵怪閃現貼臉：Tab選取+Lshift+長K
-        self.skill4_time=0
+        self.skill14_time = 0
         #[15]強化普攻命中僵直：w+長K
         #[16]強化普攻命中觸發特殊對話(類似夢釘)：s+長K
         #[17]佩刀可切換刀背，傷害砍半斬擊不致死，敵怪剩餘1HP視作擊敗(劇情用)
 
 
-           
-    def R_move(self):                                               #角色移動
+#角色移動
+
+    #向右移動
+    def R_move(self):                                               
         if not "1_R" in self.now_NT_Touch:   #若有右碰撞，則不移動
             if self.attack_state["playing"]:
                 self.vx = 3
@@ -105,6 +115,7 @@ class player():
 
 
 
+    #向左移動
     def L_move(self):
         if not "1_L" in self.now_NT_Touch :   #若有左碰撞，則不移動
             if self.attack_state["playing"]:
@@ -116,6 +127,7 @@ class player():
 
 
 
+    #跳躍
     def jump(self):
         if self.on_ground == True:
             self.vy = -30
@@ -148,6 +160,7 @@ class player():
                 tool.start_animation(self.attack_state, self.Attack2, 5, self.flip, False)   #第二段攻擊
                 self.atk_procedure = 2
             elif self.atk_procedure == 2:
+                self.inertia = 21
                 tool.start_animation(self.attack_state, self.Attack3, 7, self.flip, False)   #第三段攻擊會向前滑行
                 if self.flip:
                     self.vx = -35
