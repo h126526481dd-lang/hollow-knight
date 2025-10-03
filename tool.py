@@ -63,6 +63,8 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
     
     T_rect = object2.surface.get_rect(topleft = (object2.x, object2.y))
   #物件2的碰撞盒複製(調整用)
+    if object1.now_NT_Touch == []:
+        object1.on_ground = False
 
     
     if object1.rect.colliderect(object2.rect):
@@ -135,6 +137,7 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
             return True
 
         return True
+    
     else:
         return False
 
@@ -223,10 +226,175 @@ def update_animation(obj, state):
 def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys):
 
 
-    Main.now_NT_Touch = []                                      #角色目前碰撞清單
+    
     Main.unhurtable_cd -= 1
     if Main.inertia > 0:
         Main.inertia -= 1
+
+    
+#=======================================================角色技能區
+
+    if Main.skill_key[6] == 2:
+
+        if Main.skill6_time >= 10:
+            if Main.flip == False:
+                Main.vx += 3
+            else:
+                Main.vx -= 3
+
+        elif Main.skill6_time > 0 and abs(Main.vx) > 3:
+            if Main.flip == False:
+                Main.vx -= 3
+            else:
+                Main.vx += 3
+
+        elif Main.skill6_time == 0:
+            Main.skill_key[6] = 1
+            Main.move_lock = 0
+
+        Main.skill6_time -= 1
+        Main.vy = 0
+
+    if Main.is_hurt == 0:
+
+#===========================================================移動按鍵判定(動vx)(動角色圖片)
+
+        if not Main.attack_state["playing"] or Main.atk_procedure != 0 :     #如果不是第三段攻擊
+            if keys[pygame.K_d] and keys[pygame.K_a] and Main.move_lock == 0:                       #避免同時按兩個方向鍵
+                Main.vx=0
+                pass
+                        
+            else:
+                        
+                if keys[pygame.K_d] and Main.move_lock == 0:                                        #按下d鍵右移
+                    Main.R_move()
+
+                elif keys[pygame.K_a] and Main.move_lock == 0:                                      #按下a鍵左移
+                    Main.L_move()
+
+                else:                                                       #不移動時水平速度歸零(沒有慣性)
+                    if  Main.inertia == 0:
+                        Main.idle() 
+                        Main.vx = 0
+                                
+        elif abs(Main.vx) > 0:
+            if Main.flip:
+                Main.vx += 2
+            else:
+                Main.vx -= 2
+
+#====================================================================滯空動畫
+
+        if Main.vy > 0:
+            Main.surface = pygame.transform.flip(Main.Jump[7], Main.flip, False)
+        elif Main.vy < 0:
+            Main.surface = pygame.transform.flip(Main.Jump[6], Main.flip, False)
+
+#=================================================偵測角色攻擊按鍵(是否按下j鍵, 是否在撥放攻擊動畫, 前一偵是否按著j鍵)
+
+        if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j]:
+
+            #如果未銜接攻擊，攻擊步驟歸零
+            if Main.atk_next <= 0:
+                Main.atk_procedure = 0
+            
+        #生成攻擊劍氣
+
+            #確認角色朝向
+            if not Main.flip:
+                match Main.atk_procedure:
+                    case 0:
+                        ATKs_AL.append(object_class.object(Main.x + 100,Main.y + 30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0,0))
+                    case 1:
+                        pass
+                    case 2:
+                        pass
+                            
+            else:
+                match Main.atk_procedure:
+                    case 0:
+                        ATKs_AL.append(object_class.object(Main.x - 70,Main.y + 30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0,1))
+                    case 1:
+                        pass
+                    case 2:
+                        pass
+            
+            Main.attack()
+
+
+        if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground==True or (Main.on_ground==False and Main.skill_key[5]==1)):
+            if Main.inertia == 0:
+                Main.vx = 0
+            Main.unhurtable_cd = 22
+            Main.skill_key[6] = 2
+            Main.skill6_time = 20
+            Main.inertia = max(Main.inertia,20)
+            Main.move_lock = 1
+
+
+
+    else:
+        Main.is_hurt-=1
+
+#==================================================================斬擊朝向(動vx)
+
+    for atk_al in ATKs_AL:
+        if atk_al.dif == "blade1":
+            if atk_al.flip == False:
+                atk_al.x = Main.x + 100
+                atk_al.y = Main.y + 30
+                atk_al.rect.x = atk_al.x
+                atk_al.rect.y = atk_al.y
+            else:
+                atk_al.x = Main.x - 70
+                atk_al.y = Main.y + 30
+                atk_al.rect.x = atk_al.x
+                atk_al.rect.y = atk_al.y
+
+        if atk_al.state["playing"] == False:
+            start_animation(atk_al.state, atk_al.frames, 15, atk_al.flip, False)
+            
+        if atk_al.dur <= 0:
+            ATKs_AL.remove(atk_al)
+        atk_al.dur -= 1    
+        update_animation(atk_al, atk_al.state)
+
+
+#==================================================================攻擊動畫(動角色圖片)
+
+    finished = update_animation(Main, Main.attack_state)
+
+    if finished and Main.atk_next == 0:
+        Main.atk_next = 20                              #此段攻擊結束需多久接下一段
+    
+    if Main.atk_next > 0:
+        Main.atk_next -= 1
+
+#==================================================================下墜判定(動vy)
+                    
+    if "1_U" in Main.now_NT_Touch and Main.vy < 0:                          
+        Main.vy = 0 
+
+    if Main.on_ground == False and Main.vy <= 30 and not Main.skill_key[6] == 2:           #重力加速度(有設上限)
+        Main.vy += 1
+
+    elif Main.on_ground == True:                            #觸地垂直速度歸零
+        Main.vy = 0
+                    
+#==================================================================跳躍判定(動vy)
+
+
+        
+        
+    if keys[pygame.K_w]:
+        for obj in CT_object:
+            if obj.type == "skill":
+                if Touch(Main,obj):
+                    Main.skill_key[obj.num] = 1
+                    CT_object.remove(obj)
+                    del obj
+    
+#============================================================以上是移動、撞牆判定以及攻擊區
 
     for enemy in Enemy:
                     
@@ -276,173 +444,15 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             Enemy.remove(enemy)
             del enemy
 
+        Main.now_NT_Touch = []                                      #角色目前碰撞清單
+
+        for obj in NT_object:
+            Touch(Main,obj)
+
+        if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE]:                                #按下空白鍵跳躍
+            Main.jump()
+
 #=====================================================以上是碰撞清單清除、傷害判定以及敵人區
-
-    if Main.skill_key[6] == 2:
-
-        if Main.skill6_time >= 10:
-            if Main.flip == False:
-                Main.vx += 3
-            else:
-                Main.vx -= 3
-
-        elif Main.skill6_time > 0 and abs(Main.vx) > 3:
-            if Main.flip == False:
-                Main.vx -= 3
-            else:
-                Main.vx += 3
-
-        elif Main.skill6_time == 0:
-            Main.skill_key[6] = 1
-            Main.move_lock = 0
-
-        Main.skill6_time -= 1
-        Main.vy = 0
-
-
-#============================================================以上是角色技能區
-    for obj in NT_object:
-        Touch(Main,obj)
-                        
-    if not "1_D" in Main.now_NT_Touch :                                     #若沒有站地上，則設為False
-        Main.on_ground = False
-                    
-    if "1_U" in Main.now_NT_Touch and Main.vy < 0:                          
-        Main.vy = 0 
-
-    if Main.on_ground == False and Main.vy <= 30 and not Main.skill_key[6] == 2:           #重力加速度(有設上限)
-        Main.vy += 1
-
-    elif Main.on_ground == True:                            #觸地垂直速度歸零
-        Main.vy = 0
-
-
-    if Main.is_hurt == 0:
-
-        if not Main.attack_state["playing"] or Main.atk_procedure != 0 :     #如果不是第三段攻擊
-            if keys[pygame.K_d] and keys[pygame.K_a] and Main.move_lock == 0:                       #避免同時按兩個方向鍵
-                Main.vx=0
-                pass
-                        
-            else:
-                        
-                if keys[pygame.K_d] and Main.move_lock == 0:                                        #按下d鍵右移
-                    Main.R_move()
-
-                elif keys[pygame.K_a] and Main.move_lock == 0:                                      #按下a鍵左移
-                    Main.L_move()
-
-                else:                                                       #不移動時水平速度歸零(沒有慣性)
-                    if  Main.inertia == 0:
-                        Main.idle() 
-                        Main.vx = 0
-                                
-        elif abs(Main.vx) > 0:
-            if Main.flip:
-                Main.vx += 2
-            else:
-                Main.vx -= 2
-
-        #滯空動畫
-        if Main.vy > 0:
-            Main.surface = pygame.transform.flip(Main.Jump[7], Main.flip, False)
-        elif Main.vy < 0:
-            Main.surface = pygame.transform.flip(Main.Jump[6], Main.flip, False)
-
-        #偵測角色攻擊按鍵(是否按下j鍵, 是否在撥放攻擊動畫, 前一偵是否按著j鍵)
-        if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j]:
-
-            #如果未銜接攻擊，攻擊步驟歸零
-            if Main.atk_next <= 0:
-                Main.atk_procedure = 0
-            
-        #生成攻擊劍氣
-
-            #確認角色朝向
-            if not Main.flip:
-                match Main.atk_procedure:
-                    case 0:
-                        ATKs_AL.append(object_class.object(Main.x + 100,Main.y + 30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0,0))
-                    case 1:
-                        pass
-                    case 2:
-                        pass
-                            
-            else:
-                match Main.atk_procedure:
-                    case 0:
-                        ATKs_AL.append(object_class.object(Main.x - 70,Main.y + 30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0,1))
-                    case 1:
-                        pass
-                    case 2:
-                        pass
-            
-            Main.attack()
-
-
-        if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground==True or (Main.on_ground==False and Main.skill_key[5]==1)):
-            if Main.inertia == 0:
-                Main.vx = 0
-            Main.unhurtable_cd = 22
-            Main.skill_key[6] = 2
-            Main.skill6_time = 20
-            Main.inertia = max(Main.inertia,20)
-            Main.move_lock = 1
-
-
-
-    else:
-        Main.is_hurt-=1
-
-
-    for atk_al in ATKs_AL:
-        if atk_al.dif == "blade1":
-            if atk_al.flip == False:
-                atk_al.x = Main.x + 100
-                atk_al.y = Main.y + 30
-                atk_al.rect.x = atk_al.x
-                atk_al.rect.y = atk_al.y
-            else:
-                atk_al.x = Main.x - 70
-                atk_al.y = Main.y + 30
-                atk_al.rect.x = atk_al.x
-                atk_al.rect.y = atk_al.y
-
-        if atk_al.state["playing"] == False:
-            start_animation(atk_al.state, atk_al.frames, 15, atk_al.flip, False)
-            
-        if atk_al.dur <= 0:
-            ATKs_AL.remove(atk_al)
-        atk_al.dur -= 1    
-        update_animation(atk_al, atk_al.state)
-
-
-
-    finished = update_animation(Main, Main.attack_state)
-
-    if finished and Main.atk_next == 0:
-        Main.atk_next = 20                              #此段攻擊結束需多久接下一段
-    if Main.atk_next > 0:
-        Main.atk_next -= 1
-
-
-
-                    
-
-    if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE]:                                #按下空白鍵跳躍
-        Main.jump()
-        
-        
-    if keys[pygame.K_w]:
-        for obj in CT_object:
-            if obj.type == "skill":
-                if Touch(Main,obj):
-                    Main.skill_key[obj.num] = 1
-                    CT_object.remove(obj)
-                    del obj
-
-
-#============================================================以上是移動、撞牆判定以及攻擊區
 
     Main.y += Main.vy                                       #更新角色位置
     Main.x += Main.vx
@@ -465,6 +475,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         print("死")
         pygame.quit()
         exit()
+
 #==========================================================以上是最終更新判定區
-                
+    print(Main.vy)
     show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)    #最終印刷

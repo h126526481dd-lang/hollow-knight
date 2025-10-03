@@ -7,7 +7,6 @@ import math
 import tool
 
 
-
 #=======================================================================================================
 
 
@@ -90,10 +89,7 @@ while True:
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys)
 
                 pre_keys = keys
-
-
-                                
-          
+   
 #=======================================================================================================
 
         case 11:                                                             #場景1
