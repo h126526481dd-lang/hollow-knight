@@ -140,15 +140,17 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
 
 
 
-def split(picture, times):              #切割圖片(圖片, 切割次數)
+#切割圖片(圖片, 切割次數)
+def split(picture, times):
     frames = []
     sprite_sheet = pygame.image.load(picture).convert_alpha()
     frame_width = sprite_sheet.get_width() // times
     frame_height = sprite_sheet.get_height()
+
+    #導入圖片，分割開後存進List  
     for i in range(times):
         frame = sprite_sheet.subsurface((i * frame_width, 0, frame_width, frame_height))
         frames.append(frame)
-    #導入圖片(八張合一起)，分割開後存進List  
     return frames  
 
 
@@ -180,7 +182,8 @@ def anime_update(object, change_time ,flip , image_num, image_list):
 
 
 
-def start_animation(state, image_list, change_time, flip, loop):                #初始化動畫設定
+#初始化動畫設定
+def start_animation(state, image_list, change_time, flip, loop): 
     state["playing"] = True
     state["current_frame"] = 0
     state["timer"] = 0
@@ -189,8 +192,9 @@ def start_animation(state, image_list, change_time, flip, loop):                
     state["flip"] = flip
     state["loop"] = loop
 
-#123
 
+
+#每偵更新動畫
 def update_animation(obj, state):
     if not state.get("playing", False):
         return False
@@ -341,10 +345,21 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         else:
             Main.inertia = 0
 
-                    
+        if Main.vy > 0:
+            Main.surface = pygame.transform.flip(Main.Jump[8], Main.flip, False)
+        elif Main.vy < 0:
+            Main.surface = pygame.transform.flip(Main.Jump[6], Main.flip, False)
+
+        #偵測角色攻擊按鍵(是否按下j鍵, 是否在撥放攻擊動畫, 前一偵是否按著j鍵)
         if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j]:
+
+            #如果未銜接攻擊，攻擊步驟歸零
             if Main.atk_next <= 0:
                 Main.atk_procedure = 0
+            
+        #生成攻擊劍氣
+
+            #確認角色朝向
             if not Main.flip:
                 match Main.atk_procedure:
                     case 0:
@@ -362,6 +377,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         pass
                     case 2:
                         pass
+            
             Main.attack()
 
 
@@ -389,7 +405,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 atk_al.rect.y = atk_al.y
             else:
                 atk_al.x = Main.x - 70
-                atk_al.y = Main.y+30
+                atk_al.y = Main.y + 30
                 atk_al.rect.x = atk_al.x
                 atk_al.rect.y = atk_al.y
         if atk_al.state["playing"] == False:
@@ -398,9 +414,11 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             ATKs_AL.remove(atk_al)
         atk_al.dur -= 1    
         update_animation(atk_al, atk_al.state)
-                    
+
+
 
     finished = update_animation(Main, Main.attack_state)
+
     if finished and Main.atk_next == 0:
         Main.atk_next = 20                              #此段攻擊結束需多久接下一段
     if Main.atk_next > 0:
