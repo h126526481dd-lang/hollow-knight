@@ -225,6 +225,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     Main.now_NT_Touch = []                                      #角色目前碰撞清單
     Main.unhurtable_cd -= 1
+    if Main.inertia > 0:
+        Main.inertia -= 1
 
     for enemy in Enemy:
                     
@@ -292,7 +294,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
         elif Main.skill6_time == 0:
             Main.skill_key[6] = 1
-            Main.inertia = 0
             Main.move_lock = 0
 
         Main.skill6_time -= 1
@@ -341,12 +342,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 Main.vx += 2
             else:
                 Main.vx -= 2
-                
-        else:
-            Main.inertia = 0
 
+        #滯空動畫
         if Main.vy > 0:
-            Main.surface = pygame.transform.flip(Main.Jump[8], Main.flip, False)
+            Main.surface = pygame.transform.flip(Main.Jump[7], Main.flip, False)
         elif Main.vy < 0:
             Main.surface = pygame.transform.flip(Main.Jump[6], Main.flip, False)
 
@@ -387,7 +386,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             Main.unhurtable_cd = 22
             Main.skill_key[6] = 2
             Main.skill6_time = 20
-            Main.inertia = 1
+            Main.inertia = max(Main.inertia,20)
             Main.move_lock = 1
 
 
@@ -408,8 +407,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 atk_al.y = Main.y + 30
                 atk_al.rect.x = atk_al.x
                 atk_al.rect.y = atk_al.y
+
         if atk_al.state["playing"] == False:
             start_animation(atk_al.state, atk_al.frames, 15, atk_al.flip, False)
+            
         if atk_al.dur <= 0:
             ATKs_AL.remove(atk_al)
         atk_al.dur -= 1    

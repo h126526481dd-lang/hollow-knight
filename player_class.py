@@ -69,6 +69,7 @@ class player():
 
         #慣性
         self.inertia = 0
+        
         #18招，0是未獲取，1是可發動，2是發動中
         self.skill_key = [0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0]
         # [0]不須佩劍
@@ -159,7 +160,7 @@ class player():
                 tool.start_animation(self.attack_state, self.Attack2, 5, self.flip, False)   #第二段攻擊
                 self.atk_procedure = 2
             elif self.atk_procedure == 2:
-                self.inertia = 1
+                self.inertia = 21
                 tool.start_animation(self.attack_state, self.Attack3, 7, self.flip, False)   #第三段攻擊會向前滑行
                 if self.flip:
                     self.vx = -35
