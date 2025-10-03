@@ -76,7 +76,7 @@ while True:
                     Main.is_hurt-=1
                     continue
                     
-               # print("FPS:", clock.get_fps())ㄎ
+               # print("FPS:", clock.get_fps()
                 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
