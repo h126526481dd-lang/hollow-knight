@@ -268,9 +268,12 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
         if enemy.HP <= 0:
             Enemy.remove(enemy)
+            del enemy
 
 #=====================================================以上是碰撞清單清除、傷害判定以及敵人區
+
     if Main.skill_key[6] == 2:
+
         if Main.skill6_time >= 10:
             if Main.flip == False:
                 Main.vx += 3
@@ -292,7 +295,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         Main.vy = 0
 
 
-#============================================================以上是角色發動技能區
+#============================================================以上是角色技能區
     for obj in NT_object:
         Touch(Main,obj)
                         
@@ -334,6 +337,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 Main.vx += 2
             else:
                 Main.vx -= 2
+                
+        else:
+            Main.inertia = 0
 
                     
         if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j]:
@@ -342,7 +348,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if not Main.flip:
                 match Main.atk_procedure:
                     case 0:
-                        ATKs_AL.append(object_class.object(Main.x + 100,Main.y + 30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0))
+                        ATKs_AL.append(object_class.object(Main.x + 100,Main.y + 30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0,0))
                     case 1:
                         pass
                     case 2:
@@ -351,7 +357,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             else:
                 match Main.atk_procedure:
                     case 0:
-                        ATKs_AL.append(object_class.object(Main.x - 70,Main.y + 30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",1))
+                        ATKs_AL.append(object_class.object(Main.x - 70,Main.y + 30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0,1))
                     case 1:
                         pass
                     case 2:
@@ -360,8 +366,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
         if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground==True or (Main.on_ground==False and Main.skill_key[5]==1)):
-            Main.vx = 0
-            Main.unhurtable_cd = 20
+            if Main.inertia == 0:
+                Main.vx = 0
+            Main.unhurtable_cd = 22
             Main.skill_key[6] = 2
             Main.skill6_time = 20
             Main.inertia = 1
@@ -381,7 +388,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 atk_al.rect.x = atk_al.x
                 atk_al.rect.y = atk_al.y
             else:
-                atk_al.x = Main.x - 100
+                atk_al.x = Main.x - 70
                 atk_al.y = Main.y+30
                 atk_al.rect.x = atk_al.x
                 atk_al.rect.y = atk_al.y
@@ -405,6 +412,16 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE]:                                #按下空白鍵跳躍
         Main.jump()
+        
+        
+    if keys[pygame.K_w]:
+        for obj in CT_object:
+            if obj.type == "skill":
+                if Touch(Main,obj):
+                    Main.skill_key[obj.num] = 1
+                    CT_object.remove(obj)
+                    del obj
+
 
 #============================================================以上是移動、撞牆判定以及攻擊區
 
