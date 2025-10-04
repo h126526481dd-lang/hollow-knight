@@ -8,10 +8,7 @@ import math
 import tool
 import sys
 
-
 #=======================================================================================================
-
-
 
 pygame.init()                                                   #初始化
 Info = pygame.display.Info()                                      #偵測用戶顯示參數
@@ -33,6 +30,7 @@ print(pygame.display.get_active())                              #確認是否正
 
 scene_ctrl = 10
 pre_keys = []
+
 #=======================================================================================================
 
 while True:
@@ -54,11 +52,6 @@ while True:
                         pygame.quit()
                         exit()
             
-
-
-
-
-
 #=======================================================================================================
 
         case 10:                                                             #場景10
@@ -85,6 +78,9 @@ while True:
 
             door = pygame.image.load("door.png")
             door = pygame.transform.scale(door, (200, 200))  # 調整大小
+            
+            CT_object.append(object_class.object(2400,600,door,"path",0,0,0,0,0))
+            
             CT_object.append(object_class.object(1600,500,door,"door",0,0,0,0,0))
             CT_object.append(object_class.object(2000,-2000,pygame.image.load("skill.png"),"skill",0,0,0,6,0))
             CT_object.append(object_class.object(2000,600,pygame.image.load("skill.png"),"skill",0,0,0,4,0))
@@ -100,21 +96,25 @@ while True:
                     Main.is_hurt -= 1
                     continue
                     
-               # print("FPS:", clock.get_fps())
+                #print("FPS:", clock.get_fps())
                 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
-                if keys[pygame.K_w]:                                #按下w進門
-                    for obj in CT_object:
+                for obj in CT_object:
+                    if keys[pygame.K_w]:                                #按下w進門
+
                         if obj.type == "door":
                             if tool.Touch(Main,obj):
-                                scene_ctrl=11
+                                scene_ctrl = 11
+                    if obj.type == "path":
+                        if tool.Touch(Main,obj):
+                            scene_ctrl = 0
+
                                 
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys)
 
                 pre_keys = keys
                 
-   
 #=======================================================================================================
 
         case 11:                                                             #場景1
