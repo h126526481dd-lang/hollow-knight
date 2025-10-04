@@ -3,9 +3,10 @@ import os
 import pygame
 import player_class
 import object_class
+import button
 import math
 import tool
-
+import sys
 
 
 #=======================================================================================================
@@ -31,19 +32,29 @@ Main = player_class.player("BOBO",0,0)                #建立角色物件
 print(pygame.display.get_active())                              #確認是否正確開啟
 
 scene_ctrl = 10
-pre_keys=[]
+pre_keys = []
 #=======================================================================================================
 
 while True:
     match scene_ctrl:
         
         case 0:                                                              #場景0
-            scene = []
-            scene.append(pygame.image.load("white.jpg"))                  #導入背景圖片
-            scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
+            
+            while(1==1): 
+                screen.fill(color= "white")
+                
+                pygame.display.update()
 
-            tool.show(screen,scene[0],0,0,0,0)
-            pass
+                for event in pygame.event.get():                               #偵測事件
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
+            
+
+
+
+
+
 #=======================================================================================================
 
         case 10:                                                             #場景10
@@ -52,8 +63,8 @@ while True:
             NT_object = []
             CT_object = []
             Enemy = []
-            ATKs_AL=[]
-            ATKs_EN=[]
+            ATKs_AL = []
+            ATKs_EN = []
 
             scene.append(pygame.image.load("IMG_2794.jpg"))                  #導入背景圖片
             scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
@@ -77,7 +88,7 @@ while True:
                     Main.is_hurt -= 1
                     continue
                     
-                #print("FPS:", clock.get_fps())
+                print("FPS:", clock.get_fps())
                 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
@@ -85,17 +96,13 @@ while True:
                     for obj in CT_object:
                         if obj.type == "door":
                             if tool.Touch(Main,obj):
-                                scene_ctrl = 11
+                                scene_ctrl=11
                                 
-                tool.tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys)
-                print(Main.now_NT_Touch)
-
+                tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys)
 
                 pre_keys = keys
-
-
-                                
-          
+                
+   
 #=======================================================================================================
 
         case 11:                                                             #場景1
