@@ -23,6 +23,7 @@ class player():
         self.ATK = 5
         self.endurance = 4
         self.endurance_cd = 120
+        self.hurt_flashing = 0
         
         #角色圖片
         self.image = 0                                        
@@ -63,8 +64,11 @@ class player():
         self.Attack2 = tool.split("Character\mainchacter\Attack_2.png", 4) 
         self.Attack3 = tool.split("Character\mainchacter\Attack_3.png", 3) 
         
-        #匯入jump.png圖片並切分成動畫
+        #匯入Jump.png圖片並切分成動畫
         self.Jump = tool.split("Character\mainchacter\Jump.png", 12)
+
+        #匯入Hurt.png圖片並切分成動畫
+        self.Hurt = tool.split("Character\mainchacter\Hurt.png",2)
         
         self.is_hurt = 0
         self.unhurtable_cd = 0
@@ -154,6 +158,7 @@ class player():
                 pygame.quit()
                 exit()   
             self.unhurtable_cd = 120
+            self.hurt_flashing = 120
             print(self.HP)
 
 
