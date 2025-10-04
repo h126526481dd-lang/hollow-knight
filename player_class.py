@@ -21,7 +21,9 @@ class player():
 
         self.HP = 5
         self.ATK = 5
-
+        self.endurance = 4
+        self.endurance_cd = 120
+        
         #角色圖片
         self.image = 0                                        
 
@@ -71,7 +73,7 @@ class player():
         self.inertia = 0
         
         #18招，0是未獲取，1是可發動，2是發動中
-        self.skill_key = [0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0]
+        self.skill_key = [0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0]
         # [0]不須佩劍
         # [1]水上漂
         # [2]劍氣：長k

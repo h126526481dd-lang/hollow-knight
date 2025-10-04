@@ -28,7 +28,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
     camera_rect = pygame.Rect(camera_x,camera_y,screen_width,screen_height)  #攝影機碰撞盒(只顯示在螢幕中的物件)
     
 
-    screen.blit(scene, (-500-camera_x, -500 - camera_y))                  #繪製背景圖片(背景位置=原位置-置中向量)
+    screen.blit(scene, (-2000-camera_x, -2500 - camera_y))                  #繪製背景圖片(背景位置=原位置-置中向量)
    
     for obj in NT_object:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(obj.rect):
@@ -236,8 +236,13 @@ def update_animation(obj, state):
 
 def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys):
 
-
-    
+    if Main.endurance < 4:
+        Main.endurance_cd -= 1
+        if Main.endurance_cd == 0:
+            Main.endurance += 1
+            Main.endurance_cd = 120
+            
+            
     Main.unhurtable_cd -= 1
     if Main.inertia > 0:
         Main.inertia -= 1
@@ -339,7 +344,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             Main.attack()
 
 
-        if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground==True or (Main.on_ground==False and Main.skill_key[5]==1)):
+        if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground==True or (Main.on_ground==False and Main.skill_key[5]==1)) and Main.endurance > 0:
             if Main.inertia == 0:
                 Main.vx = 0
             Main.unhurtable_cd = 22
@@ -347,6 +352,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             Main.skill6_time = 20
             Main.inertia = max(Main.inertia,20)
             Main.move_lock = 1
+            Main.endurance -= 1
 
 
 
@@ -492,5 +498,5 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         exit()
 
 #==========================================================以上是最終更新判定區
-    #print(Main.now_NT_Touch)
+    print(Main.endurance)
     show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)    #最終印刷
