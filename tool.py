@@ -5,6 +5,15 @@ import math
 import player_class
 import object_class
 
+def show_UI(screen,scene):
+
+    Info = pygame.display.Info()                                      #偵測用戶顯示參數
+    screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
+    screen_width  = Info.current_w
+    
+    
+
+
 def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     Info = pygame.display.Info()                                      #偵測用戶顯示參數
@@ -328,7 +337,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         Main.idle() 
                         Main.vx = 0
                                 
-        elif abs(Main.vx) > 0:
+        elif abs(Main.vx) > 1:
             if Main.flip:
                 Main.vx += 2
             else:
