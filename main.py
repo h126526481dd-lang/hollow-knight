@@ -77,8 +77,8 @@ while True:
 
             Main.x = 0
             Main.y = 0
-            Main.rect.x = 0
-            Main.rect.y = 0
+            Main.rect.x = 50
+            Main.rect.y = 50
             scene = []
             NT_object = []
             CT_object = []
