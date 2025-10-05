@@ -46,10 +46,12 @@ while True:
                 test=button.button("black",200,200)
                 
                 screen.blit(test.image,(400,400))
-                
                 pygame.display.update()
 
                 for event in pygame.event.get():                               #偵測事件
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.pos == test.rect:
+                            test.image.fill("red")
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         exit()
