@@ -12,8 +12,6 @@ import sys
 
 #=======================================================================================================
 
-
-
 pygame.init()                                                   #初始化
 Info = pygame.display.Info()                                      #偵測用戶顯示參數
 screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
@@ -36,6 +34,10 @@ print(pygame.display.get_active())                              #確認是否正
 
 scene_ctrl = 0
 pre_keys = []
+
+def scene_ctrler(num):
+    scene_ctrl = num
+
 #=======================================================================================================
 
 while True:
@@ -43,14 +45,22 @@ while True:
         
         case 0:                                                              #場景0
             
-            while(1==1): 
-                screen.fill(color= "white")
-                pygame.display.update()
+            
+            
+            
+            BUTTON = pygame.sprite.Group()
+            
+            button1 = button.Button(300, 300, "Click Me", button.on_click(scene_ctrl,10))
+            BUTTON.add(button1)
+            
+            while True: 
 
-#                button1 = button(200, 100, "hello")
-#                button1 = pygame.sprite.Group()
 
-#                pygame.sprite.Group.draw()
+                # 建立按鈕並加入群組
+                BUTTON.update()
+                screen.fill((50, 50, 50))
+                BUTTON.draw(screen)
+                pygame.display.flip()
 
 #                text_surf = pygame.font.Font.render("hello", True, (255, 255, 255))
 #                text_rect = text_surf.get_rect(center=(Info.current_h/2, Info.current_w/2))
@@ -61,11 +71,6 @@ while True:
                         pygame.quit()
                         exit()
             
-
-
-
-
-
 #=======================================================================================================
 
         case 10:                                                             #場景10
@@ -86,6 +91,9 @@ while True:
 
             door = pygame.image.load("door.png")
             door = pygame.transform.scale(door, (200, 200))  # 調整大小
+            
+            CT_object.append(object_class.object(2400,600,door,"path",0,0,0,0,0))
+            
             CT_object.append(object_class.object(1600,500,door,"door",0,0,0,0,0))
             CT_object.append(object_class.object(2000,300,pygame.image.load("skill.png"),"skill",0,0,0,6,0))
 
@@ -99,15 +107,20 @@ while True:
                     Main.is_hurt -= 1
                     continue
                     
-               # print("FPS:", clock.get_fps())
+                #print("FPS:", clock.get_fps())
                 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
-                if keys[pygame.K_w]:                                #按下w進門
-                    for obj in CT_object:
+                for obj in CT_object:
+                    if keys[pygame.K_w]:                                #按下w進門
+
                         if obj.type == "door":
                             if tool.Touch(Main,obj):
-                                scene_ctrl=11
+                                scene_ctrl = 11
+                    if obj.type == "path":
+                        if tool.Touch(Main,obj):
+                            scene_ctrl = 0
+
                                 
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys)
 

@@ -77,7 +77,7 @@ class player():
         self.inertia = 0
         
         #18招，0是未獲取，1是可發動，2是發動中
-        self.skill_key = [0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0]
+        self.skill_key = [0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0]
         # [0]不須佩劍
         # [1]水上漂
         # [2]劍氣：長k
@@ -302,4 +302,16 @@ class enemy():
                     self.vy+=1
                     self.y += self.vy
                     self.rect.y += self.vy  
-
+                    
+                    
+                    
+                    
+class NPC():
+    def __init__(self,x,y,who,IMG,phase,ani):
+        self.x = x
+        self.y = y
+        self.who = who
+        self.phase = phase        
+        self.surface = IMG
+        self.ani = ani
+        self.is_talked = 0

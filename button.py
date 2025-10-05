@@ -1,17 +1,29 @@
 import pygame
 
-class button(pygame.sprite.Sprite):
-    def __init__(self, color, width, height):
-       # Call the parent class (Sprite) constructor
-       pygame.sprite.Sprite.__init__(self)
+class Button(pygame.sprite.Sprite):
+    
+    def __init__(self, x, y, text, callback):
+        super().__init__()                                  #sprite初始化
+        self.font = pygame.font.SysFont(None, 40)           #字體
+        self.text = text                                    #文字
+        self.callback = callback                            #輸入按鈕按下所要執行的函式
+        self.default_color = (100, 100, 100)                #預設顏色
+        self.hover_color = (200, 200, 200)                  #觸碰顏色
+        self.image = self.font.render(self.text, True, (0, 0, 0), self.default_color)  #建立surface
+        self.rect = self.image.get_rect(topleft=(x, y))     #碰撞箱
 
-       # Create an image of the block, and fill it with a color.
-       # This could also be an image loaded from the disk.
-       self.image = pygame.Surface([width, height])
-       self.image.fill(color)
+    def update(self):
+        mouse_pos = pygame.mouse.get_pos()                  #拿鼠標座標
+        mouse_pressed = pygame.mouse.get_pressed()[0]       #是否點擊
 
-       # Fetch the rectangle object that has the dimensions of the image
-       # Update the position of this object by setting the values of rect.x and rect.y
-       self.rect = self.image.get_rect()
+        # 滑鼠碰到就變顏色
+        if self.rect.collidepoint(mouse_pos):
+            self.image = self.font.render(self.text, True, (0, 0, 0), self.hover_color)
+            if mouse_pressed:
+                self.callback()     #回傳上面寫的callback
+        else:
+            self.image = self.font.render(self.text, True, (0, 0, 0), self.default_color)
 
-#    def show_UI():
+def on_click(scene_ctrl,num):
+    scene_ctrl=num
+    print("clicked")
