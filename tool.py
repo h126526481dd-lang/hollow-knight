@@ -13,7 +13,6 @@ def show_UI(screen,scene):
     
     
 
-
 def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     Info = pygame.display.Info()                                      #偵測用戶顯示參數
@@ -24,6 +23,11 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
     adjust_x = screen_width//2
     camera_x = player.x - adjust_x                              #把角色置中所需要的向量  
     camera_y = player.y - adjust_y
+    camera_x = max(camera_x, -500)
+    camera_x = min(camera_x, 1000)
+    camera_y = max(camera_y, -3000)
+    camera_y = min(camera_y, 500)
+    print(camera_x, camera_y)
     
     camera_rect = pygame.Rect(camera_x,camera_y,screen_width,screen_height)  #攝影機碰撞盒(只顯示在螢幕中的物件)
     
@@ -60,7 +64,10 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
             screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
     
-    screen.blit(player.surface, ( player.x - camera_x,player.y - camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
+    if not player.hurt_flashing % 8 > 4:
+        screen.blit(player.surface, ( player.x - camera_x,player.y - camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
+    
+    
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
     
     
@@ -241,13 +248,14 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         if Main.endurance_cd == 0:
             Main.endurance += 1
             Main.endurance_cd = 120
-            
-            
+
+    if Main.hurt_flashing > 0:
+        Main.hurt_flashing -= 1
+    
     Main.unhurtable_cd -= 1
     if Main.inertia > 0:
         Main.inertia -= 1
 
-    
 #=======================================================角色技能區
 
     if Main.skill_key[6] == 2:
@@ -277,14 +285,15 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         if Main.on_ground == True:
             Main.skill_key[4] = 1
         
-
 #===========================================================移動按鍵判定(動vx)(動角色圖片)
+
     if Main.is_hurt == 0:
 
         if not Main.attack_state["playing"] or Main.atk_procedure != 0 :     #如果不是第三段攻擊
             if keys[pygame.K_d] and keys[pygame.K_a] and Main.move_lock == 0:                       #避免同時按兩個方向鍵
-                Main.vx=0
-                pass
+                if  Main.inertia == 0:
+                    Main.idle() 
+                    Main.vx = 0
                         
             else:
                         
@@ -382,7 +391,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         atk_al.dur -= 1    
         update_animation(atk_al, atk_al.state)
 
-
 #==================================================================攻擊動畫(動角色圖片)
 
     finished = update_animation(Main, Main.attack_state)
@@ -403,9 +411,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                     
 #==================================================================跳躍判定(動vy)
-
-
-        
         
     if keys[pygame.K_w]:
         for obj in CT_object:
@@ -414,8 +419,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     Main.skill_key[obj.num] = 1
                     CT_object.remove(obj)
                     del obj
-    
-#============================================================以上是移動、撞牆判定以及攻擊區
+
+#===============================================================以上是移動、撞牆判定以及攻擊區
 
     for enemy in Enemy:
                     
@@ -429,21 +434,17 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
         if Touch(Main,enemy):
             if Main.unhurtable_cd <= 0:
-                                
+
                 if Main.rect.x-enemy.rect.x > 0:
                     Main.vx = 10
-                    Main.y -= 10
-                    Main.rect.y -= 10
-                    Main.vy = -15
-                    Main.is_hurt = 30
-                    Main.get_hit()
+                    
                 else:
                     Main.vx =- 10
-                    Main.y -= 10
-                    Main.rect.y -= 10
-                    Main.vy = -15
-                    Main.is_hurt = 30
-                    Main.get_hit()
+                Main.y -= 10
+                Main.rect.y -= 10
+                Main.vy = -15
+                Main.is_hurt = 30
+                Main.get_hit()
                         
         for atk_al in ATKs_AL:
             
@@ -472,6 +473,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE]:                                #按下空白鍵跳躍
             Main.jump()
+    
+    if Main.is_hurt > 0:
+        Main.surface = pygame.transform.flip(Main.Hurt[0], Main.flip, False)
 
 #=====================================================以上是碰撞清單清除、傷害判定以及敵人區
 
@@ -498,5 +502,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         exit()
 
 #==========================================================以上是最終更新判定區
-    print(Main.endurance)
+
+    #print(Main.hurt_flashing)
     show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)    #最終印刷
