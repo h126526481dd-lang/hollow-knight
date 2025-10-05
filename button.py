@@ -24,6 +24,7 @@ class Button(pygame.sprite.Sprite):
         else:
             self.image = self.font.render(self.text, True, (0, 0, 0), self.default_color)
 
-def on_click(scene_ctrl,num):
-    scene_ctrl=num
-    print("clicked")
+def on_click(num):
+    import main
+    main.scene_ctrl = num
+    print(main.scene_ctrl)

@@ -26,7 +26,7 @@ class player():
         self.hurt_flashing = 0
         
         #角色圖片
-        self.image = 0                                        
+        self.image = 0
 
         #角色速度
         self.vx = 0                                                   

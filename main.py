@@ -50,10 +50,10 @@ while True:
             
             BUTTON = pygame.sprite.Group()
             
-            button1 = button.Button(300, 300, "Click Me", button.on_click(scene_ctrl,10))
+            button1 = button.Button(300, 300, "Click Me", lambda:button.on_click(10))
             BUTTON.add(button1)
             
-            while True: 
+            while scene_ctrl == 0: 
 
 
                 # 建立按鈕並加入群組
@@ -75,6 +75,10 @@ while True:
 
         case 10:                                                             #場景10
 
+            Main.x = 0
+            Main.y = 0
+            Main.rect.x = 0
+            Main.rect.y = 0
             scene = []
             NT_object = []
             CT_object = []
