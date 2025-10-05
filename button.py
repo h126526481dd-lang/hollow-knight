@@ -4,7 +4,7 @@ class Button(pygame.sprite.Sprite):
     
     def __init__(self, x, y, text, callback):
         super().__init__()                                  #sprite初始化
-        self.font = pygame.font.SysFont(None, 40)           #字體
+        self.font = pygame.font.SysFont(None, 40)              #字體
         self.text = text                                    #文字
         self.callback = callback                            #輸入按鈕按下所要執行的函式
         self.default_color = (100, 100, 100)                #預設顏色

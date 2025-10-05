@@ -53,6 +53,8 @@ while True:
             button1 = button.Button(300, 300, "Click Me", lambda:button.on_click(10))
             BUTTON.add(button1)
             
+            
+            
             while scene_ctrl == 0: 
 
 
@@ -62,10 +64,7 @@ while True:
                 BUTTON.draw(screen)
                 pygame.display.flip()
 
-#                text_surf = pygame.font.Font.render("hello", True, (255, 255, 255))
-#                text_rect = text_surf.get_rect(center=(Info.current_h/2, Info.current_w/2))
 
-                
                 for event in pygame.event.get():                               #偵測事件
                     if event.type == pygame.QUIT:
                         pygame.quit()
