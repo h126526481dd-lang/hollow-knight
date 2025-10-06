@@ -33,11 +33,12 @@ def quit_button():
     pygame.quit()
     exit()
 
-def change_FPS(FPS, changed_FPS):
-    if(FPS == 60):
-        changed_FPS == 30
-        FPS = changed_FPS
+def change_FPS(scene_ctrl):
+
+    if(scene_ctrl.fps == 60):
+        scene_ctrl.fps = 30
+        print(scene_ctrl.fps)
 
     else:
-        changed_FPS == 60
-        FPS = changed_FPS
+        scene_ctrl.fps = 60
+        print(scene_ctrl.fps)

@@ -12,6 +12,7 @@ class scene_c():
     def __init__(self):
         self.num = 0
         self.menu = 0
+        self.fps = 60
 
 #=======================================================================================================
 
@@ -139,7 +140,7 @@ while True:
 
             button_back = button.Button(screen_width//2, 500, "Go back", lambda:button.on_click(scene_ctrl, scene_ctrl_temp))
             button_quit = button.Button(screen_width//2, 900, "Quit", button.quit_button)
-            button_change_FPS = button.Button(screen_width//2, 300, "change FPS", lambda:button.change_FPS(FPS, FPS))   
+            button_change_FPS = button.Button(screen_width//2, 300, "change FPS", lambda:button.change_FPS(scene_ctrl))   
             BUTTON.add(button_back, button_quit, button_change_FPS)
 
 
@@ -194,21 +195,21 @@ while True:
 
             Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
 
-            button_home = button.Button(200, 200, "Home", lambda:button.on_click(scene_ctrl,0))
+            # button_home = button.Button(200, 200, "Home", lambda:button.on_click(scene_ctrl,0))
 
-            BUTTON.add(button_home)
+            # BUTTON.add(button_home)
            
             while scene_ctrl.num == 10:                                                     #遊戲主迴圈
 
-                clock.tick(FPS)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
+                clock.tick(scene_ctrl.fps)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
 
                 if Main.is_hurt > 20:
                     Main.is_hurt -= 1
                     continue
                 
-                BUTTON.update()
-                BUTTON.draw(screen)
-                pygame.display.flip()
+                # BUTTON.update()
+                # BUTTON.draw(screen)
+                # pygame.display.flip()
 
                 #print("FPS:", clock.get_fps())
                 
