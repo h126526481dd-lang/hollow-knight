@@ -84,13 +84,16 @@ while True:
             
             BUTTON.empty()
 
-            button1 = button.Button(screen_width//2, 400, "Audio", lambda:button.on_click(scene_ctrl,10))
-            button2 = button.Button(screen_width//2, 700, "Video", lambda:button.on_click(scene_ctrl,1))
+            button1 = button.Button(screen_width//2, 400, "Audio", lambda:button.on_click(scene_ctrl,4))
+            button2 = button.Button(screen_width//2, 700, "Video", lambda:button.on_click(scene_ctrl,4))  
+            button3 = button.Button(screen_width//2, 1000, "Home", lambda:button.on_click(scene_ctrl,0))
 
-            BUTTON.add(button1)
-            BUTTON.add(button2)
+            BUTTON.add(button1, button2, button3)
 
             while scene_ctrl.num == 1: 
+                
+
+                scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
 
                 BUTTON.update()
                 screen.fill((50, 50, 50))
@@ -108,6 +111,7 @@ while True:
 
             BUTTON.empty()
 
+            scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
 
             while scene_ctrl.num == 2: 
 
@@ -128,7 +132,32 @@ while True:
 #=======================================================================================================
 
         case 4:                                                                #畫面設定
-            pass
+            
+            BUTTON.empty()
+
+
+
+            button_back = button.Button(screen_width//2, 500, "Go back", lambda:button.on_click(scene_ctrl, scene_ctrl_temp))
+            button_quit = button.Button(screen_width//2, 900, "Quit", button.quit_button)
+            button_change_FPS = button.Button(screen_width//2, 300, "change FPS", lambda:button.change_FPS(FPS, FPS))   
+            BUTTON.add(button_back, button_quit, button_change_FPS)
+
+
+            while scene_ctrl.num == 4:
+
+                screen.fill((50, 50, 50))
+
+                BUTTON.update()
+                BUTTON.draw(screen)
+                pygame.display.flip()
+                
+
+                for event in pygame.event.get():                               #偵測事件
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
+
+
 
 #=======================================================================================================
 
@@ -144,6 +173,9 @@ while True:
             Enemy = []
             ATKs_AL = []
             ATKs_EN = []
+            BUTTON.empty()
+
+            scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
 
             scene.append(pygame.image.load("IMG_2794.jpg"))                  #導入背景圖片
             scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
@@ -154,14 +186,14 @@ while True:
 
             door = pygame.image.load("door.png")
             door = pygame.transform.scale(door, (200, 200))  # 調整大小
-            
+
             CT_object.append(object_class.object(2400,600,door,"path",0,0,0,0,0))
             
             CT_object.append(object_class.object(1600,500,door,"door",0,0,0,0,0))
             CT_object.append(object_class.object(2000,300,pygame.image.load("skill.png"),"skill",0,0,0,6,0))
 
             Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
-            
+           
             while scene_ctrl.num == 10:                                                     #遊戲主迴圈
 
                 clock.tick(FPS)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
