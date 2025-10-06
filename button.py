@@ -10,7 +10,7 @@ class Button(pygame.sprite.Sprite):
         self.default_color = (100, 100, 100)                #預設顏色
         self.hover_color = (200, 200, 200)                  #觸碰顏色
         self.image = self.font.render(self.text, True, (0, 0, 0), self.default_color)  #建立surface
-        self.rect = self.image.get_rect(topleft=(x, y))     #碰撞箱
+        self.rect = self.image.get_rect(center=(x, y))     #碰撞箱
 
     def update(self):
         mouse_pos = pygame.mouse.get_pos()                  #拿鼠標座標
@@ -24,7 +24,11 @@ class Button(pygame.sprite.Sprite):
         else:
             self.image = self.font.render(self.text, True, (0, 0, 0), self.default_color)
 
-def on_click(num):
-    import main
-    main.scene_ctrl = num
-    print(main.scene_ctrl)
+def on_click(scene_ctrl,num):
+    scene_ctrl.num = num
+    print(scene_ctrl.num)
+
+
+def quit_button():
+    pygame.quit()
+    exit()

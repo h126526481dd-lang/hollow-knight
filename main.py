@@ -8,7 +8,10 @@ import math
 import tool
 import sys
 
-
+class scene_c():
+    def __init__(self):
+        self.num = 0
+        self.menu = 0
 
 #=======================================================================================================
 
@@ -17,6 +20,7 @@ Info = pygame.display.Info()                                      #偵測用戶�
 screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
 screen_width  = Info.current_w
 
+scene_ctrl=scene_c()
 
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.NOFRAME)
 
@@ -29,33 +33,37 @@ Main = player_class.player("BOBO",0,0)                #建立角色物件
 
 # font = pygame.font.Font(None, 50)
 
+BUTTON = pygame.sprite.Group()
 
 print(pygame.display.get_active())                              #確認是否正確開啟
 
-scene_ctrl = 0
+scene_ctrl.num = 0
 pre_keys = []
 
-def scene_ctrler(num):
-    scene_ctrl = num
 
 #=======================================================================================================
 
 while True:
-    match scene_ctrl:
+    match scene_ctrl.num:
         
-        case 0:                                                              #場景0
+        case 0:                                                              #初始畫面
             
-            
-            
-            
-            BUTTON = pygame.sprite.Group()
-            
-            button1 = button.Button(300, 300, "Click Me", lambda:button.on_click(10))
+                        
+            BUTTON.empty()
+
+            button1 = button.Button(screen_width//2, 300, "Start", lambda:button.on_click(scene_ctrl,10))
+            button2 = button.Button(screen_width//2, 400, "Menu", lambda:button.on_click(scene_ctrl,1))
+            button3 = button.Button(screen_width//2, 500, "Achievement", lambda:button.on_click(scene_ctrl,2))
+            button4 = button.Button(screen_width//2, 900, "Quit", button.quit_button)
+
             BUTTON.add(button1)
+            BUTTON.add(button2)
+            BUTTON.add(button3)
+            BUTTON.add(button4)
+
             
             
-            
-            while scene_ctrl == 0: 
+            while scene_ctrl.num == 0: 
 
 
                 # 建立按鈕並加入群組
@@ -70,6 +78,58 @@ while True:
                         pygame.quit()
                         exit()
             
+#=======================================================================================================
+
+        case 1:                                                                #選單
+            
+            BUTTON.empty()
+
+            button1 = button.Button(screen_width//2, 400, "Audio", lambda:button.on_click(scene_ctrl,10))
+            button2 = button.Button(screen_width//2, 700, "Video", lambda:button.on_click(scene_ctrl,1))
+
+            BUTTON.add(button1)
+            BUTTON.add(button2)
+
+            while scene_ctrl.num == 1: 
+
+                BUTTON.update()
+                screen.fill((50, 50, 50))
+
+                BUTTON.draw(screen)
+                pygame.display.flip()
+
+                for event in pygame.event.get():                               #偵測事件
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
+
+#======================================================================================================
+        case 2:                                                                #成就
+
+            BUTTON.empty()
+
+
+            while scene_ctrl.num == 2: 
+
+
+
+                pass
+
+
+                for event in pygame.event.get():                               #偵測事件
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
+
+#=======================================================================================================
+
+        case 3:                                                                #音量調整
+            pass
+#=======================================================================================================
+
+        case 4:                                                                #畫面設定
+            pass
+
 #=======================================================================================================
 
         case 10:                                                             #場景10
@@ -102,7 +162,7 @@ while True:
 
             Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
             
-            while scene_ctrl == 10:                                                     #遊戲主迴圈
+            while scene_ctrl.num == 10:                                                     #遊戲主迴圈
 
                 clock.tick(FPS)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
 
@@ -119,10 +179,10 @@ while True:
 
                         if obj.type == "door":
                             if tool.Touch(Main,obj):
-                                scene_ctrl = 11
+                                scene_ctrl.num = 11
                     if obj.type == "path":
                         if tool.Touch(Main,obj):
-                            scene_ctrl = 0
+                            scene_ctrl.num = 0
 
                                 
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys)
@@ -135,7 +195,7 @@ while True:
 #=======================================================================================================
 
         case 11:                                                             #場景1
-            while scene_ctrl == 11:                                                     #遊戲主迴圈
+            while scene_ctrl.num == 11:                                                     #遊戲主迴圈
             
                 print("go")
                 pygame.quit()
