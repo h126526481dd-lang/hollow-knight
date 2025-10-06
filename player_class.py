@@ -8,62 +8,76 @@ import object_class
 
 class player():
 
-             
-    def __init__(self,name,x,y):                         #角色模型
+    #角色模型
+    def __init__(self,name,x,y):
 
-        self.name = name                                              #角色名稱
+        #角色名稱
+        self.name = name                                              
 
-        self.x = x                                                    #角色位置
+        #角色位置
+        self.x = x
         self.y = y
-        self.move_lock=0
+        self.move_lock = 0
 
         self.HP = 5
-        self.ATK=5
+        self.ATK = 5
+        self.endurance = 4
+        self.endurance_cd = 120
+        self.hurt_flashing = 0
+        
+        #角色圖片
+        self.image = 0
 
-        self.image = 0                                        #角色圖片
-
-        self.vx = 0                                                   #角色速度
+        #角色速度
+        self.vx = 0                                                   
         self.vy = 0
 
-        self.on_ground = False                                      #角色是否在地面上
+        #角色是否在地面上
+        self.on_ground = False                                      
 
         self.anime_time = 0
 
         self.flip = False
 
-        self.now_NT_Touch = []                                      #角色目前碰撞清單
-        self.now_CT_Touch = []                                      #角色目前碰撞清單
+        #角色目前碰撞清單
+        self.now_NT_Touch = []
+        self.now_CT_Touch = []
 
-
-        self.attack_state = {}                                      #attack字典用以紀錄attack動畫狀態
+        #attack字典用以紀錄attack動畫狀態
+        self.attack_state = {}
         self.attack_state["playing"] = False
-
         self.atk_procedure = 0
         self.atk_next = 0
-                            
-        self.Walk = tool.split("Character\mainchacter\Walk.png", 8)   #匯入Walk.png圖片並切分成動畫
+
+        #匯入Walk.png圖片並切分成動畫       
+        self.Walk = tool.split("Character\mainchacter\Walk.png", 8)
         self.surface = self.Walk[self.image]
-        
+
         self.rect = self.surface.get_rect(topleft=(self.x, self.y+50))
-        
         self.rect.x += 50
-        
+
         self.rect.width -= 100
         self.rect.height -= 50
 
-        self.Attack1 = tool.split("Character\mainchacter\Attack_1.png", 6)         #匯入Attack_1.png圖片並切分成動畫
+        #匯入3張Attack.png圖片並切分成動畫
+        self.Attack1 = tool.split("Character\mainchacter\Attack_1.png", 6)
         self.Attack2 = tool.split("Character\mainchacter\Attack_2.png", 4) 
         self.Attack3 = tool.split("Character\mainchacter\Attack_3.png", 3) 
         
-
-        
+        #匯入Jump.png圖片並切分成動畫
         self.Jump = tool.split("Character\mainchacter\Jump.png", 12)
+
+        #匯入Hurt.png圖片並切分成動畫
+        self.Hurt = tool.split("Character\mainchacter\Hurt.png",2)
+        
         self.is_hurt = 0
         self.unhurtable_cd = 0
 
-        self.inertia =0
-        self.skill_key=[0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0]        #18招，0是未獲取，1是可發動，2是發動中
-
+        #慣性
+        self.inertia = 0
+        
+        #18招，0是未獲取，1是可發動，2是發動中
+        self.skill_key = [0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0]
         # [0]不須佩劍
         # [1]水上漂
         # [2]劍氣：長k
@@ -87,14 +101,16 @@ class player():
         #[13]疾跑：double a or d
         self.skill13_time = 0
         #[14]指定敵怪閃現貼臉：Tab選取+Lshift+長K
-        self.skill4_time = 0
+        self.skill14_time = 0
         #[15]強化普攻命中僵直：w+長K
         #[16]強化普攻命中觸發特殊對話(類似夢釘)：s+長K
         #[17]佩刀可切換刀背，傷害砍半斬擊不致死，敵怪剩餘1HP視作擊敗(劇情用)
 
 
-           
-    def R_move(self):                                               #角色移動
+#角色移動
+
+    #向右移動
+    def R_move(self):                                               
         if not "1_R" in self.now_NT_Touch:   #若有右碰撞，則不移動
             if self.attack_state["playing"]:
                 self.vx = 3
@@ -105,6 +121,7 @@ class player():
 
 
 
+    #向左移動
     def L_move(self):
         if not "1_L" in self.now_NT_Touch :   #若有左碰撞，則不移動
             if self.attack_state["playing"]:
@@ -116,10 +133,12 @@ class player():
 
 
 
+    #跳躍
     def jump(self):
-        if self.on_ground == True:
-            self.vy = -30
-            
+        if self.on_ground == True or (not self.on_ground == True and self.skill_key[4] == 1) and not self.skill_key[6] == 2:
+            self.vy = -20
+            if self.on_ground == False:
+                self.skill_key[4] = 2           
     
 
 
@@ -139,6 +158,7 @@ class player():
                 pygame.quit()
                 exit()   
             self.unhurtable_cd = 120
+            self.hurt_flashing = 120
             print(self.HP)
 
 
@@ -148,6 +168,7 @@ class player():
                 tool.start_animation(self.attack_state, self.Attack2, 5, self.flip, False)   #第二段攻擊
                 self.atk_procedure = 2
             elif self.atk_procedure == 2:
+                self.inertia = 21
                 tool.start_animation(self.attack_state, self.Attack3, 7, self.flip, False)   #第三段攻擊會向前滑行
                 if self.flip:
                     self.vx = -35
@@ -281,4 +302,16 @@ class enemy():
                     self.vy+=1
                     self.y += self.vy
                     self.rect.y += self.vy  
-
+                    
+                    
+                    
+                    
+class NPC():
+    def __init__(self,x,y,who,IMG,phase,ani):
+        self.x = x
+        self.y = y
+        self.who = who
+        self.phase = phase        
+        self.surface = IMG
+        self.ani = ani
+        self.is_talked = 0
