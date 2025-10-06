@@ -33,11 +33,6 @@ def quit_button():
     pygame.quit()
     exit()
 
-
-def back_button(scene_ctrl,pre_num):
-    scene_ctrl.num = pre_num
-    print(scene_ctrl.num)
-
 def change_FPS(FPS, changed_FPS):
     if(FPS == 60):
         changed_FPS == 30

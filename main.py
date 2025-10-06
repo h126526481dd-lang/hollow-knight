@@ -193,6 +193,10 @@ while True:
             CT_object.append(object_class.object(2000,300,pygame.image.load("skill.png"),"skill",0,0,0,6,0))
 
             Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
+
+            button_home = button.Button(200, 200, "Home", lambda:button.on_click(scene_ctrl,0))
+
+            BUTTON.add(button_home)
            
             while scene_ctrl.num == 10:                                                     #遊戲主迴圈
 
@@ -201,7 +205,11 @@ while True:
                 if Main.is_hurt > 20:
                     Main.is_hurt -= 1
                     continue
-                    
+                
+                BUTTON.update()
+                BUTTON.draw(screen)
+                pygame.display.flip()
+
                 #print("FPS:", clock.get_fps())
                 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
