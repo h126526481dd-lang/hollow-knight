@@ -55,7 +55,7 @@ while True:
             button1 = button.Button(screen_width//2, 300, "Start", lambda:button.on_click(scene_ctrl,10))
             button2 = button.Button(screen_width//2, 400, "Menu", lambda:button.on_click(scene_ctrl,1))
             button3 = button.Button(screen_width//2, 500, "Achievement", lambda:button.on_click(scene_ctrl,2))
-            button4 = button.Button(screen_width//2, 900, "Quit", button.quit_button)
+            button4 = button.Button(screen_width//2, 700, "Quit", button.quit_button)
 
             BUTTON.add(button1)
             BUTTON.add(button2)
@@ -86,8 +86,8 @@ while True:
             BUTTON.empty()
 
             button1 = button.Button(screen_width//2, 400, "Audio", lambda:button.on_click(scene_ctrl,4))
-            button2 = button.Button(screen_width//2, 700, "Video", lambda:button.on_click(scene_ctrl,4))  
-            button3 = button.Button(screen_width//2, 1000, "Home", lambda:button.on_click(scene_ctrl,0))
+            button2 = button.Button(screen_width//2, 550, "Video", lambda:button.on_click(scene_ctrl,4))  
+            button3 = button.Button(screen_width//2, 700, "Home", lambda:button.on_click(scene_ctrl,0))
 
             BUTTON.add(button1, button2, button3)
 

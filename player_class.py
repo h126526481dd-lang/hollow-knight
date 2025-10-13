@@ -113,9 +113,9 @@ class player():
     def R_move(self):                                               
         if not "1_R" in self.now_NT_Touch:   #若有右碰撞，則不移動
             if self.attack_state["playing"]:
-                self.vx = 3
+                self.vx = 2
             else:
-                self.vx = 10
+                self.vx = 5
             self.flip = False
             tool.anime_update(self,5,False,8,self.Walk)
 
@@ -125,9 +125,9 @@ class player():
     def L_move(self):
         if not "1_L" in self.now_NT_Touch :   #若有左碰撞，則不移動
             if self.attack_state["playing"]:
-                self.vx = -3
+                self.vx = -2
             else:
-                self.vx = -10
+                self.vx = -5
             self.flip = True
             tool.anime_update(self,5,True,8,self.Walk)
 
