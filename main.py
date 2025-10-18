@@ -59,12 +59,14 @@ while True:
             button1 = button.Button(screen_width//2, 300, "Start", lambda:button.on_click(scene_ctrl,10))
             button2 = button.Button(screen_width//2, 400, "Menu", lambda:button.on_click(scene_ctrl,1))
             button3 = button.Button(screen_width//2, 500, "Achievement", lambda:button.on_click(scene_ctrl,2))
-            button4 = button.Button(screen_width//2, 700, "Quit", button.quit_button)
+            button4 = button.Button(screen_width//2, 600, "Savings", lambda:button.on_click(scene_ctrl,5))
+            button5 = button.Button(screen_width//2, 700, "Quit", button.quit_button)
 
             BUTTON.add(button1)
             BUTTON.add(button2)
             BUTTON.add(button3)
             BUTTON.add(button4)
+            BUTTON.add(button5)
 
             
             
@@ -161,8 +163,30 @@ while True:
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         exit()
+#=======================================================================================================
 
+        case 5:                                                                 #讀檔
 
+            BUTTON.empty()
+
+            scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
+            button_back = button.Button(screen_width//2, 800, "Go back", lambda:button.on_click(scene_ctrl, 0))
+            #button_saving = button.Button(screen_width//2, 500, "Saving 1", tool.save(scene_ctrl, "BOBO"))
+
+            BUTTON.add(button_back)
+
+            while scene_ctrl.num == 5:
+
+                screen.fill((0,0,0))
+                
+                BUTTON.update()
+                BUTTON.draw(screen)
+                pygame.display.flip()
+
+                for event in pygame.event.get():                               #偵測事件
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
 
 #=======================================================================================================
 
