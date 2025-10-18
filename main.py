@@ -7,6 +7,7 @@ import button
 import math
 import tool
 import sys
+import json
 
 class scene_c():
     def __init__(self):
@@ -40,6 +41,9 @@ print(pygame.display.get_active())                              #確認是否正
 
 scene_ctrl.num = 0
 pre_keys = []
+
+tool.save(scene_ctrl,Main)
+tool.load(1)
 
 
 #=======================================================================================================

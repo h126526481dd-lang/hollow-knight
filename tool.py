@@ -4,6 +4,98 @@ import pygame
 import math
 import player_class
 import object_class
+import json
+
+def save(scene_ctrl,player):
+    path="save\save_1.json"
+
+    data={
+        "name":player.name,                                            
+        "x":player.x,
+        "y":player.y,
+        "move_lock":player.move_lock,
+        "HP":player.HP,
+        "ATK":player.ATK,
+        "endurance":player.endurance,
+        "endurance_cd":player.endurance_cd,
+        "hurt_flashing":player.hurt_flashing,
+        "image":player.image,
+        "vx":player.vx,                                                   
+        "vy":player.vy,
+        "on_ground":player.on_ground,                                      
+        "anime_time":player.anime_time,
+        "flip":player.flip,
+        "now_NT_Touch":player.now_NT_Touch,
+        "now_CT_Touch":player.now_CT_Touch,
+        "attack_state":player.attack_state,
+        #player.attack_state["playing"] = False,
+        "atk_procedure":player.atk_procedure,
+        "atk_next":player.atk_next,       
+        #"Walk":player.Walk,
+        #"surface":player.surface,
+        #"rect":player.rect,
+        #"Attack1":player.Attack1,
+        #"Attack2":player.Attack2,
+        #"Attack3":player.Attack3, 
+        #"jump":player.Jump,
+        #"Hurt":player.Hurt,
+        "is_hurt":player.is_hurt,
+        "unhurtable_cd":player.unhurtable_cd,
+        "inertia":player.inertia,
+        "skill_key":player.skill_key,
+        "skill2_time":player.skill2_time,
+        "skill3_time":player.skill3_time,
+        "skill6_time":player.skill6_time,
+        "skill7_time":player.skill7_time,
+        "skill8_time":player.skill8_time,
+        "skill9_time":player.skill9_time,
+        "skill10_time":player.skill10_time,
+        "skill13_time":player.skill13_time,
+        "skill14_time":player.skill14_time,
+
+        'scene_ctrl_num':scene_ctrl.num,
+        'fps':scene_ctrl.fps
+    }
+
+    with open(path,'w',encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+
+
+def load(save):
+    match save:
+        case 1:
+            with open('save\save_1.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+
+                # 現在 data 變數中包含了 JSON 檔案的內容
+                print(data)
+
+
+        case 2:
+            with open('save\save_2.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+                # 現在 data 變數中包含了 JSON 檔案的內容
+                print(data)
+
+
+        case 3:
+            with open('save\save_3.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+                # 現在 data 變數中包含了 JSON 檔案的內容
+                print(data)
+
+
+        case 4:
+            with open('save\save_4.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+                # 現在 data 變數中包含了 JSON 檔案的內容
+                print(data)            
+
 
 def show_UI(screen,scene):
 
