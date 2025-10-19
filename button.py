@@ -1,7 +1,6 @@
 import pygame
 
 class Button(pygame.sprite.Sprite):
-    
     def __init__(self, x, y, text, callback, color = (100,100,100), hover_color = (200, 200, 200)):
         super().__init__()                                  #sprite初始化
         self.font = pygame.font.SysFont(None, 40)              #字體
@@ -20,7 +19,7 @@ class Button(pygame.sprite.Sprite):
         if self.rect.collidepoint(mouse_pos):
             self.image = self.font.render(self.text, True, (0, 0, 0), self.hover_color)
             if mouse_pressed:
-                self.callback()     #回傳上面寫的callback
+                self.callback()
         else:
             self.image = self.font.render(self.text, True, (0, 0, 0), self.default_color)
 

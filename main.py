@@ -33,7 +33,7 @@ FPS = 60                                                     #設定每秒幀數
 
 Main = player_class.player("BOBO",0,0)                #建立角色物件
 
-# font = pygame.font.Font(None, 50)
+font = pygame.font.Font(None, 50)
 
 BUTTON = pygame.sprite.Group()
 
@@ -142,8 +142,6 @@ while True:
             
             BUTTON.empty()
 
-
-
             button_back = button.Button(screen_width//2, 500, "Go back", lambda:button.on_click(scene_ctrl, scene_ctrl_temp))
             button_quit = button.Button(screen_width//2, 900, "Quit", button.quit_button)
             button_change_FPS = button.Button(screen_width//2, 300, "change FPS", lambda:button.change_FPS(scene_ctrl))   
@@ -170,15 +168,24 @@ while True:
             BUTTON.empty()
 
             scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
-            button_back = button.Button(screen_width//2, 800, "Go back", lambda:button.on_click(scene_ctrl, 0))
-            #button_saving = button.Button(screen_width//2, 500, "Saving 1", tool.save(scene_ctrl, "BOBO"))
+            button_back = button.Button(screen_width//2, 750, "Go back", lambda:button.on_click(scene_ctrl, 0))
+
+            text = font.render("Savings", True, (255, 255, 255))      #存檔標題
+            text_rect = text.get_rect(center=(screen_width//2, 150))
+
+            button_saving1 = button.Button(screen_width//2, 300, "Saving 1", tool.save(scene_ctrl, "BOBO"))
+            button_saving2 = button.Button(screen_width//2, 400, "Saving 2", tool.save(scene_ctrl, "BOBO"))
+            button_saving3 = button.Button(screen_width//2, 500, "Saving 3", tool.save(scene_ctrl, "BOBO"))
+            button_saving4 = button.Button(screen_width//2, 600, "Saving 4", tool.save(scene_ctrl, "BOBO"))
 
             BUTTON.add(button_back)
+            BUTTON.add(button_saving1, button_saving2, button_saving3, button_saving4)
 
             while scene_ctrl.num == 5:
 
                 screen.fill((0,0,0))
-                
+                screen.blit(text, text_rect)
+
                 BUTTON.update()
                 BUTTON.draw(screen)
                 pygame.display.flip()
