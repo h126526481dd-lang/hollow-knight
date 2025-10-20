@@ -185,6 +185,12 @@ class player():
             # 沒有緩衝 → 從頭開始
             tool.start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
             self.atk_procedure = 1
+            
+    def to_dict(self):
+        return self.__dict__
+    
+    def from_dict(cls,data):
+        return cls(**data)
         
 
 

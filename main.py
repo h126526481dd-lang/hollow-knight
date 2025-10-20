@@ -14,6 +14,11 @@ class scene_c():
         self.num = 0
         self.menu = 0
         self.fps = 60
+        self.button_cd = 0
+
+
+def nothing():
+    pass
 
 #=======================================================================================================
 
@@ -21,6 +26,8 @@ pygame.init()                                                   #初始化
 Info = pygame.display.Info()                                      #偵測用戶顯示參數
 screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
 screen_width  = Info.current_w
+
+
 
 scene_ctrl=scene_c()
 
@@ -30,11 +37,11 @@ screen = pygame.display.set_mode((screen_width, screen_height), pygame.NOFRAME)
 
 clock = pygame.time.Clock()                                     #建立時鐘物件(用來處理tick)
 FPS = 60                                                     #設定每秒幀數
-
+ 
 Main = player_class.player("BOBO",0,0)                #建立角色物件
 
-font = pygame.font.Font(None, 50)
-
+font = pygame.font.Font(None, 60)
+font_2 = pygame.font.Font(None, 80)
 BUTTON = pygame.sprite.Group()
 
 print(pygame.display.get_active())                              #確認是否正確開啟
@@ -42,40 +49,40 @@ print(pygame.display.get_active())                              #確認是否正
 scene_ctrl.num = 0
 pre_keys = []
 
-tool.save(scene_ctrl,Main)
-tool.load(1)
+#tool.save(scene_ctrl,Main)
+#tool.load(1)
 
 
 #=======================================================================================================
 
 while True:
+    
     match scene_ctrl.num:
         
         case 0:                                                              #初始畫面
-            
-                        
+              
             BUTTON.empty()
 
-            button1 = button.Button(screen_width//2, 300, "Start", lambda:button.on_click(scene_ctrl,10))
-            button2 = button.Button(screen_width//2, 400, "Menu", lambda:button.on_click(scene_ctrl,1))
-            button3 = button.Button(screen_width//2, 500, "Achievement", lambda:button.on_click(scene_ctrl,2))
-            button4 = button.Button(screen_width//2, 600, "Savings", lambda:button.on_click(scene_ctrl,5))
-            button5 = button.Button(screen_width//2, 700, "Quit", button.quit_button)
-
-            BUTTON.add(button1)
-            BUTTON.add(button2)
-            BUTTON.add(button3)
-            BUTTON.add(button4)
-            BUTTON.add(button5)
-
+            text = font_2.render("Welcome", True, (0,0,255))      #存檔標題
+            text_rect = text.get_rect(center=(screen_width//2, screen_height//6))
             
+            button1 = button.Button(screen_width//2, screen_height//7*3, "Start", lambda:button.on_click(scene_ctrl,10))
+            button2 = button.Button(screen_width//2, screen_height//7*4, "Savings", lambda:button.on_click(scene_ctrl,5))
+            button3 = button.Button(screen_width//2, screen_height//8*7, "Achievement", lambda:button.on_click(scene_ctrl,2))
+            button4 = button.Button(screen_width//7, screen_height//8*7, "Menu", lambda:button.on_click(scene_ctrl,1))
+            button5 = button.Button(screen_width//7*6, screen_height//8*7, "Quit", button.quit_button)
+
+            BUTTON.add(button1,button2,button3,button4,button5)
             
             while scene_ctrl.num == 0: 
-
+                
+                
+                if scene_ctrl.button_cd > 0:
+                    scene_ctrl.button_cd-=1                
 
                 # 建立按鈕並加入群組
-                BUTTON.update()
-                screen.fill((50, 50, 50))
+                BUTTON.update(scene_ctrl)
+                screen.fill((255,255,255))
                 BUTTON.draw(screen)
                 pygame.display.flip()
 
@@ -89,21 +96,26 @@ while True:
 
         case 1:                                                                #選單
             
+            
+            
             BUTTON.empty()
 
-            button1 = button.Button(screen_width//2, 400, "Audio", lambda:button.on_click(scene_ctrl,4))
-            button2 = button.Button(screen_width//2, 550, "Video", lambda:button.on_click(scene_ctrl,4))  
-            button3 = button.Button(screen_width//2, 700, "Home", lambda:button.on_click(scene_ctrl,0))
+            button1 = button.Button(screen_width//4, screen_height//4, "Audio", lambda:button.on_click(scene_ctrl,4))
+            button2 = button.Button(screen_width//4, screen_height//2, "Video", lambda:button.on_click(scene_ctrl,4))  
+            button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
 
-            BUTTON.add(button1, button2, button3)
+            BUTTON.add(button1, button2, button_back)
 
             while scene_ctrl.num == 1: 
+            
+                if scene_ctrl.button_cd > 0:
+                    scene_ctrl.button_cd-=1
                 
 
                 scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
 
-                BUTTON.update()
-                screen.fill((50, 50, 50))
+                BUTTON.update(scene_ctrl)
+                screen.fill((255,255,255))
 
                 BUTTON.draw(screen)
                 pygame.display.flip()
@@ -116,16 +128,18 @@ while True:
 #======================================================================================================
         case 2:                                                                #成就
 
+
             BUTTON.empty()
 
             scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
 
             while scene_ctrl.num == 2: 
 
+                if scene_ctrl.button_cd > 0:
+                    scene_ctrl.button_cd-=1
 
-
-                pass
-
+                pygame.quit()
+                exit()
 
                 for event in pygame.event.get():                               #偵測事件
                     if event.type == pygame.QUIT:
@@ -135,24 +149,36 @@ while True:
 #=======================================================================================================
 
         case 3:                                                                #音量調整
-            pass
+            
+            BUTTON.empty()
+            
+            button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, scene_ctrl_temp))
+            BUTTON.add(button_back)
+            
+            while scene_ctrl==5:
+                
+                pass
 #=======================================================================================================
 
         case 4:                                                                #畫面設定
             
+            
             BUTTON.empty()
-
-            button_back = button.Button(screen_width//2, 500, "Go back", lambda:button.on_click(scene_ctrl, scene_ctrl_temp))
-            button_quit = button.Button(screen_width//2, 900, "Quit", button.quit_button)
-            button_change_FPS = button.Button(screen_width//2, 300, "change FPS", lambda:button.change_FPS(scene_ctrl))   
-            BUTTON.add(button_back, button_quit, button_change_FPS)
+            
+            button_change_FPS = button.Button(screen_width//4, screen_height//4, "change FPS", lambda:button.change_FPS(scene_ctrl))   
+            button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, scene_ctrl_temp))
+            BUTTON.add(button_back, button_change_FPS)
 
 
             while scene_ctrl.num == 4:
+                if scene_ctrl.button_cd > 0:
+                    scene_ctrl.button_cd-=1
+        
 
-                screen.fill((50, 50, 50))
 
-                BUTTON.update()
+                screen.fill((255,255,255))
+
+                BUTTON.update(scene_ctrl)
                 BUTTON.draw(screen)
                 pygame.display.flip()
                 
@@ -168,25 +194,30 @@ while True:
             BUTTON.empty()
 
             scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
-            button_back = button.Button(screen_width//2, 750, "Go back", lambda:button.on_click(scene_ctrl, 0))
+            text = font.render("Savings", True, (0,0,0))      #存檔標題
+            text_rect = text.get_rect(center=(screen_width//4, screen_height//6))
 
-            text = font.render("Savings", True, (255, 255, 255))      #存檔標題
-            text_rect = text.get_rect(center=(screen_width//2, 150))
+            button_saving1 = button.Button(screen_width//4, screen_height//8*3, "Saving 1", nothing)
+            button_saving2 = button.Button(screen_width//4, screen_height//8*4, "Saving 2", nothing)
+            button_saving3 = button.Button(screen_width//4, screen_height//8*5, "Saving 3", nothing)
+            button_saving4 = button.Button(screen_width//4, screen_height//8*6, "Saving 4", nothing)
+            button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
 
-            button_saving1 = button.Button(screen_width//2, 300, "Saving 1", tool.save(scene_ctrl, "BOBO"))
-            button_saving2 = button.Button(screen_width//2, 400, "Saving 2", tool.save(scene_ctrl, "BOBO"))
-            button_saving3 = button.Button(screen_width//2, 500, "Saving 3", tool.save(scene_ctrl, "BOBO"))
-            button_saving4 = button.Button(screen_width//2, 600, "Saving 4", tool.save(scene_ctrl, "BOBO"))
 
             BUTTON.add(button_back)
             BUTTON.add(button_saving1, button_saving2, button_saving3, button_saving4)
 
             while scene_ctrl.num == 5:
 
-                screen.fill((0,0,0))
+
+                if scene_ctrl.button_cd > 0:
+                    scene_ctrl.button_cd-=1
+
+
+                screen.fill((255,255,255))
                 screen.blit(text, text_rect)
 
-                BUTTON.update()
+                BUTTON.update(scene_ctrl)
                 BUTTON.draw(screen)
                 pygame.display.flip()
 
@@ -238,6 +269,9 @@ while True:
 
                 clock.tick(scene_ctrl.fps)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
 
+                
+
+            
                 if Main.is_hurt > 20:
                     Main.is_hurt -= 1
                     continue
@@ -246,7 +280,7 @@ while True:
                 # BUTTON.draw(screen)
                 # pygame.display.flip()
 
-                #print("FPS:", clock.get_fps())
+                print("FPS:", clock.get_fps())
                 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
