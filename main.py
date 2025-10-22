@@ -17,8 +17,9 @@ class scene_c():
         self.button_cd = 0
 
 
-def nothing():
-    pass
+def Load(save,scene_ctrl):
+    global Main
+    Main = tool.load(1,scene_ctrl)
 
 #=======================================================================================================
 
@@ -39,6 +40,7 @@ clock = pygame.time.Clock()                                     #建立時鐘物
 FPS = 60                                                     #設定每秒幀數
  
 Main = player_class.player("BOBO",0,0)                #建立角色物件
+Main.read_surface()
 
 font = pygame.font.Font(None, 60)
 font_2 = pygame.font.Font(None, 80)
@@ -48,9 +50,6 @@ print(pygame.display.get_active())                              #確認是否正
 
 scene_ctrl.num = 0
 pre_keys = []
-
-#tool.save(scene_ctrl,Main)
-#tool.load(1)
 
 
 #=======================================================================================================
@@ -197,10 +196,10 @@ while True:
             text = font.render("Savings", True, (0,0,0))      #存檔標題
             text_rect = text.get_rect(center=(screen_width//4, screen_height//6))
 
-            button_saving1 = button.Button(screen_width//4, screen_height//8*3, "Saving 1", nothing)
-            button_saving2 = button.Button(screen_width//4, screen_height//8*4, "Saving 2", nothing)
-            button_saving3 = button.Button(screen_width//4, screen_height//8*5, "Saving 3", nothing)
-            button_saving4 = button.Button(screen_width//4, screen_height//8*6, "Saving 4", nothing)
+            button_saving1 = button.Button(screen_width//4, screen_height//8*3, "Saving 1", lambda:Load(1,scene_ctrl))
+            button_saving2 = button.Button(screen_width//4, screen_height//8*4, "Saving 2", lambda:Load(2,scene_ctrl))
+            button_saving3 = button.Button(screen_width//4, screen_height//8*5, "Saving 3", lambda:Load(3,scene_ctrl))
+            button_saving4 = button.Button(screen_width//4, screen_height//8*6, "Saving 4", lambda:Load(4,scene_ctrl))
             button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
 
 
@@ -229,11 +228,7 @@ while True:
 #=======================================================================================================
 
         case 10:                                                             #場景10
-
-            Main.x = 0
-            Main.y = 0
-            Main.rect.x = 50
-            Main.rect.y = 50
+            print("hi")
             scene = []
             NT_object = []
             CT_object = []
@@ -293,7 +288,10 @@ while True:
                     if obj.type == "path":
                         if tool.Touch(Main,obj):
                             scene_ctrl.num = 0
-
+                            print(0)
+                if keys[pygame.K_p]:
+                    tool.save(Main,scene_ctrl)
+                    Main.read_surface()
                                 
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys)
 

@@ -50,25 +50,21 @@ class player():
         self.atk_next = 0
 
         #匯入Walk.png圖片並切分成動畫       
-        self.Walk = tool.split("Character\mainchacter\Walk.png", 8)
-        self.surface = self.Walk[self.image]
 
-        self.rect = self.surface.get_rect(topleft=(self.x, self.y+50))
-        self.rect.x += 50
 
-        self.rect.width -= 100
-        self.rect.height -= 50
 
         #匯入3張Attack.png圖片並切分成動畫
-        self.Attack1 = tool.split("Character\mainchacter\Attack_1.png", 6)
-        self.Attack2 = tool.split("Character\mainchacter\Attack_2.png", 4) 
-        self.Attack3 = tool.split("Character\mainchacter\Attack_3.png", 3) 
+        self.attack1 = "Character\mainchacter\Attack_1.png"
+        self.attack2 = "Character\mainchacter\Attack_2.png" 
+        self.attack3 = "Character\mainchacter\Attack_3.png" 
         
         #匯入Jump.png圖片並切分成動畫
-        self.Jump = tool.split("Character\mainchacter\Jump.png", 12)
+        self.jumping = "Character\mainchacter\Jump.png"
 
         #匯入Hurt.png圖片並切分成動畫
-        self.Hurt = tool.split("Character\mainchacter\Hurt.png",2)
+        self.hurt = "Character\mainchacter\Hurt.png"
+        
+        self.walk = "Character\mainchacter\Walk.png"
         
         self.is_hurt = 0
         self.unhurtable_cd = 0
@@ -105,6 +101,19 @@ class player():
         #[15]強化普攻命中僵直：w+長K
         #[16]強化普攻命中觸發特殊對話(類似夢釘)：s+長K
         #[17]佩刀可切換刀背，傷害砍半斬擊不致死，敵怪剩餘1HP視作擊敗(劇情用)
+        self.Attack1 = None
+        self.Attack2 = None
+        self.Attack3 = None
+        
+        #匯入Jump.png圖片並切分成動畫
+        self.Jump = None
+
+        #匯入Hurt.png圖片並切分成動畫
+        self.Hurt = None
+        
+        self.Walk = None
+        self.surface = None
+        self.rect = None
 
 
 #角色移動
@@ -187,11 +196,55 @@ class player():
             self.atk_procedure = 1
             
     def to_dict(self):
+        self.Attack1 = None
+        self.Attack2 = None
+        self.Attack3 = None
+        
+        #匯入Jump.png圖片並切分成動畫
+        self.Jump = None
+
+        #匯入Hurt.png圖片並切分成動畫
+        self.Hurt = None
+        
+        self.Walk = None
+        self.surface = None
+        self.rect = None
+        self.attack_state = {}
+        self.attack_state["playing"] = False
+
         return self.__dict__
     
+    @classmethod
     def from_dict(cls,data):
-        return cls(**data)
+        # 建立一個空的 Player，不呼叫 __init__
+        obj = cls.__new__(cls)
+
+        # 回寫狀態
+        for k, v in data.items():
+            setattr(obj, k, v)
+
+        return obj
+    
+    def read_surface(self):
+        self.Attack1 = tool.split(self.attack1, 6)
+        self.Attack2 = tool.split(self.attack2, 4) 
+        self.Attack3 = tool.split(self.attack3, 3) 
         
+        #匯入Jump.png圖片並切分成動畫
+        self.Jump = tool.split(self.jumping, 12)
+
+        #匯入Hurt.png圖片並切分成動畫
+        self.Hurt = tool.split(self.hurt,2)
+        
+        self.Walk = tool.split(self.walk, 8)
+        self.surface = self.Walk[self.image]
+        self.rect = self.surface.get_rect(topleft=(self.x, self.y+50))
+        self.rect.x = self.x + 50
+
+        self.rect.width -= 100
+        self.rect.height -= 50
+        self.attack_state = {}
+        self.attack_state["playing"] = False
 
 
 class enemy():

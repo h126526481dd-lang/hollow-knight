@@ -1,1 +1,0 @@
-{"name": "BOBO", "x": 0, "y": 0, "move_lock": 0, "HP": 5, "ATK": 5, "endurance": 4, "endurance_cd": 120, "hurt_flashing": 0, "image": 0, "vx": 0, "vy": 0, "on_ground": false, "anime_time": 0, "flip": false, "now_NT_Touch": [], "now_CT_Touch": [], "attack_state": {"playing": false}, "atk_procedure": 0, "atk_next": 0, "Walk": [

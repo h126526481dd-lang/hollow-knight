@@ -6,22 +6,35 @@ import player_class
 import object_class
 import json
 
-def save(scene_ctrl,player):
-    path="save\save_1.json"
+def save(player,scene_ctrl):
+    p_path="save\save1\player.json"
 
-    with open(path,'w',encoding='utf-8') as f:
+    with open(p_path,'w',encoding='utf-8') as f:
         json.dump(player.to_dict(),f)
 
+    s_path="save\save1\scene.json"
+    
+    with open(s_path,'w',encoding='utf-8') as f:
+        json.dump(scene_ctrl.__dict__,f)
 
 
-def load(save):
+def Load(save,Main,scene_ctrl):
+    Main = load(save,scene_ctrl)
+def load(save,scene_ctrl):
     match save:
         case 1:
-            with open('save\save_1.json', 'r', encoding='utf-8') as f:
+            with open("save\save1\player.json", 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            player=player.from_dict(data)
+            player=player_class.player.from_dict(data)
+            player.read_surface()
 
+            with open("save\save1\scene.json", 'r', encoding='utf-8') as f:
+                data = json.load(f)
 
+            scene_ctrl.num = data["num"]
+            scene_ctrl.menu = data["menu"]
+            scene_ctrl.fps = data["fps"]
+            scene_ctrl.button_cd = data["button_cd"]
                 # 現在 data 變數中包含了 JSON 檔案的內容
                 #print(data)
 
@@ -47,16 +60,8 @@ def load(save):
                 data = json.load(f)
 
                 # 現在 data 變數中包含了 JSON 檔案的內容
-                print(data)            
-
-
-def show_UI(screen,scene):
-
-    Info = pygame.display.Info()                                      #偵測用戶顯示參數
-    screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
-    screen_width  = Info.current_w
-    
-    
+                print(data)  
+    return player             
 
 def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
@@ -545,6 +550,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         print("死")
         pygame.quit()
         exit()
+
+
+
 
 #==========================================================以上是最終更新判定區
 
