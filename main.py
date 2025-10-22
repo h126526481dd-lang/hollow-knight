@@ -249,10 +249,14 @@ while True:
             door = pygame.image.load("door.png")
             door = pygame.transform.scale(door, (200, 200))  # 調整大小
 
+            save_point=pygame.image.load("save_point.png")
+            save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
+
             CT_object.append(object_class.object(2400,600,door,"path",0,0,0,0,0))
             
             CT_object.append(object_class.object(1600,500,door,"door",0,0,0,0,0))
             CT_object.append(object_class.object(2000,300,pygame.image.load("skill.png"),"skill",0,0,0,6,0))
+            CT_object.append(object_class.object(2000,500,save_point,"save_point",0,0,0,0,0))
 
             Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
 
@@ -289,9 +293,10 @@ while True:
                         if tool.Touch(Main,obj):
                             scene_ctrl.num = 0
                             print(0)
-                if keys[pygame.K_p]:
-                    tool.save(Main,scene_ctrl)
-                    Main.read_surface()
+                    if obj.type == "save_point":
+                        if keys[pygame.K_p]:
+                            tool.save(Main,scene_ctrl)
+                            Main.read_surface()
                                 
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys)
 
