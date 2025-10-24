@@ -31,6 +31,8 @@ class player():
         #角色速度
         self.vx = 0                                                   
         self.vy = 0
+        self.pre_vx=0
+        self.pre_vy=0
 
         #角色是否在地面上
         self.on_ground = False                                      
@@ -153,13 +155,13 @@ class player():
             self.vy = -20
         #蹬牆跳(左牆向右)
         elif  "1_L" in self.now_NT_Touch and self.skill_key[5] == 1:
-            print("wall jump")
+            #print("wall jump")
             self.vy = -20
             self.Walljump_direct = 1
             self.Walljump_time = 10
         #蹬牆跳(右牆向左)
         elif  "1_R" in self.now_NT_Touch and self.skill_key[5] == 1:
-            print("wall jump")
+            #print("wall jump")
             self.vy = -20
             self.Walljump_direct = 2
             self.Walljump_time = 10
