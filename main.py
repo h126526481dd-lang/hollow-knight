@@ -323,7 +323,8 @@ while True:
 
                 clock.tick(scene_ctrl.fps)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
 
-                
+                if not get_current_input_lang() == 0x0409:
+                    force_english_input()
 
             
                 if Main.is_hurt > 20:
@@ -352,8 +353,6 @@ while True:
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys)
 
                 pre_keys = keys
-
-
 
                 if keys[pygame.K_ESCAPE]:                               #按ESC後暫停
 
@@ -393,34 +392,63 @@ while True:
 
                             BUTTON.empty()
 
-                    #button_continue = button.Button(screen_width//2, screen_height//4, "Continue", lambda:button.continued(scene_ctrl))
-                    button_quit = button.Button(screen_width//2, screen_height//4, "Quit", button.quit_button)
+                            button1 = button.Button(screen_width//2, screen_height//4, "Audio", lambda:button.resuming(scene_ctrl,3))
+                            button2 = button.Button(screen_width//2, screen_height//4*2, "Video", lambda:button.resuming(scene_ctrl,4))  
+                            button_back = button.Button(screen_width//2, screen_height//4*3, "Go back", lambda:button.resuming(scene_ctrl,1))
 
-                    BUTTON.add(button_quit)
+                            BUTTON.add(button1, button2, button_back)
 
-                    black_overlay = pygame.Surface((screen_width, screen_height))        #建立與畫面同大小的Surface
-                    black_overlay.fill((100,100,100))                  
-                    black_overlay.set_alpha(10)                                         #不透明度
+                            while scene_ctrl.menu == 2:
+                                    
+                                screen.blit(scene[1], (0,0))                  #繪製背景圖片
 
-                    while True:
+                                if scene_ctrl.button_cd > 0:
+                                    scene_ctrl.button_cd-=1
 
-                        screen.blit(black_overlay, (0,0))
+                                BUTTON.update(scene_ctrl)
+                                BUTTON.draw(screen)
+                                pygame.display.flip()
 
-                        BUTTON.update(scene_ctrl)
-                        BUTTON.draw(screen)
-                        pygame.display.flip()
+                                for event in pygame.event.get():                               #偵測事件
+                                    if event.type == pygame.QUIT:
+                                        pygame.quit()
+                                        exit()
 
-                        for event in pygame.event.get():                               #偵測事件
-                            if event.type == pygame.QUIT:
-                                pygame.quit()
-                                exit()
+                        case 3:
 
+                            BUTTON.empty()
 
+                            while scene_ctrl.menu == 3:                                      #音訊調整
 
+                                pass
 
+                            for event in pygame.event.get():                               #偵測事件
+                                if event.type == pygame.QUIT:
+                                    pygame.quit()
+                                    exit()
 
+                        case 4:                                           
+                                        
+                            BUTTON.empty()
 
+                            button_change_FPS = button.Button(screen_width//2, screen_height//3, "change FPS", lambda:button.change_FPS(scene_ctrl))   
+                            button_back = button.Button(screen_width//2, screen_height//3*2, "Go back", lambda:button.resuming(scene_ctrl, 2))
+                            BUTTON.add(button_back, button_change_FPS)
+                                    
+                            while scene_ctrl.menu == 4:                                 #影像調整
 
-                                
-          
+                                screen.blit(scene[1], (0,0))                  #繪製背景圖片
+
+                                if scene_ctrl.button_cd > 0:
+                                    scene_ctrl.button_cd-=1
+                                        
+                                BUTTON.update(scene_ctrl)
+                                BUTTON.draw(screen)
+                                pygame.display.flip()
+
+                                for event in pygame.event.get():                               #偵測事件
+                                    if event.type == pygame.QUIT:
+                                        pygame.quit()
+                                        exit()
+
 #=======================================================================================================
