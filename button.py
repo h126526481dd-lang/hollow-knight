@@ -32,6 +32,8 @@ def on_click(scene_ctrl,num):
     scene_ctrl.num = num
     print(scene_ctrl.num)
 
+def resuming(scene_ctrl, num1):
+    scene_ctrl.menu = num1
 
 def quit_button():
     pygame.quit()
@@ -45,4 +47,4 @@ def change_FPS(scene_ctrl):
 
     else:
         scene_ctrl.fps = 60
-        print(scene_ctrl.fps)   
+        print(scene_ctrl.fps)
