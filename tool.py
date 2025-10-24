@@ -4,14 +4,64 @@ import pygame
 import math
 import player_class
 import object_class
+import json
 
-def show_UI(screen,scene):
+def save(player,scene_ctrl):
+    p_path="save\save1\player.json"
 
-    Info = pygame.display.Info()                                      #偵測用戶顯示參數
-    screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
-    screen_width  = Info.current_w
+    with open(p_path,'w',encoding='utf-8') as f:
+        json.dump(player.to_dict(),f)
+
+    s_path="save\save1\scene.json"
     
-    
+    with open(s_path,'w',encoding='utf-8') as f:
+        json.dump(scene_ctrl.__dict__,f)
+
+
+def Load(save,Main,scene_ctrl):
+    Main = load(save,scene_ctrl)
+def load(save,scene_ctrl):
+    match save:
+        case 1:
+            with open("save\save1\player.json", 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            player=player_class.player.from_dict(data)
+            player.read_surface()
+
+            with open("save\save1\scene.json", 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+            scene_ctrl.num = data["num"]
+            scene_ctrl.menu = data["menu"]
+            scene_ctrl.fps = data["fps"]
+            scene_ctrl.button_cd = data["button_cd"]
+                # 現在 data 變數中包含了 JSON 檔案的內容
+                #print(data)
+
+
+        case 2:
+            with open('save\save_2.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+                # 現在 data 變數中包含了 JSON 檔案的內容
+                print(data)
+
+
+        case 3:
+            with open('save\save_3.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+                # 現在 data 變數中包含了 JSON 檔案的內容
+                print(data)
+
+
+        case 4:
+            with open('save\save_4.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+                # 現在 data 變數中包含了 JSON 檔案的內容
+                print(data)  
+    return player             
 
 def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
@@ -27,7 +77,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
     camera_x = min(camera_x, 1000)
     camera_y = max(camera_y, -3000)
     camera_y = min(camera_y, 500)
-    print(camera_x, camera_y)
+    #print(camera_x, camera_y)
     
     camera_rect = pygame.Rect(camera_x,camera_y,screen_width,screen_height)  #攝影機碰撞盒(只顯示在螢幕中的物件)
     
@@ -315,11 +365,11 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 Main.vx -= 2
 
 #====================================================================滯空動畫
-
-        if Main.vy > 0:
-            Main.surface = pygame.transform.flip(Main.Jump[7], Main.flip, False)
-        elif Main.vy < 0:
-            Main.surface = pygame.transform.flip(Main.Jump[6], Main.flip, False)
+        if not Main.on_ground:
+            if Main.vy >= 0:
+                Main.surface = pygame.transform.flip(Main.Jump[7], Main.flip, False)
+            elif Main.vy < 0:
+                Main.surface = pygame.transform.flip(Main.Jump[6], Main.flip, False)
 
 #=================================================偵測角色攻擊按鍵(是否按下j鍵, 是否在撥放攻擊動畫, 前一偵是否按著j鍵)
 
@@ -409,9 +459,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if Main.on_ground == False and Main.vy <= 30 and not Main.skill_key[6] == 2:           #重力加速度(有設上限)
         Main.vy += 1
 
-                    
-#==================================================================跳躍判定(動vy)
-        
+#==================================================================撿技能球判定
+
     if keys[pygame.K_w]:
         for obj in CT_object:
             if obj.type == "skill":
@@ -471,8 +520,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     for obj in NT_object:
         Touch(Main,obj)
 
+    #如果(按下空格, 在地上, 剛才沒按空格)
     if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE]:                                #按下空白鍵跳躍
-            Main.jump()
+        Main.jump()
     
     if Main.is_hurt > 0:
         Main.surface = pygame.transform.flip(Main.Hurt[0], Main.flip, False)
@@ -484,7 +534,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     Main.rect.x += Main.vx
     Main.rect.y += Main.vy
-
 
     for event in pygame.event.get():                               #偵測事件
                 
