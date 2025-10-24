@@ -53,6 +53,8 @@ scene_ctrl.num = 0
 pre_keys = []
 
 
+
+
 #=======================================================================================================
 
 while True:
@@ -60,8 +62,11 @@ while True:
     match scene_ctrl.num:
         
         case 0:                                                              #初始畫面
-              
+            
+            scene = []
             BUTTON.empty()
+
+            
 
             text = font_2.render("Welcome", True, (0,0,255))      #存檔標題
             text_rect = text.get_rect(center=(screen_width//2, screen_height//6))
@@ -70,21 +75,24 @@ while True:
             button2 = button.Button(screen_width//2, screen_height//7*4, "Savings", lambda:button.on_click(scene_ctrl,5))
             button3 = button.Button(screen_width//2, screen_height//8*7, "Achievement", lambda:button.on_click(scene_ctrl,2))
             button4 = button.Button(screen_width//7, screen_height//8*7, "Menu", lambda:button.on_click(scene_ctrl,1))
-            button5 = button.Button(screen_width//7*6, screen_height//8*7, "Quit", button.quit_button)
+            button_quit = button.Button(screen_width//7*6, screen_height//8*7, "Quit", button.quit_button)
 
-            BUTTON.add(button1,button2,button3,button4,button5)
+            BUTTON.add(button1,button2,button3,button4,button_quit)
             
             while scene_ctrl.num == 0: 
                 
-                
+                scene.append(pygame.image.load("title_scene.png"))                  #導入背景圖片
+                scene[0] = pygame.transform.scale(scene[0], (screen_width, screen_height))  # 調整大小
+
+                screen.blit(scene, (0,0))                  #繪製背景圖片
+
                 if scene_ctrl.button_cd > 0:
                     scene_ctrl.button_cd-=1                
 
                 # 建立按鈕並加入群組
                 BUTTON.update(scene_ctrl)
-                screen.fill((255,255,255))
                 BUTTON.draw(screen)
-                pygame.display.flip()
+                pygame.display.update()
 
 
                 for event in pygame.event.get():                               #偵測事件
@@ -269,6 +277,13 @@ while True:
                     # button_home = button.Button(200, 200, "Home", lambda:button.on_click(scene_ctrl,0))
 
                     # BUTTON.add(button_home)
+
+                    button_pause = button.Button(screen_width//8, screen_height//8, "Pause", lambda:button.paused(scene_ctrl))
+
+                    BUTTON.add(button_pause)
+
+                    
+
                 case 1:
                     pass
                 
@@ -282,9 +297,6 @@ while True:
             while scene_ctrl.num == 10 and scene_ctrl.game == scene_ctrl.pre_game:                                                     #遊戲主迴圈
 
                 clock.tick(scene_ctrl.fps)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
-
-                
-
             
                 if Main.is_hurt > 20:
                     Main.is_hurt -= 1
@@ -295,7 +307,6 @@ while True:
                 # pygame.display.flip()
 
                 #print("FPS:", clock.get_fps())
-                
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
                 for obj in CT_object:
@@ -316,6 +327,37 @@ while True:
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys)
 
                 pre_keys = keys
+
+                if keys[pygame.K_ESCAPE]:
+
+                    BUTTON.empty()
+
+                    #button_continue = button.Button(screen_width//2, screen_height//4, "Continue", lambda:button.continued(scene_ctrl))
+                    button_quit = button.Button(screen_width//2, screen_height//4, "Quit", button.quit_button)
+
+                    BUTTON.add(button_quit)
+
+                    black_overlay = pygame.Surface((screen_width, screen_height))        #建立與畫面同大小的Surface
+                    black_overlay.fill((100,100,100))                  
+                    black_overlay.set_alpha(10)                                         #不透明度
+
+                    while True:
+
+                        screen.blit(black_overlay, (0,0))
+
+                        BUTTON.update(scene_ctrl)
+                        BUTTON.draw(screen)
+                        pygame.display.flip()
+
+                        for event in pygame.event.get():                               #偵測事件
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                exit()
+
+
+
+
+
 
 
                                 

@@ -11,7 +11,7 @@ class Button(pygame.sprite.Sprite):
         self.image = self.font.render(self.text, True, (0, 0, 0), self.default_color)  #建立surface
         self.rect = self.image.get_rect(center=(x, y))     #碰撞箱
         self.mouse_pre_pressed = 0       #是否點擊
-        self.mouse_pressed=0
+        self.mouse_pressed = 0
 
 
     def update(self,scene_ctrl):
@@ -45,4 +45,4 @@ def change_FPS(scene_ctrl):
 
     else:
         scene_ctrl.fps = 60
-        print(scene_ctrl.fps)
+        print(scene_ctrl.fps)   
