@@ -236,6 +236,16 @@ def HRZ_combine(picture, times):
     return   big_surface
 
 
+def V_combine(picture, times):
+    sprite_sheet = pygame.image.load(picture).convert_alpha()
+    w , h = sprite_sheet.get_size()
+    big_surface = pygame.Surface((w, h*times), pygame.SRCALPHA)         #導入圖片(八張合一起)，分割開後存進List 
+
+    for i in range(times):
+        big_surface.blit(sprite_sheet, (0, h*i))
+
+    return   big_surface
+
 
 #播放動畫(物件, 幾偵動一下, 是否翻轉, 圖片數, 圖片清單)
 def anime_update(object, change_time ,flip , image_num, image_list):
@@ -455,12 +465,23 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if "1_U" in Main.now_NT_Touch and Main.vy < 0:                          
         Main.vy = 0 
 
-    if Main.on_ground == False and Main.vy <= 30 and not Main.skill_key[6] == 2:           #重力加速度(有設上限)
-        Main.vy += 1
+    if Main.on_ground == False:
+        if ("1_L" in Main.now_NT_Touch or "1_R" in Main.now_NT_Touch) and Main.skill_key[5] == 1:   #如果碰牆就緩速下滑
+            if Main.vy < 0 and Main.vy > -18:
+                Main.vy = 0
+            Main.skill_key[4] = 1
+            if Main.vy <= 10:
+                if Main.Wall_slip == 1:
+                    Main.vy += 1
+                    Main.Wall_slip = 0
+                else:
+                    Main.Wall_slip = 1
 
-                    
-#==================================================================跳躍判定(動vy)
-        
+        elif Main.vy <= 30 and not Main.skill_key[6] == 2:           #重力加速度(有設上限)
+            Main.vy += 1
+    
+#=================================================================撿技能球判定
+
     if keys[pygame.K_w]:
         for obj in CT_object:
             if obj.type == "skill":
@@ -469,7 +490,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     CT_object.remove(obj)
                     del obj
 
-#===============================================================以上是移動、撞牆判定以及攻擊區
+#===============================================================碰撞清單清除、傷害判定以及敵人區
 
     for enemy in Enemy:
                     
@@ -520,20 +541,38 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     for obj in NT_object:
         Touch(Main,obj)
 
+#==================================================================蹬牆跳後的位移(動vx)
+
+    if Main.Walljump_direct == 1:
+        Main.vx = 7
+        Main.flip = False
+        Main.Walljump_time -= 1
+        if Main.Walljump_time == 0:
+            Main.Walljump_direct = 0
+    
+    elif Main.Walljump_direct == 2:
+        Main.vx = -7
+        Main.flip = True
+        Main.Walljump_time -= 1
+        if Main.Walljump_time == 0:
+            Main.Walljump_direct = 0
+
+#===================================================================跳躍和受傷判定
+
+    #如果(按下空格, 在地上, 剛才沒按空格)
     if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE]:                                #按下空白鍵跳躍
-            Main.jump()
+        Main.jump()
     
     if Main.is_hurt > 0:
         Main.surface = pygame.transform.flip(Main.Hurt[0], Main.flip, False)
 
-#=====================================================以上是碰撞清單清除、傷害判定以及敵人區
+#===================================================================最終更新判定區
 
     Main.y += Main.vy                                       #更新角色位置
     Main.x += Main.vx
 
     Main.rect.x += Main.vx
     Main.rect.y += Main.vy
-
 
     for event in pygame.event.get():                               #偵測事件
                 
@@ -550,10 +589,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         pygame.quit()
         exit()
 
-
-
-
-#==========================================================以上是最終更新判定區
+#=========================================================================刷新畫面
 
     #print(Main.hurt_flashing)
     show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)    #最終印刷

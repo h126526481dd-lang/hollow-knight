@@ -8,6 +8,24 @@ import math
 import tool
 import sys
 import json
+import ctypes
+
+def force_english_input():
+    # 0x0409 是英文(美國)鍵盤代碼
+    ctypes.windll.user32.PostMessageW(
+        ctypes.windll.user32.GetForegroundWindow(),
+        0x0050,  # WM_INPUTLANGCHANGEREQUEST
+        0,
+        0x0409  # 英文
+    )
+
+def get_current_input_lang():
+    hwnd = ctypes.windll.user32.GetForegroundWindow()  # 取得目前視窗
+    thread_id = ctypes.windll.user32.GetWindowThreadProcessId(hwnd, 0)
+    layout_id = ctypes.windll.user32.GetKeyboardLayout(thread_id)
+    lang_id = layout_id & 0xFFFF
+    return lang_id
+
 
 class scene_c():
     def __init__(self):
@@ -259,6 +277,8 @@ while True:
                     
                     NT_object.append(object_class.object(1200,800,tool.HRZ_combine("floor.png",10),"wall",0,0,0,0,0))
                     NT_object.append(object_class.object(-50,400,tool.HRZ_combine("floor.png",10),"wall",0,0,0,1,0))
+                    
+                    NT_object.append(object_class.object(1600,-500,tool.V_combine("floor.png",10),"wall",0,0,0,0,0))
 
 
                     door = pygame.image.load("door.png")
@@ -268,7 +288,7 @@ while True:
                     save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
                     CT_object.append(object_class.object(2400,600,door,"path",0,0,0,0,0))
-                    
+                    CT_object.append(object_class.object(2000,600,save_point,"save_point",0,0,0,0,0))
                     CT_object.append(object_class.object(1600,500,door,"door",0,0,0,0,0))
                     CT_object.append(object_class.object(2000,300,pygame.image.load("skill.png"),"skill",0,0,0,6,0))
 
@@ -290,13 +310,19 @@ while True:
                 case 2:
                     pass
 
-            scene_ctrl.pre_game = scene_ctrl.game
+
+            #while True:
+             #   tool.show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)
+              #  scene_ctrl.pre_game = scene_ctrl.game
 
 
            
             while scene_ctrl.num == 10 and scene_ctrl.game == scene_ctrl.pre_game:                                                     #遊戲主迴圈
 
                 clock.tick(scene_ctrl.fps)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
+
+                
+
             
                 if Main.is_hurt > 20:
                     Main.is_hurt -= 1
