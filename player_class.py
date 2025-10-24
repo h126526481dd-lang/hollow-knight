@@ -117,6 +117,8 @@ class player():
 
         #設定蹬牆跳方向(0是沒使用 1向右跳 2向左跳)
         self.Walljump_direct = 0
+        self.Walljump_time = 0
+        self.Wall_slip = 0
 
 #角色移動
 
@@ -144,18 +146,24 @@ class player():
 
 
 
-    #跳躍
+    #四種跳躍模式
     def jump(self):
+        #在地上跳
         if self.on_ground == True:
             self.vy = -20
-            if self.on_ground == False:
-                self.skill_key[4] = 2  
-
+        #蹬牆跳(左牆向右)
         elif  "1_L" in self.now_NT_Touch and self.skill_key[5] == 1:
             print("wall jump")
             self.vy = -20
             self.Walljump_direct = 1
-        
+            self.Walljump_time = 10
+        #蹬牆跳(右牆向左)
+        elif  "1_R" in self.now_NT_Touch and self.skill_key[5] == 1:
+            print("wall jump")
+            self.vy = -20
+            self.Walljump_direct = 2
+            self.Walljump_time = 10
+        #二段跳
         elif(not self.on_ground == True and self.skill_key[4] == 1) and not self.skill_key[6] == 2:
             self.vy = -20
             self.skill_key[4] = 2  

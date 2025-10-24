@@ -8,6 +8,24 @@ import math
 import tool
 import sys
 import json
+import ctypes
+
+def force_english_input():
+    # 0x0409 是英文(美國)鍵盤代碼
+    ctypes.windll.user32.PostMessageW(
+        ctypes.windll.user32.GetForegroundWindow(),
+        0x0050,  # WM_INPUTLANGCHANGEREQUEST
+        0,
+        0x0409  # 英文
+    )
+
+def get_current_input_lang():
+    hwnd = ctypes.windll.user32.GetForegroundWindow()  # 取得目前視窗
+    thread_id = ctypes.windll.user32.GetWindowThreadProcessId(hwnd, 0)
+    layout_id = ctypes.windll.user32.GetKeyboardLayout(thread_id)
+    lang_id = layout_id & 0xFFFF
+    return lang_id
+
 
 class scene_c():
     def __init__(self):
@@ -15,7 +33,8 @@ class scene_c():
         self.menu = 0
         self.fps = 60
         self.button_cd = 0
-
+        self.game = 0
+        self.pre_game = 0
 
 def Load(save,scene_ctrl):
     global Main
@@ -227,47 +246,68 @@ while True:
 
 #=======================================================================================================
 
-        case 10:                                                             #場景10
-            scene = []
-            NT_object = []
-            CT_object = []
-            Enemy = []
-            ATKs_AL = []
-            ATKs_EN = []
-            BUTTON.empty()
-
-            scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
-
-            scene.append(pygame.image.load("IMG_2794.jpg"))                  #導入背景圖片
-            scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
+        case 10:                                                             #遊戲main loop
             
-            NT_object.append(object_class.object(1200,800,tool.HRZ_combine("floor.png",10),"wall",0,0,0,0,0))
-            NT_object.append(object_class.object(-50,400,tool.HRZ_combine("floor.png",10),"wall",0,0,0,1,0))
-
-
-            door = pygame.image.load("door.png")
-            door = pygame.transform.scale(door, (200, 200))  # 調整大小
-
-            save_point=pygame.image.load("save_point.png")
-            save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
-
-            CT_object.append(object_class.object(2400,600,door,"path",0,0,0,0,0))
+            match scene_ctrl.game:
+                
+                
+                
+                case 0:
             
-            CT_object.append(object_class.object(1600,500,door,"door",0,0,0,0,0))
-            CT_object.append(object_class.object(2000,300,pygame.image.load("skill.png"),"skill",0,0,0,6,0))
-            CT_object.append(object_class.object(2000,500,save_point,"save_point",0,0,0,0,0))
+                    scene = []
+                    NT_object = []
+                    CT_object = []
+                    Enemy = []
+                    ATKs_AL = []
+                    ATKs_EN = []
+                    BUTTON.empty()
 
-            Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
+                    scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
 
-            # button_home = button.Button(200, 200, "Home", lambda:button.on_click(scene_ctrl,0))
+                    scene.append(pygame.image.load("IMG_2794.jpg"))                  #導入背景圖片
+                    scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
+                    
+                    NT_object.append(object_class.object(1200,800,tool.HRZ_combine("floor.png",10),"wall",0,0,0,0,0))
+                    NT_object.append(object_class.object(-50,400,tool.HRZ_combine("floor.png",10),"wall",0,0,0,1,0))
+                    
+                    NT_object.append(object_class.object(1600,-500,tool.V_combine("floor.png",10),"wall",0,0,0,0,0))
 
-            # BUTTON.add(button_home)
+
+                    door = pygame.image.load("door.png")
+                    door = pygame.transform.scale(door, (200, 200))  # 調整大小
+
+                    save_point=pygame.image.load("save_point.png")
+                    save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
+
+                    CT_object.append(object_class.object(2400,600,door,"path",0,0,0,0,0))
+                    CT_object.append(object_class.object(2000,600,save_point,"save_point",0,0,0,0,0))
+                    CT_object.append(object_class.object(1600,500,door,"door",0,0,0,0,0))
+                    CT_object.append(object_class.object(2000,300,pygame.image.load("skill.png"),"skill",0,0,0,6,0))
+
+                    Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
+
+                    # button_home = button.Button(200, 200, "Home", lambda:button.on_click(scene_ctrl,0))
+
+                    # BUTTON.add(button_home)
+                case 1:
+                    pass
+                
+                case 2:
+                    pass
+
+
+            #while True:
+             #   tool.show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)
+              #  scene_ctrl.pre_game = scene_ctrl.game
+
+
            
-            while scene_ctrl.num == 10:                                                     #遊戲主迴圈
+            while scene_ctrl.num == 10 and scene_ctrl.game == scene_ctrl.pre_game:                                                     #遊戲主迴圈
 
                 clock.tick(scene_ctrl.fps)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
 
-                
+                if not get_current_input_lang() == 0x0409:
+                    force_english_input()
 
             
                 if Main.is_hurt > 20:
@@ -287,7 +327,7 @@ while True:
 
                         if obj.type == "door":
                             if tool.Touch(Main,obj):
-                                scene_ctrl.num = 11
+                                scene_ctrl.game = 11
                     if obj.type == "path":
                         if tool.Touch(Main,obj):
                             scene_ctrl.num = 0
@@ -305,10 +345,3 @@ while True:
                                 
           
 #=======================================================================================================
-
-        case 11:                                                             #場景1
-            while scene_ctrl.num == 11:                                                     #遊戲主迴圈
-            
-                print("go")
-                pygame.quit()
-                exit()
