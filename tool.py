@@ -18,8 +18,7 @@ def save(player,scene_ctrl):
         json.dump(scene_ctrl.__dict__,f)
 
 
-def Load(save,Main,scene_ctrl):
-    Main = load(save,scene_ctrl)
+
 def load(save,scene_ctrl):
     match save:
         case 1:
