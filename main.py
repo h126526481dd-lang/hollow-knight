@@ -102,7 +102,7 @@ while True:
                 scene.append(pygame.image.load("title_scene.png"))                  #導入背景圖片
                 scene[0] = pygame.transform.scale(scene[0], (screen_width, screen_height))  # 調整大小
 
-                screen.blit(scene, (0,0))                  #繪製背景圖片
+                screen.blit(scene[0], (0,0))                  #繪製背景圖片
 
                 if scene_ctrl.button_cd > 0:
                     scene_ctrl.button_cd-=1                
@@ -321,7 +321,8 @@ while True:
 
                 clock.tick(scene_ctrl.fps)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
 
-                
+                if not get_current_input_lang() == 0x0409:
+                    force_english_input()
 
             
                 if Main.is_hurt > 20:
@@ -354,6 +355,8 @@ while True:
 
                 pre_keys = keys
 
+
+
                 if keys[pygame.K_ESCAPE]:
 
                     BUTTON.empty()
@@ -374,18 +377,10 @@ while True:
                         BUTTON.update(scene_ctrl)
                         BUTTON.draw(screen)
                         pygame.display.flip()
-
+                        
                         for event in pygame.event.get():                               #偵測事件
                             if event.type == pygame.QUIT:
                                 pygame.quit()
                                 exit()
 
-
-
-
-
-
-
-                                
-          
 #=======================================================================================================
