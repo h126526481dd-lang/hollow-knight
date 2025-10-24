@@ -35,6 +35,9 @@ def on_click(scene_ctrl,num):
 def resuming(scene_ctrl, num1):
     scene_ctrl.menu = num1
 
+def go_home(scene_ctrl):
+    scene_ctrl.num = 0
+    scene_ctrl.menu = 0
 def quit_button():
     pygame.quit()
     exit()

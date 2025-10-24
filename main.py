@@ -313,7 +313,7 @@ while True:
                     pass
 
 
-            #while True:
+            #while True:ddd
              #   tool.show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)
               #  scene_ctrl.pre_game = scene_ctrl.game
 
@@ -358,97 +358,99 @@ while True:
 
                     scene_ctrl.menu = 1
 
-                    match scene_ctrl.menu:
+                    while scene_ctrl.menu > 0:
 
-                        case 1:                            #暫停主介面
+                        match scene_ctrl.menu:
 
-                            BUTTON.empty()
+                            case 1:                            #暫停主介面
 
-                            button_resume = button.Button(screen_width//2, screen_height//4, "Resume", lambda:button.resuming(scene_ctrl,0))
-                            button_menu = button.Button(screen_width//2, screen_height//4*2, "Menu", lambda:button.resuming(scene_ctrl,2))
-                            button_quit = button.Button(screen_width//2, screen_height//4*3, "Home", lambda:button.on_click(scene_ctrl,0))
+                                BUTTON.empty()
 
-                            BUTTON.add(button_resume, button_menu, button_quit)
+                                button_resume = button.Button(screen_width//2, screen_height//4, "Resume", lambda:button.resuming(scene_ctrl,0))
+                                button_menu = button.Button(screen_width//2, screen_height//4*2, "Menu", lambda:button.resuming(scene_ctrl,2))
+                                button_quit = button.Button(screen_width//2, screen_height//4*3, "Home", lambda:button.go_home(scene_ctrl))
 
-                            while scene_ctrl.menu == 1:
+                                BUTTON.add(button_resume, button_menu, button_quit)
 
-                                screen.blit(scene[1], (0,0))                  #繪製背景圖片
+                                while scene_ctrl.menu == 1:
 
-                                if scene_ctrl.button_cd > 0:
-                                    scene_ctrl.button_cd-=1
+                                    screen.blit(scene[1], (0,0))                  #繪製背景圖片
 
-                                BUTTON.update(scene_ctrl)
-                                BUTTON.draw(screen)
-                                pygame.display.flip()
+                                    if scene_ctrl.button_cd > 0:
+                                        scene_ctrl.button_cd-=1
 
-                                for event in pygame.event.get():                               #偵測事件
-                                    if event.type == pygame.QUIT:
-                                        pygame.quit()
-                                        exit()
+                                    BUTTON.update(scene_ctrl)
+                                    BUTTON.draw(screen)
+                                    pygame.display.flip()
+
+                                    for event in pygame.event.get():                               #偵測事件
+                                        if event.type == pygame.QUIT:
+                                            pygame.quit()
+                                            exit()
 
 
 
-                        case 2:                      #暫停後的選單
+                            case 2:                      #暫停後的選單
 
-                            BUTTON.empty()
+                                BUTTON.empty()
 
-                            button1 = button.Button(screen_width//2, screen_height//4, "Audio", lambda:button.resuming(scene_ctrl,3))
-                            button2 = button.Button(screen_width//2, screen_height//4*2, "Video", lambda:button.resuming(scene_ctrl,4))  
-                            button_back = button.Button(screen_width//2, screen_height//4*3, "Go back", lambda:button.resuming(scene_ctrl,1))
+                                button1 = button.Button(screen_width//2, screen_height//4, "Audio", lambda:button.resuming(scene_ctrl,3))
+                                button2 = button.Button(screen_width//2, screen_height//4*2, "Video", lambda:button.resuming(scene_ctrl,4))  
+                                button_back = button.Button(screen_width//2, screen_height//4*3, "Go back", lambda:button.resuming(scene_ctrl,1))
 
-                            BUTTON.add(button1, button2, button_back)
+                                BUTTON.add(button1, button2, button_back)
 
-                            while scene_ctrl.menu == 2:
-                                    
-                                screen.blit(scene[1], (0,0))                  #繪製背景圖片
-
-                                if scene_ctrl.button_cd > 0:
-                                    scene_ctrl.button_cd-=1
-
-                                BUTTON.update(scene_ctrl)
-                                BUTTON.draw(screen)
-                                pygame.display.flip()
-
-                                for event in pygame.event.get():                               #偵測事件
-                                    if event.type == pygame.QUIT:
-                                        pygame.quit()
-                                        exit()
-
-                        case 3:
-
-                            BUTTON.empty()
-
-                            while scene_ctrl.menu == 3:                                      #音訊調整
-
-                                pass
-
-                            for event in pygame.event.get():                               #偵測事件
-                                if event.type == pygame.QUIT:
-                                    pygame.quit()
-                                    exit()
-
-                        case 4:                                           
+                                while scene_ctrl.menu == 2:
                                         
-                            BUTTON.empty()
+                                    screen.blit(scene[1], (0,0))                  #繪製背景圖片
 
-                            button_change_FPS = button.Button(screen_width//2, screen_height//3, "change FPS", lambda:button.change_FPS(scene_ctrl))   
-                            button_back = button.Button(screen_width//2, screen_height//3*2, "Go back", lambda:button.resuming(scene_ctrl, 2))
-                            BUTTON.add(button_back, button_change_FPS)
-                                    
-                            while scene_ctrl.menu == 4:                                 #影像調整
+                                    if scene_ctrl.button_cd > 0:
+                                        scene_ctrl.button_cd-=1
 
-                                screen.blit(scene[1], (0,0))                  #繪製背景圖片
+                                    BUTTON.update(scene_ctrl)
+                                    BUTTON.draw(screen)
+                                    pygame.display.flip()
 
-                                if scene_ctrl.button_cd > 0:
-                                    scene_ctrl.button_cd-=1
+                                    for event in pygame.event.get():                               #偵測事件
+                                        if event.type == pygame.QUIT:
+                                            pygame.quit()
+                                            exit()
+
+                            case 3:
+
+                                BUTTON.empty()
+
+                                while scene_ctrl.menu == 3:                                      #音訊調整
+
+                                    pass
+
+                                    for event in pygame.event.get():                               #偵測事件
+                                        if event.type == pygame.QUIT:
+                                            pygame.quit()
+                                            exit()
+
+                            case 4:                                           
+                                            
+                                BUTTON.empty()
+
+                                button_change_FPS = button.Button(screen_width//2, screen_height//3, "change FPS", lambda:button.change_FPS(scene_ctrl))   
+                                button_back = button.Button(screen_width//2, screen_height//3*2, "Go back", lambda:button.resuming(scene_ctrl, 2))
+                                BUTTON.add(button_back, button_change_FPS)
                                         
-                                BUTTON.update(scene_ctrl)
-                                BUTTON.draw(screen)
-                                pygame.display.flip()
+                                while scene_ctrl.menu == 4:                                 #影像調整
 
-                                for event in pygame.event.get():                               #偵測事件
-                                    if event.type == pygame.QUIT:
-                                        pygame.quit()
-                                        exit()
+                                    screen.blit(scene[1], (0,0))                  #繪製背景圖片
+
+                                    if scene_ctrl.button_cd > 0:
+                                        scene_ctrl.button_cd-=1
+                                            
+                                    BUTTON.update(scene_ctrl)
+                                    BUTTON.draw(screen)
+                                    pygame.display.flip()
+
+                                    for event in pygame.event.get():                               #偵測事件
+                                        if event.type == pygame.QUIT:
+                                            pygame.quit()
+                                            exit()
 
 #=======================================================================================================
