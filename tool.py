@@ -19,7 +19,7 @@ def save(player,scene_ctrl):
 
 
 
-def load(save,scene_ctrl):
+def load_p(save):
     match save:
         case 1:
             with open("save\save1\player.json", 'r', encoding='utf-8') as f:
@@ -29,13 +29,6 @@ def load(save,scene_ctrl):
 
             with open("save\save1\scene.json", 'r', encoding='utf-8') as f:
                 data = json.load(f)
-
-            scene_ctrl.num = data["num"]
-            scene_ctrl.menu = data["menu"]
-            scene_ctrl.fps = data["fps"]
-            scene_ctrl.button_cd = data["button_cd"]
-                # 現在 data 變數中包含了 JSON 檔案的內容
-                #print(data)
 
 
         case 2:
@@ -60,9 +53,54 @@ def load(save,scene_ctrl):
 
                 # 現在 data 變數中包含了 JSON 檔案的內容
                 print(data)  
-    return player             
+    return player   
 
-def show(screen,scene,strength_bar,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
+def load_s(save,scene_ctrl):
+    match save:
+        case 1:
+            with open("save\save1\scene.json", 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+            scene_ctrl.num = data["num"]
+            scene_ctrl.menu = data["menu"]
+            scene_ctrl.fps = data["fps"]
+            scene_ctrl.button_cd = data["button_cd"]
+            scene_ctrl.game = data["game"]
+            scene_ctrl.pre_game = data["pre_game"]
+            scene_ctrl.trans = data["trans"]
+
+        case 2:
+            with open('save\save_2.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+            scene_ctrl.num = data["num"]
+            scene_ctrl.menu = data["menu"]
+            scene_ctrl.fps = data["fps"]
+            scene_ctrl.button_cd = data["button_cd"]
+
+
+        case 3:
+            with open('save\save_3.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+            scene_ctrl.num = data["num"]
+            scene_ctrl.menu = data["menu"]
+            scene_ctrl.fps = data["fps"]
+            scene_ctrl.button_cd = data["button_cd"]
+
+        case 4:
+            with open('save\save_4.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            scene_ctrl.num = data["num"]
+            scene_ctrl.menu = data["menu"]
+            scene_ctrl.fps = data["fps"]
+            scene_ctrl.button_cd = data["button_cd"]
+
+    return scene_ctrl
+
+          
+
+def show(screen,scene,strength_bar,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,trans,scene_ctrl):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     Info = pygame.display.Info()                                      #偵測用戶顯示參數
     screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
@@ -117,10 +155,15 @@ def show(screen,scene,strength_bar,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,pla
     if not player.hurt_flashing % 8 > 4:
         screen.blit(player.surface, ( player.x - camera_x,player.y - camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
     
-    
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
-    
-    
+
+
+    if scene_ctrl.trans > 0:
+        trans.x+=screen_width//30
+        trans.rect.x+=screen_width//30
+        scene_ctrl.trans -= 1
+        screen.blit(trans.surface, (trans.x, trans.y))
+
     pygame.display.update()
 
 
@@ -344,7 +387,7 @@ def update_animation(obj, state):
 
 
 
-def tick_mission(screen,scene,strength_bar,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys):
+def tick_mission(screen,scene,strength_bar,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys,trans,scene_ctrl):
 
     if Main.endurance < 4:
         Main.endurance_cd -= 1
@@ -639,4 +682,4 @@ def tick_mission(screen,scene,strength_bar,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,
 #=========================================================================刷新畫面
 
     #print(Main.hurt_flashing)
-    show(screen,scene[0], strength_bar[Main.endurance], NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)    #最終印刷
+    show(screen,scene[0], strength_bar[Main.endurance], NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,trans,scene_ctrl)    #最終印刷
