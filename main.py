@@ -261,8 +261,6 @@ while True:
             
             match scene_ctrl.game:
                 
-                
-                
                 case 0:
             
                     scene = []
@@ -281,12 +279,10 @@ while True:
                     scene.append(pygame.image.load("white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
                     
-                    
                     NT_object.append(object_class.object(1200,800,tool.HRZ_combine("floor.png",10),"wall",0,0,0,0,0))
                     NT_object.append(object_class.object(-50,400,tool.HRZ_combine("floor.png",10),"wall",0,0,0,1,0))
                     
                     NT_object.append(object_class.object(1600,-500,tool.V_combine("floor.png",10),"wall",0,0,0,0,0))
-
 
                     door = pygame.image.load("door.png")
                     door = pygame.transform.scale(door, (200, 200))  # 調整大小
@@ -312,7 +308,6 @@ while True:
                     strength_bar.append(pygame.image.load("strength_bar_4.png"))
                     strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
 
-
                     # button_home = button.Button(200, 200, "Home", lambda:button.on_click(scene_ctrl,0))
 
                     # BUTTON.add(button_home)
@@ -320,8 +315,6 @@ while True:
                     button_pause = button.Button(screen_width//8, screen_height//8, "Pause", lambda:button.paused(scene_ctrl))
 
                     BUTTON.add(button_pause)
-
-                    
 
                 case 1:
                     scene = []
@@ -366,7 +359,6 @@ while True:
                     strength_bar.append(pygame.image.load("strength_bar_4.png"))
                     strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
 
-
                     # button_home = button.Button(200, 200, "Home", lambda:button.on_click(scene_ctrl,0))
 
                     # BUTTON.add(button_home)
@@ -379,9 +371,6 @@ while True:
                 case 2:
                     pass
 
-
-
-                
             scene_ctrl.trans = 60
             trans.x = -1*screen_width
             trans.rect.x = -1*screen_width
@@ -426,7 +415,7 @@ while True:
                             tool.save(Main,scene_ctrl)
                             Main.read_surface()
                                 
-                tool.tick_mission(screen, scene, strength_bar, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys,trans,scene_ctrl)
+                tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, strength_bar, trans,scene_ctrl)
 
 
 
