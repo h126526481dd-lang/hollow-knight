@@ -62,7 +62,7 @@ def load(save,scene_ctrl):
                 print(data)  
     return player             
 
-def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
+def show(screen,scene,strength_bar,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     Info = pygame.display.Info()                                      #偵測用戶顯示參數
     screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
@@ -82,6 +82,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
     
 
     screen.blit(scene, (-2000-camera_x, -2500 - camera_y))                  #繪製背景圖片(背景位置=原位置-置中向量)
+    screen.blit(strength_bar, (screen_width//20, screen_height//8))
    
     for obj in NT_object:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(obj.rect):
@@ -343,7 +344,7 @@ def update_animation(obj, state):
 
 
 
-def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys):
+def tick_mission(screen,scene,strength_bar,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys):
 
     if Main.endurance < 4:
         Main.endurance_cd -= 1
@@ -638,4 +639,4 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 #=========================================================================刷新畫面
 
     #print(Main.hurt_flashing)
-    show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)    #最終印刷
+    show(screen,scene[0], strength_bar[Main.endurance], NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)    #最終印刷
