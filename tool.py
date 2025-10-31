@@ -156,10 +156,10 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_
     
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
 
-    screen.blit(strength_bar, (screen_width//20, screen_height//6))
+    screen.blit(strength_bar, (screen_width//25, screen_height//6))
 
-    pygame.draw.rect(screen, (255,255,255), (screen_width//20-5, screen_height//8-5, (screen_width//6+(Main.Max_HP-5)*50)+10, screen_height//50+10))
-    pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, (screen_width//6+((Main.Max_HP-5)*50))-(screen_width//6+((Main.Max_HP-5)*50))*((Main.Max_HP-Main.HP)/Main.Max_HP), screen_height//50))
+    pygame.draw.rect(screen, (255,255,255), (screen_width//20-5, screen_height//8-5, (screen_width//20+(Main.Max_HP-5)*10)+10, screen_height//50+10))
+    pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, (screen_width//20+((Main.Max_HP-5)*10))-(screen_width//20+((Main.Max_HP-5)*10))*((Main.Max_HP-Main.HP)/Main.Max_HP), screen_height//50))
     
     if scene_ctrl.trans > 0:
         trans.x+=screen_width//30
