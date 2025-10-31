@@ -19,7 +19,8 @@ class player():
         self.y = y
         self.move_lock = 0
 
-        self.HP = 5
+        self.HP = 10
+        self.Max_HP = 10
         self.ATK = 5
         self.endurance = 4
         self.endurance_cd = 120

@@ -87,11 +87,6 @@ while True:
             scene = []
             BUTTON.empty()
 
-            
-
-            text = font_2.render("Welcome", True, (0,0,255))      #存檔標題
-            text_rect = text.get_rect(center=(screen_width//2, screen_height//6))
-            
             button1 = button.Button(screen_width//2, screen_height//7*3, "Start", lambda:button.on_click(scene_ctrl,10))
             button2 = button.Button(screen_width//2, screen_height//7*4, "Savings", lambda:button.on_click(scene_ctrl,5))
             button3 = button.Button(screen_width//2, screen_height//8*7, "Achievement", lambda:button.on_click(scene_ctrl,2))
@@ -415,11 +410,7 @@ while True:
                             tool.save(Main,scene_ctrl)
                             Main.read_surface()
                                 
-                tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, strength_bar, trans,scene_ctrl)
-
-
-
-
+                tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, strength_bar, trans, scene_ctrl)
 
 
                 pre_keys = keys
