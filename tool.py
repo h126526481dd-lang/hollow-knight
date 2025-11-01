@@ -523,6 +523,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         elif Main.vy <= 30 and not Main.skill_key[6] == 2:           #重力加速度(有設上限)
             Main.vy += 1
     
+    if "1_L" in Main.now_NT_Touch or "1_R" in Main.now_NT_Touch:
+        Main.inertia = 0
 #=================================================================撿技能球判定
 
     if keys[pygame.K_w]:
