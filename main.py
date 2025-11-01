@@ -38,9 +38,11 @@ class scene_c():
         self.trans = 0
         self.R_edge = 0
         self.L_edge = 0
+        self.init = 0
 
-def Load(save,scene_ctrl):
+def Load(save):
     global Main
+    global scene_ctrl
     Main = tool.load_p(save)
     scene_ctrl = tool.load_s(save,scene_ctrl)
 
@@ -224,10 +226,10 @@ while True:
             text = font.render("Savings", True, (0,0,0))      #存檔標題
             text_rect = text.get_rect(center=(screen_width//4, screen_height//6))
 
-            button_saving1 = button.Button(screen_width//4, screen_height//8*3, "Saving 1", lambda:Load(1,scene_ctrl))
-            button_saving2 = button.Button(screen_width//4, screen_height//8*4, "Saving 2", lambda:Load(2,scene_ctrl))
-            button_saving3 = button.Button(screen_width//4, screen_height//8*5, "Saving 3", lambda:Load(3,scene_ctrl))
-            button_saving4 = button.Button(screen_width//4, screen_height//8*6, "Saving 4", lambda:Load(4,scene_ctrl))
+            button_saving1 = button.Button(screen_width//4, screen_height//8*3, "Saving 1", lambda:Load(1))
+            button_saving2 = button.Button(screen_width//4, screen_height//8*4, "Saving 2", lambda:Load(2))
+            button_saving3 = button.Button(screen_width//4, screen_height//8*5, "Saving 3", lambda:Load(3))
+            button_saving4 = button.Button(screen_width//4, screen_height//8*6, "Saving 4", lambda:Load(4))
             button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
 
 
@@ -369,20 +371,34 @@ while True:
                 case 2:
                     pass
 
-            scene_ctrl.trans = 60
-            trans.x = -1*screen_width
-            trans.rect.x = -1*screen_width
-            for i in range(30):
-                trans.x+=screen_width//30
-                trans.rect.x+=screen_width//30
-                scene_ctrl.trans -= 1
-                screen.blit(trans.surface, (trans.x, trans.y))
-                pygame.display.update()
+
+
+
+                case "dead":
+                    Main.HP=Main.Max_HP
+                    Load(1)
+                    scene_ctrl.init = 1
+
+
+            if scene_ctrl.init == 0 :
+                scene_ctrl.trans = 60
+                trans.x = -1*screen_width
+                trans.rect.x = -1*screen_width
+                for i in range(30):
+                    trans.x+=screen_width//30
+                    trans.rect.x+=screen_width//30
+                    scene_ctrl.trans -= 1
+                    screen.blit(trans.surface, (trans.x, trans.y))
+                    pygame.display.update()
 
 
             scene_ctrl.pre_game = scene_ctrl.game
 
-            while scene_ctrl.num == 10 and scene_ctrl.game == scene_ctrl.pre_game:                                                     #遊戲主迴圈
+            while scene_ctrl.num == 10 and scene_ctrl.game == scene_ctrl.pre_game :                                                     #遊戲主迴圈
+                
+                if scene_ctrl.init == 1:
+                    scene_ctrl.init = 0
+                    break
 
                 clock.tick(scene_ctrl.fps)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
 
@@ -409,10 +425,14 @@ while True:
                             scene_ctrl.game = obj.goto
                     if obj.type == "save_point":
                         if keys[pygame.K_p]:
+                            Main.HP=Main.Max_HP
                             tool.save(Main,scene_ctrl)
                             Main.read_surface()
                                 
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, strength_bar, trans, scene_ctrl)
+                
+                if Main.HP<=0:
+                    scene_ctrl.game = "dead"
 
 
                 pre_keys = keys

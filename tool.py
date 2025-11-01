@@ -68,6 +68,8 @@ def load_s(save,scene_ctrl):
             scene_ctrl.game = data["game"]
             scene_ctrl.pre_game = data["pre_game"]
             scene_ctrl.trans = data["trans"]
+            scene_ctrl.R_edge = 0
+            scene_ctrl.L_edge = 0
 
         case 2:
             with open('save\save_2.json', 'r', encoding='utf-8') as f:
@@ -698,11 +700,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         Main.y = 0
         Main.rect.y = 50
                 
-    if Main.HP <= 0:
-        print("死")
-        pygame.quit()
-        exit()
-
 #=========================================================================刷新畫面
 
     #print(Main.hurt_flashing)

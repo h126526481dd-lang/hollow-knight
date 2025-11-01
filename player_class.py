@@ -184,13 +184,8 @@ class player():
     def get_hit(self):
         if self.unhurtable_cd <=0:
             self.HP -= 1  
-            if self.HP <=0:
-                print("死")
-                pygame.quit()
-                exit()   
             self.unhurtable_cd = 120
             self.hurt_flashing = 120
-            print(self.HP)
 
 
     def attack(self):
