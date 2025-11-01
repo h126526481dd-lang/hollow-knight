@@ -39,6 +39,7 @@ class scene_c():
         self.R_edge = 0
         self.L_edge = 0
         self.init = 0
+        self.back_cd = 0
 
 def Load(save):
     global Main
@@ -437,9 +438,10 @@ while True:
 
                 pre_keys = keys
 
-                if keys[pygame.K_ESCAPE]:                               #按ESC後暫停
+                if keys[pygame.K_ESCAPE] and scene_ctrl.back_cd == 0:                               #按ESC後暫停
 
                     scene_ctrl.menu = 1
+                    scene_ctrl.back_cd = 60
 
                     while scene_ctrl.menu > 0:
 
@@ -462,6 +464,9 @@ while True:
                                     if scene_ctrl.button_cd > 0:
                                         scene_ctrl.button_cd-=1
 
+                                    if scene_ctrl.back_cd > 0:
+                                        scene_ctrl.back_cd-=1
+
                                     BUTTON.update(scene_ctrl)
                                     BUTTON.draw(screen)
                                     pygame.display.flip()
@@ -470,6 +475,10 @@ while True:
                                         if event.type == pygame.QUIT:
                                             pygame.quit()
                                             exit()
+
+                                    if keys[pygame.K_ESCAPE] and scene_ctrl.back_cd == 0:
+                                        scene_ctrl.menu = 0
+                                        scene_ctrl.back_cd = 60
 
 
 
