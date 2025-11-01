@@ -19,7 +19,7 @@ def save(player,scene_ctrl):
 
 
 
-def load(save,scene_ctrl):
+def load_p(save):
     match save:
         case 1:
             with open("save\save1\player.json", 'r', encoding='utf-8') as f:
@@ -29,13 +29,6 @@ def load(save,scene_ctrl):
 
             with open("save\save1\scene.json", 'r', encoding='utf-8') as f:
                 data = json.load(f)
-
-            scene_ctrl.num = data["num"]
-            scene_ctrl.menu = data["menu"]
-            scene_ctrl.fps = data["fps"]
-            scene_ctrl.button_cd = data["button_cd"]
-                # 現在 data 變數中包含了 JSON 檔案的內容
-                #print(data)
 
 
         case 2:
@@ -60,9 +53,54 @@ def load(save,scene_ctrl):
 
                 # 現在 data 變數中包含了 JSON 檔案的內容
                 print(data)  
-    return player             
+    return player   
 
-def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
+def load_s(save,scene_ctrl):
+    match save:
+        case 1:
+            with open("save\save1\scene.json", 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+            scene_ctrl.num = data["num"]
+            scene_ctrl.menu = data["menu"]
+            scene_ctrl.fps = data["fps"]
+            scene_ctrl.button_cd = data["button_cd"]
+            scene_ctrl.game = data["game"]
+            scene_ctrl.pre_game = data["pre_game"]
+            scene_ctrl.trans = data["trans"]
+
+        case 2:
+            with open('save\save_2.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+            scene_ctrl.num = data["num"]
+            scene_ctrl.menu = data["menu"]
+            scene_ctrl.fps = data["fps"]
+            scene_ctrl.button_cd = data["button_cd"]
+
+
+        case 3:
+            with open('save\save_3.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+
+            scene_ctrl.num = data["num"]
+            scene_ctrl.menu = data["menu"]
+            scene_ctrl.fps = data["fps"]
+            scene_ctrl.button_cd = data["button_cd"]
+
+        case 4:
+            with open('save\save_4.json', 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            scene_ctrl.num = data["num"]
+            scene_ctrl.menu = data["menu"]
+            scene_ctrl.fps = data["fps"]
+            scene_ctrl.button_cd = data["button_cd"]
+
+    return scene_ctrl
+
+          
+
+def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_bar,trans,scene_ctrl,Main):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     Info = pygame.display.Info()                                      #偵測用戶顯示參數
     screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
@@ -116,10 +154,19 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player):        
     if not player.hurt_flashing % 8 > 4:
         screen.blit(player.surface, ( player.x - camera_x,player.y - camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
     
-    
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
+
+    screen.blit(strength_bar, (screen_width//25, screen_height//6))
+
+    pygame.draw.rect(screen, (255,255,255), (screen_width//20-5, screen_height//8-5, (screen_width//20+(Main.Max_HP-5)*10)+10, screen_height//50+10))
+    pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, (screen_width//20+((Main.Max_HP-5)*10))-(screen_width//20+((Main.Max_HP-5)*10))*((Main.Max_HP-Main.HP)/Main.Max_HP), screen_height//50))
     
-    
+    if scene_ctrl.trans > 0:
+        trans.x+=screen_width//30
+        trans.rect.x+=screen_width//30
+        scene_ctrl.trans -= 1
+        screen.blit(trans.surface, (trans.x, trans.y))
+
     pygame.display.update()
 
 
@@ -343,7 +390,7 @@ def update_animation(obj, state):
 
 
 
-def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys):
+def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys,strength_bar,trans,scene_ctrl):
 
     if Main.endurance < 4:
         Main.endurance_cd -= 1
@@ -437,23 +484,24 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if not Main.flip:
                 match Main.atk_procedure:
                     case 0:
-                        ATKs_AL.append(object_class.object(Main.x + 100,Main.y + 30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0,0))
+                        ATKs_AL.append(object_class.object(Main.x + 100,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0,0,0))
                     case 1:
-                        pass
+                        ATKs_AL.append(object_class.object(Main.x + 100,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade2",0,0,0))
                     case 2:
-                        pass
+                        ATKs_AL.append(object_class.object(Main.x,Main.y,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade3",0,0,0))
                             
             else:
                 match Main.atk_procedure:
                     case 0:
-                        ATKs_AL.append(object_class.object(Main.x - 70,Main.y + 30,pygame.image.load("Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0,1))
+                        ATKs_AL.append(object_class.object(Main.x - 70,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0,1,0))
                     case 1:
-                        pass
+                        ATKs_AL.append(object_class.object(Main.x - 70,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade2",0,1,0))
                     case 2:
-                        pass
+                        ATKs_AL.append(object_class.object(Main.x,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade3",0,1,0))
             
             Main.attack()
 
+#=====================================================================衝刺按鍵
 
         if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground==True or (Main.on_ground==False and Main.skill_key[5]==1)) and Main.endurance > 0:
             if Main.inertia == 0:
@@ -484,6 +532,24 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 atk_al.y = Main.y + 30
                 atk_al.rect.x = atk_al.x
                 atk_al.rect.y = atk_al.y
+        
+        elif atk_al.dif == "blade2":
+            if atk_al.flip == False:
+                atk_al.x = Main.x + 100
+                atk_al.y = Main.y + 30
+                atk_al.rect.x = atk_al.x
+                atk_al.rect.y = atk_al.y
+            else:
+                atk_al.x = Main.x - 70
+                atk_al.y = Main.y + 30
+                atk_al.rect.x = atk_al.x
+                atk_al.rect.y = atk_al.y
+
+        elif atk_al.dif == "blade3":
+            atk_al.x = Main.x
+            atk_al.y = Main.y + 30
+            atk_al.rect.x = atk_al.x
+            atk_al.rect.y = atk_al.y
 
         if atk_al.state["playing"] == False:
             start_animation(atk_al.state, atk_al.frames, 15, atk_al.flip, False)
@@ -640,4 +706,4 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 #=========================================================================刷新畫面
 
     #print(Main.hurt_flashing)
-    show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main)    #最終印刷
+    show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,strength_bar[Main.endurance],trans,scene_ctrl,Main)    #最終印刷

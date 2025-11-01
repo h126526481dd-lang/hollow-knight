@@ -20,6 +20,7 @@ class player():
         self.move_lock = 0
 
         self.HP = 5
+        self.Max_HP = 5
         self.ATK = 5
         self.endurance = 4
         self.endurance_cd = 120
@@ -56,17 +57,17 @@ class player():
 
 
         #匯入3張Attack.png圖片並切分成動畫
-        self.attack1 = "Character\mainchacter\Attack_1.png"
-        self.attack2 = "Character\mainchacter\Attack_2.png" 
-        self.attack3 = "Character\mainchacter\Attack_3.png" 
+        self.attack1 = "Image\Character\mainchacter\Attack_1.png"
+        self.attack2 = "Image\Character\mainchacter\Attack_2.png" 
+        self.attack3 = "Image\Character\mainchacter\Attack_3.png" 
         
         #匯入Jump.png圖片並切分成動畫
-        self.jumping = "Character\mainchacter\Jump.png"
+        self.jumping = "Image\Character\mainchacter\Jump.png"
 
         #匯入Hurt.png圖片並切分成動畫
-        self.hurt = "Character\mainchacter\Hurt.png"
+        self.hurt = "Image\Character\mainchacter\Hurt.png"
         
-        self.walk = "Character\mainchacter\Walk.png"
+        self.walk = "Image\Character\mainchacter\Walk.png"
         
         self.is_hurt = 0
         self.unhurtable_cd = 0
@@ -306,7 +307,7 @@ class enemy():
             case _: 
         
 
-                self.surface =pygame.image.load("zombie.png")
+                self.surface =pygame.image.load("Image\Character\Enemy\zombie.png")
                 self.rect = self.surface.get_rect(topleft=(self.x, self.y))
 
 
