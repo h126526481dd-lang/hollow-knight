@@ -188,6 +188,7 @@ class player():
         if self.unhurtable_cd <=0 and self.HP > 0:
             self.HP -= 1  
             self.unhurtable_cd = 120
+        if self.HP != 0 :
             self.hurt_flashing = 120
 
 

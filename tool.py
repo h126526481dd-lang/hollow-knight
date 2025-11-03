@@ -616,7 +616,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         player_class.enemy.Move(enemy,NT_object)
 
         if Touch(Main,enemy):
-            if Main.unhurtable_cd <= 0:
+            if Main.unhurtable_cd <= 0 and Main.HP > 1:
 
                 if Main.rect.x-enemy.rect.x > 0:
                     Main.vx = 10
@@ -628,6 +628,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 Main.vy = -15
                 Main.is_hurt = 30
                 Main.get_hit()
+            elif Main.unhurtable_cd <= 0 and Main.HP == 1:
+                Main.get_hit()
+
+            
                         
         for atk_al in ATKs_AL:
             

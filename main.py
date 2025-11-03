@@ -197,7 +197,8 @@ while True:
             
             button_change_FPS = button.Button(screen_width//4, screen_height//4, "change FPS", lambda:button.change_FPS(scene_ctrl))   
             button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, scene_ctrl_temp))
-            BUTTON.add(button_back, button_change_FPS)
+            button_screen_size = button.Button(screen_width//4, screen_height//4*2, "change size", lambda:button.on_click(scene_ctrl, 6))
+            BUTTON.add(button_back, button_change_FPS, button_screen_size)
 
 
             while scene_ctrl.num == 4:
@@ -255,7 +256,11 @@ while True:
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         exit()
+#=======================================================================================================
 
+        #case 6:
+
+            #BUTTON.empty()
 #=======================================================================================================
 
         case 10:                                                             #遊戲main loop
