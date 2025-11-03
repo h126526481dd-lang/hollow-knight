@@ -70,6 +70,7 @@ def load_s(save,scene_ctrl):
             scene_ctrl.trans = data["trans"]
             scene_ctrl.R_edge = 0
             scene_ctrl.L_edge = 0
+            scene_ctrl.From = 0
 
         case 2:
             with open('save\save_2.json', 'r', encoding='utf-8') as f:
