@@ -377,6 +377,7 @@ while True:
 
                 case "dead":
                     Main.HP=Main.Max_HP
+                    Main.death_cd = 0
                     Load(1)
                     scene_ctrl.init = 1
 
@@ -432,17 +433,13 @@ while True:
                                 
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, strength_bar, trans, scene_ctrl)
                 
-                if Main.HP<=0:
-                    scene_ctrl.game = "dead"
 
 
-                pre_keys = keys
 
-                if keys[pygame.K_ESCAPE] and scene_ctrl.back_cd == 0:                               #按ESC後暫停
+                if keys[pygame.K_ESCAPE] and not pre_keys[pygame.K_ESCAPE]:                               #按ESC後暫停
 
                     scene_ctrl.menu = 1
-                    scene_ctrl.back_cd = 60
-
+                    
                     while scene_ctrl.menu > 0:
 
                         match scene_ctrl.menu:
@@ -457,28 +454,28 @@ while True:
 
                                 BUTTON.add(button_resume, button_menu, button_quit)
 
-                                while scene_ctrl.menu == 1:
+                                while scene_ctrl.menu == 1 :
+
+                                    pre_keys = keys
+                                    keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
+
 
                                     screen.blit(scene[1], (0,0))                  #繪製背景圖片
 
                                     if scene_ctrl.button_cd > 0:
                                         scene_ctrl.button_cd-=1
 
-                                    if scene_ctrl.back_cd > 0:
-                                        scene_ctrl.back_cd-=1
-
                                     BUTTON.update(scene_ctrl)
                                     BUTTON.draw(screen)
                                     pygame.display.flip()
+                                    
+                                    if keys[pygame.K_ESCAPE] and not pre_keys[pygame.K_ESCAPE]:                               #按ESC後暫停
+                                        scene_ctrl.menu = 0
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
                                             pygame.quit()
                                             exit()
-
-                                    if keys[pygame.K_ESCAPE] and scene_ctrl.back_cd == 0:
-                                        scene_ctrl.menu = 0
-                                        scene_ctrl.back_cd = 60
 
 
 
@@ -493,7 +490,9 @@ while True:
                                 BUTTON.add(button1, button2, button_back)
 
                                 while scene_ctrl.menu == 2:
-                                        
+                                    pre_keys = keys
+                                    keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
+                    
                                     screen.blit(scene[1], (0,0))                  #繪製背景圖片
 
                                     if scene_ctrl.button_cd > 0:
@@ -502,6 +501,10 @@ while True:
                                     BUTTON.update(scene_ctrl)
                                     BUTTON.draw(screen)
                                     pygame.display.flip()
+                                    
+                                    if keys[pygame.K_ESCAPE] and not pre_keys[pygame.K_ESCAPE]:                               #按ESC後暫停
+                                        scene_ctrl.menu = 1
+
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
@@ -513,8 +516,16 @@ while True:
                                 BUTTON.empty()
 
                                 while scene_ctrl.menu == 3:                                      #音訊調整
+                                    
+                                    pre_keys = keys
+                                    keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
                                     pass
+                                    
+                                    if keys[pygame.K_ESCAPE] and not pre_keys[pygame.K_ESCAPE]:                               #按ESC後暫停
+                                        scene_ctrl.menu = 2
+                                        scene_ctrl.button_cd = 150
+
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
@@ -529,7 +540,10 @@ while True:
                                 button_back = button.Button(screen_width//2, screen_height//3*2, "Go back", lambda:button.resuming(scene_ctrl, 2))
                                 BUTTON.add(button_back, button_change_FPS)
                                         
-                                while scene_ctrl.menu == 4:                                 #影像調整
+                                while scene_ctrl.menu == 4 :                                 #影像調整
+                        
+                                    pre_keys = keys
+                                    keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
                                     screen.blit(scene[1], (0,0))                  #繪製背景圖片
 
@@ -539,10 +553,16 @@ while True:
                                     BUTTON.update(scene_ctrl)
                                     BUTTON.draw(screen)
                                     pygame.display.flip()
+                                    
+                                    if keys[pygame.K_ESCAPE] and not pre_keys[pygame.K_ESCAPE]:                               #按ESC後暫停
+                                        scene_ctrl.menu = 2
+                                        scene_ctrl.button_cd = 150
+
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
                                             pygame.quit()
                                             exit()
+                pre_keys = keys
 
 #=======================================================================================================

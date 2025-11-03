@@ -25,6 +25,7 @@ class player():
         self.endurance = 4
         self.endurance_cd = 120
         self.hurt_flashing = 0
+        self.death_cd = 0
         
         #角色圖片
         self.image = 0
@@ -68,6 +69,8 @@ class player():
         self.hurt = "Image\Character\mainchacter\Hurt.png"
         
         self.walk = "Image\Character\mainchacter\Walk.png"
+        
+        self.dead = "Image\Character\mainchacter\Dead.png"
         
         self.is_hurt = 0
         self.unhurtable_cd = 0
@@ -182,7 +185,7 @@ class player():
 
 
     def get_hit(self):
-        if self.unhurtable_cd <=0:
+        if self.unhurtable_cd <=0 and self.HP > 0:
             self.HP -= 1  
             self.unhurtable_cd = 120
             self.hurt_flashing = 120
@@ -219,7 +222,7 @@ class player():
         
         #匯入Jump.png圖片並切分成動畫
         self.Jump = None
-
+        self.Dead = None
         #匯入Hurt.png圖片並切分成動畫
         self.Hurt = None
         
@@ -252,6 +255,7 @@ class player():
 
         #匯入Hurt.png圖片並切分成動畫
         self.Hurt = tool.split(self.hurt,2)
+        self.Dead = tool.split(self.dead,3)
         
         self.Walk = tool.split(self.walk, 8)
         self.surface = self.Walk[self.image]

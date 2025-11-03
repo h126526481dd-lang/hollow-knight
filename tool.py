@@ -699,7 +699,18 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if Main.y > 1800:
         Main.y = 0
         Main.rect.y = 50
-                
+    
+    
+    
+    if Main.HP<=0:
+        Main.death_cd+=1
+        Main.move_lock=1
+        Main.surface=Main.Dead[Main.death_cd//30]
+        if Main.death_cd == 89:
+            scene_ctrl.game = "dead"
+
+    
+    
 #=========================================================================刷新畫面
 
     #print(Main.hurt_flashing)
