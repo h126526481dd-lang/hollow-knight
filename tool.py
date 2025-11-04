@@ -70,6 +70,7 @@ def load_s(save,scene_ctrl):
             scene_ctrl.trans = data["trans"]
             scene_ctrl.R_edge = 0
             scene_ctrl.L_edge = 0
+            scene_ctrl.From = 0
 
         case 2:
             with open('save\save_2.json', 'r', encoding='utf-8') as f:
@@ -710,7 +711,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if Main.HP<=0:
         Main.death_cd+=1
         Main.move_lock=1
-        Main.surface=Main.Dead[Main.death_cd//30]
+        if Main.flip:
+            Main.surface=pygame.transform.flip(Main.Dead[Main.death_cd//30],True,False)
+        else:
+            Main.surface=Main.Dead[Main.death_cd//30]
         if Main.death_cd == 89:
             scene_ctrl.game = "dead"
 

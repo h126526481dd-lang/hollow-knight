@@ -40,6 +40,7 @@ class scene_c():
         self.L_edge = 0
         self.init = 0
         self.back_cd = 0
+        self.From = 0
 
 def Load(save):
     global Main
@@ -267,6 +268,12 @@ while True:
                 
                 case 0:
             
+                    Exit = [(2400,600),(0,0)]
+                    if scene_ctrl.pre_game == 1:
+                        (Main.x,Main.y) = Exit[scene_ctrl.From]
+                        (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)    
+
+
                     scene = []
                     NT_object = []
                     CT_object = []
@@ -283,10 +290,10 @@ while True:
                     scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
                     
-                    NT_object.append(object_class.object(1200,800,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
-                    NT_object.append(object_class.object(-50,400,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,1,0,0))
+                    NT_object.append(object_class.object(1200,800,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-800,400,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,1,0,0))
                     
-                    NT_object.append(object_class.object(1600,-500,tool.V_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
+                    #NT_object.append(object_class.object(1600,-500,tool.V_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
 
                     door = pygame.image.load("Image/Object/door.png")
                     door = pygame.transform.scale(door, (200, 200))  # 調整大小
@@ -294,9 +301,8 @@ while True:
                     save_point=pygame.image.load("Image/Object/save_point.png")
                     save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
-                    CT_object.append(object_class.object(2400,600,door,"path",0,0,0,0,0,1))
+                    CT_object.append(object_class.object(3000,600,door,"path",0,0,0,0,0,[1,0]))
                     CT_object.append(object_class.object(2000,600,save_point,"save_point",0,0,0,0,0,0))
-                    CT_object.append(object_class.object(1600,500,door,"door",0,0,0,0,0,0))
                     CT_object.append(object_class.object(2000,300,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,6,0,0))
 
                     Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
@@ -321,6 +327,13 @@ while True:
                     BUTTON.add(button_pause)
 
                 case 1:
+
+                    Exit = [(-400,300),(2600,600)]
+                    if scene_ctrl.pre_game == 0:
+                        (Main.x,Main.y) = Exit[scene_ctrl.From]
+                        (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)
+
+
                     scene = []
                     NT_object = []
                     CT_object = []
@@ -340,7 +353,7 @@ while True:
                     
                     NT_object.append(object_class.object(-1000,400,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
                     
-                    NT_object.append(object_class.object(800,900,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(800,900,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
 
                     NT_object.append(object_class.object(500,1000,tool.V_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
 
@@ -351,8 +364,11 @@ while True:
                     save_point=pygame.image.load("Image/Object/save_point.png")
                     save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
-                    CT_object.append(object_class.object(0,200,door,"path",0,0,0,0,0,0))
-                    CT_object.append(object_class.object(1600,600,save_point,"save_point",0,0,0,0,0,0))
+
+                    CT_object.append(object_class.object(3000,800,door,"path",0,0,0,0,0,[0,1]))
+
+                    CT_object.append(object_class.object(-800,200,door,"path",0,0,0,0,0,[0,0]))
+                    CT_object.append(object_class.object(2000,600,save_point,"save_point",0,0,0,0,0,0))
                     
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
                     strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))
@@ -429,7 +445,8 @@ while True:
                                 scene_ctrl.game = 1
                     if obj.type == "path":
                         if tool.Touch(Main,obj):
-                            scene_ctrl.game = obj.goto
+                            scene_ctrl.game = obj.goto[0]
+                            scene_ctrl.From = obj.goto[1]
                     if obj.type == "save_point":
                         if keys[pygame.K_p]:
                             Main.HP=Main.Max_HP
