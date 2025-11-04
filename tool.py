@@ -102,7 +102,7 @@ def load_s(save,scene_ctrl):
 
           
 
-def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_bar,trans,scene_ctrl,Main):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
+def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_bar,trans,scene_ctrl):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     Info = pygame.display.Info()                                      #偵測用戶顯示參數
     screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
@@ -160,8 +160,8 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_
 
     screen.blit(strength_bar, (screen_width//25, screen_height//6))
 
-    pygame.draw.rect(screen, (255,255,255), (screen_width//20-5, screen_height//8-5, (screen_width//20+(Main.Max_HP-5)*10)+10, screen_height//50+10))
-    pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, (screen_width//20+((Main.Max_HP-5)*10))-(screen_width//20+((Main.Max_HP-5)*10))*((Main.Max_HP-Main.HP)/Main.Max_HP), screen_height//50))
+    pygame.draw.rect(screen, (255,255,255), (screen_width//20-5, screen_height//8-5, (screen_width//20+(player.Max_HP-5)*10)+10, screen_height//50+10))
+    pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, (screen_width//20+((player.Max_HP-5)*10))-(screen_width//20+((player.Max_HP-5)*10))*((player.Max_HP-player.HP)/player.Max_HP), screen_height//50))
     
     if scene_ctrl.trans > 0:
         trans.x+=screen_width//30
@@ -266,7 +266,9 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
 
             if object2.can_be_through == 0:               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
                 object1.now_NT_Touch.append("1_L")      #若往左調沒碰撞，表示物件1的左部碰撞到了物件2，新增標籤到碰撞清單
+                object1.inertia = 0
                 T_rect.x += (max(abs(object1.vx),11))
+                
 
                 
                 for i in range(max(abs(object1.vx),11)):       #把物件1往右調整，直到不碰撞為止
@@ -474,7 +476,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=================================================偵測角色攻擊按鍵(是否按下j鍵, 是否在撥放攻擊動畫, 前一偵是否按著j鍵)
 
-        if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j]:
+        if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j] and Main.HP > 0 :
 
             #如果未銜接攻擊，攻擊步驟歸零
             if Main.atk_next <= 0:
@@ -505,10 +507,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=====================================================================衝刺按鍵
 
-        if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground==True or (Main.on_ground==False and Main.skill_key[5]==1)) and Main.endurance > 0:
+        if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground==True or (Main.on_ground==False and Main.skill_key[5]==1)) and Main.endurance > 0 and Main.HP > 0:
             if Main.inertia == 0:
                 Main.vx = 0
-            Main.unhurtable_cd = 22
+            Main.unhurtable_cd = max(22,Main.unhurtable_cd)
             Main.skill_key[6] = 2
             Main.skill6_time = 20
             Main.inertia = max(Main.inertia,20)
@@ -677,7 +679,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 #===================================================================跳躍和受傷判定
 
     #如果(按下空格, 在地上, 剛才沒按空格)
-    if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE]:                                #按下空白鍵跳躍
+    if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0:                                #按下空白鍵跳躍
         Main.jump()
     
     if Main.is_hurt > 0:
@@ -701,8 +703,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             exit()
 
     if Main.y > 1800:
-        Main.y = 0
-        Main.rect.y = 50
+        Main.HP = 0
     
     
     
@@ -718,4 +719,4 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 #=========================================================================刷新畫面
 
     #print(Main.hurt_flashing)
-    show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,strength_bar[Main.endurance],trans,scene_ctrl,Main)    #最終印刷
+    show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,strength_bar[Main.endurance],trans,scene_ctrl)    #最終印刷

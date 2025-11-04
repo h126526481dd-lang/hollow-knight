@@ -194,18 +194,14 @@ while True:
             
             
             BUTTON.empty()
-            
-            button_change_FPS = button.Button(screen_width//4, screen_height//4, "change FPS", lambda:button.change_FPS(scene_ctrl))   
+             
             button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, scene_ctrl_temp))
-            button_screen_size = button.Button(screen_width//4, screen_height//4*2, "change size", lambda:button.on_click(scene_ctrl, 6))
-            BUTTON.add(button_back, button_change_FPS, button_screen_size)
+            BUTTON.add(button_back)
 
 
             while scene_ctrl.num == 4:
                 if scene_ctrl.button_cd > 0:
                     scene_ctrl.button_cd-=1
-        
-
 
                 screen.fill((255,255,255))
 
@@ -258,9 +254,11 @@ while True:
                         exit()
 #=======================================================================================================
 
-        #case 6:
+        #case 6:                                                               
 
             #BUTTON.empty()
+            
+            
 #=======================================================================================================
 
         case 10:                                                             #遊戲main loop
@@ -344,6 +342,8 @@ while True:
                     
                     NT_object.append(object_class.object(800,900,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
 
+                    NT_object.append(object_class.object(500,1000,tool.V_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+
 
                     door = pygame.image.load("Image/Object/door.png")
                     door = pygame.transform.scale(door, (200, 200))  # 調整大小
@@ -352,7 +352,7 @@ while True:
                     save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
                     CT_object.append(object_class.object(0,200,door,"path",0,0,0,0,0,0))
-                    CT_object.append(object_class.object(2000,600,save_point,"save_point",0,0,0,0,0,0))
+                    CT_object.append(object_class.object(1600,600,save_point,"save_point",0,0,0,0,0,0))
                     
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
                     strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))

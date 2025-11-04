@@ -187,7 +187,7 @@ class player():
     def get_hit(self):
         if self.unhurtable_cd <=0 and self.HP > 0:
             self.HP -= 1  
-            self.unhurtable_cd = 120
+            self.unhurtable_cd = max(120,self.unhurtable_cd)
         if self.HP != 0 :
             self.hurt_flashing = 120
 
@@ -205,7 +205,7 @@ class player():
                 else:
                     self.vx = 35
                 self.atk_procedure = 0
-                self.unhurtable_cd = 20
+                self.unhurtable_cd = max(20,self.unhurtable_cd)
             else:
                 # 已經是最後一段，回到第一段
                 tool.start_animation(self.attack_state, self.Attack1, 3, self.flip, False)

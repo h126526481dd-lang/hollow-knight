@@ -45,9 +45,13 @@ def quit_button():
 def change_FPS(scene_ctrl):
 
     if(scene_ctrl.fps == 60):
-        scene_ctrl.fps = 30
+        scene_ctrl.fps = 120
         print(scene_ctrl.fps)
 
+    elif(scene_ctrl.fps == 120):
+        scene_ctrl.fps = 30
+        print(scene_ctrl.fps)
+    
     else:
         scene_ctrl.fps = 60
         print(scene_ctrl.fps)
