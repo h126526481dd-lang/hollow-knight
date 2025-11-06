@@ -115,7 +115,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_
     camera_y = player.y - adjust_y
     camera_x = max(camera_x, scene_ctrl.L_edge)
     camera_x = min(camera_x, scene_ctrl.R_edge)
-    camera_y = max(camera_y, -3000)
+    camera_y = max(camera_y, scene_ctrl.T_edge)
     camera_y = min(camera_y, scene_ctrl.B_edge - screen_height//2)
     #print(camera_x, camera_y)
     
