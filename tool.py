@@ -113,10 +113,10 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_
     adjust_x = screen_width//2
     camera_x = player.x - adjust_x                              #把角色置中所需要的向量  
     camera_y = player.y - adjust_y
-    camera_x = max(camera_x, -500)
-    camera_x = min(camera_x, 1000)
+    camera_x = max(camera_x, scene_ctrl.L_edge)
+    camera_x = min(camera_x, scene_ctrl.R_edge)
     camera_y = max(camera_y, -3000)
-    camera_y = min(camera_y, 500)
+    camera_y = min(camera_y, scene_ctrl.B_edge - screen_height//2)
     #print(camera_x, camera_y)
     
     camera_rect = pygame.Rect(camera_x,camera_y,screen_width,screen_height)  #攝影機碰撞盒(只顯示在螢幕中的物件)
@@ -583,7 +583,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         if ("1_L" in Main.now_NT_Touch or "1_R" in Main.now_NT_Touch) and Main.skill_key[5] == 1:   #如果碰牆就緩速下滑
             if Main.vy < 0 and Main.vy > -18:
                 Main.vy = 0
-            Main.skill_key[4] = 1
+            if Main.skill_key[4] >= 1:
+                Main.skill_key[4] = 1
             if Main.vy <= 10:
                 if Main.Wall_slip == 1:
                     Main.vy += 1
@@ -703,7 +704,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             pygame.quit()
             exit()
 
-    if Main.y > 1800:
+    if Main.y > scene_ctrl.B_edge + 500:
         Main.HP = 0
     
     

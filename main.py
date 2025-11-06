@@ -38,9 +38,11 @@ class scene_c():
         self.trans = 0
         self.R_edge = 0
         self.L_edge = 0
+        self.B_edge = 1800
         self.init = 0
         self.back_cd = 0
         self.From = 0
+        
 
 def Load(save):
     global Main
@@ -266,10 +268,10 @@ while True:
             
             match scene_ctrl.game:
                 
-                case 0:
-            
-                    Exit = [(2400,600),(0,0)]
-                    if scene_ctrl.pre_game == 1:
+                
+                case -1:
+                    Exit = [(2400,600)]
+                    if scene_ctrl.pre_game == 0:
                         (Main.x,Main.y) = Exit[scene_ctrl.From]
                         (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)    
 
@@ -282,8 +284,76 @@ while True:
                     ATKs_EN = []
                     strength_bar = []
                     BUTTON.empty()
+                    
+                    
+                    scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
+                    
+                    scene_ctrl.R_edge = 1800 - screen_width//2
+                    scene_ctrl.L_edge = -1500 + screen_width//2
+
+                    scene.append(pygame.image.load("Image/Background/IMG_2794.jpg"))                                 #導入背景圖片
+                    scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
+                    scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
+                    scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
+                    
+                    NT_object.append(object_class.object(1200,800,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(600,-1500,tool.V_combine("Image/Background/floor.png",22),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-1200,-1500,tool.HRZ_combine("Image/Background/floor.png",40),"wall",0,0,0,0,0,0))
+
+                    NT_object.append(object_class.object(-40,400,tool.HRZ_combine("Image/Background/floor.png",5),"wall",0,0,0,0,0,0))
+
+
+                    NT_object.append(object_class.object(-1200,800,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
+
+                    door = pygame.image.load("Image/Object/door.png")
+                    door = pygame.transform.scale(door, (200, 1200))  # 調整大小
+
+                    save_point=pygame.image.load("Image/Object/save_point.png")
+                    save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
+
+                    CT_object.append(object_class.object(2000,500,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,4,0,0))
+                    CT_object.append(object_class.object(2600,400,door,"path",0,0,0,0,0,[0,1]))
+                    CT_object.append(object_class.object(2000,600,save_point,"save_point",0,0,0,0,0,0))
+                    CT_object.append(object_class.object(2000,500,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,5,0,0))
+
+                    strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
+                    strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))
+                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_1.png"))
+                    strength_bar[1] = pygame.transform.scale(strength_bar[1], (screen_width/9, screen_height/12))
+                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_2.png"))
+                    strength_bar[2] = pygame.transform.scale(strength_bar[2], (screen_width/9, screen_height/12))
+                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_3.png"))
+                    strength_bar[3] = pygame.transform.scale(strength_bar[3], (screen_width/9, screen_height/12))
+                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
+                    strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))                
+                
+                
+                
+                
+                
+                case 0:
+            
+                    Exit = [(2400,600),(-600,700)]
+                    if scene_ctrl.pre_game == 1:
+                        (Main.x,Main.y) = Exit[scene_ctrl.From]
+                        (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)    
+                    if scene_ctrl.pre_game == -1:
+                        (Main.x,Main.y) = Exit[scene_ctrl.From]
+                        (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)  
+
+                    scene = []
+                    NT_object = []
+                    CT_object = []
+                    Enemy = []
+                    ATKs_AL = []
+                    ATKs_EN = []
+                    strength_bar = []
+                    BUTTON.empty()
 
                     scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
+                    
+                    scene_ctrl.R_edge = 2150 - screen_width//2
+                    scene_ctrl.L_edge = -1500 + screen_width//2
 
                     scene.append(pygame.image.load("Image/Background/IMG_2794.jpg"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
@@ -292,18 +362,22 @@ while True:
                     
                     NT_object.append(object_class.object(1200,800,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
                     NT_object.append(object_class.object(-800,400,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,1,0,0))
+                    NT_object.append(object_class.object(-950,-1300,tool.V_combine("Image/Background/floor.png",15),"wall",0,0,0,0,0,0))
+
                     
-                    #NT_object.append(object_class.object(1600,-500,tool.V_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-1400,800,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
 
                     door = pygame.image.load("Image/Object/door.png")
-                    door = pygame.transform.scale(door, (200, 200))  # 調整大小
+                    door = pygame.transform.scale(door, (200, 1200))  # 調整大小
 
                     save_point=pygame.image.load("Image/Object/save_point.png")
                     save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
-                    CT_object.append(object_class.object(3000,600,door,"path",0,0,0,0,0,[1,0]))
+
+                    CT_object.append(object_class.object(-1000,600,door,"path",0,0,0,0,0,[-1,0]))
+                    CT_object.append(object_class.object(3000,-300,door,"path",0,0,0,0,0,[1,0]))
                     CT_object.append(object_class.object(2000,600,save_point,"save_point",0,0,0,0,0,0))
-                    CT_object.append(object_class.object(2000,300,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,6,0,0))
+                    CT_object.append(object_class.object(2000,500,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,5,0,0))
 
                     Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
 
@@ -328,11 +402,14 @@ while True:
 
                 case 1:
 
-                    Exit = [(-400,300),(2600,600)]
+                    Exit = [(-400,-700),(2700,1200),(2700,-1100)]
                     if scene_ctrl.pre_game == 0:
                         (Main.x,Main.y) = Exit[scene_ctrl.From]
                         (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)
-
+                        
+                    if scene_ctrl.pre_game == 2:
+                        (Main.x,Main.y) = Exit[scene_ctrl.From]
+                        (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)
 
                     scene = []
                     NT_object = []
@@ -344,31 +421,41 @@ while True:
                     BUTTON.empty()
 
                     scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
+                    scene_ctrl.R_edge = 2000 - screen_width//2
+                    scene_ctrl.L_edge = -1300 + screen_width//2
+                    scene_ctrl.B_edge = 2000
 
                     scene.append(pygame.image.load("Image/Background/IMG_2794.jpg"))                                 #導入背景圖片
-                    scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
+                    scene[0] = pygame.transform.scale(scene[0], (screen_width*7, screen_height*7))  # 調整大小
                     scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
                     
                     
-                    NT_object.append(object_class.object(-1000,400,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-1000,-600,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
                     
-                    NT_object.append(object_class.object(800,900,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(500,400,tool.V_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(1000,700,tool.V_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(1500,1100,tool.V_combine("Image/Background/floor.png",12),"wall",0,0,0,0,0,0))
+                    
+                    NT_object.append(object_class.object(1800,-1000,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
 
-                    NT_object.append(object_class.object(500,1000,tool.V_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(1800,1300,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
 
 
                     door = pygame.image.load("Image/Object/door.png")
-                    door = pygame.transform.scale(door, (200, 200))  # 調整大小
+                    door = pygame.transform.scale(door, (200, 1200))  # 調整大小
 
                     save_point=pygame.image.load("Image/Object/save_point.png")
                     save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
 
-                    CT_object.append(object_class.object(3000,800,door,"path",0,0,0,0,0,[0,1]))
+                    CT_object.append(object_class.object(3000,300,door,"path",0,0,0,0,0,[2,0]))
 
-                    CT_object.append(object_class.object(-800,200,door,"path",0,0,0,0,0,[0,0]))
-                    CT_object.append(object_class.object(2000,600,save_point,"save_point",0,0,0,0,0,0))
+                    CT_object.append(object_class.object(-800,-900,door,"path",0,0,0,0,0,[0,0]))
+                    CT_object.append(object_class.object(2000,1000,save_point,"save_point",0,0,0,0,0,0))
+                    
+                    CT_object.append(object_class.object(1800,1700,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,6,0,0))
+
                     
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
                     strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))
@@ -381,18 +468,71 @@ while True:
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
                     strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
 
-                    # button_home = button.Button(200, 200, "Home", lambda:button.on_click(scene_ctrl,0))
 
-                    # BUTTON.add(button_home)
 
-                    button_pause = button.Button(screen_width//8, screen_height//8, "Pause", lambda:button.paused(scene_ctrl))
-
-                    BUTTON.add(button_pause)
-
-                
                 case 2:
-                    pass
+                    Exit = [(-400,700),(2600,600)]
+                    if scene_ctrl.pre_game == 1:
+                        (Main.x,Main.y) = Exit[scene_ctrl.From]
+                        (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)
+                        
+                    scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
+                    scene_ctrl.R_edge = 2000 - screen_width//2
+                    scene_ctrl.L_edge = -1300 + screen_width//2
+                    scene_ctrl.B_edge = 2000
 
+
+                    scene = []
+                    NT_object = []
+                    CT_object = []
+                    Enemy = []
+                    ATKs_AL = []
+                    ATKs_EN = []
+                    strength_bar = []
+                    BUTTON.empty()
+
+
+                    scene.append(pygame.image.load("Image/Background/IMG_2794.jpg"))                                 #導入背景圖片
+                    scene[0] = pygame.transform.scale(scene[0], (screen_width*7, screen_height*7))  # 調整大小
+                    scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
+                    scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
+                    
+                    
+                    NT_object.append(object_class.object(-1000,800,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
+                    
+                    NT_object.append(object_class.object(500,-400,tool.V_combine("Image/Background/floor.png",15),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-1000,-400,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
+
+
+                    
+                    NT_object.append(object_class.object(1800,1300,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
+
+
+                    door = pygame.image.load("Image/Object/door.png")
+                    door = pygame.transform.scale(door, (200, 1200))  # 調整大小
+
+                    save_point=pygame.image.load("Image/Object/save_point.png")
+                    save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
+
+
+                    CT_object.append(object_class.object(-800,-200,door,"path",0,0,0,0,0,[1,1]))
+
+                    CT_object.append(object_class.object(-800,-1200,door,"path",0,0,0,0,0,[1,2]))
+                    CT_object.append(object_class.object(2000,1000,save_point,"save_point",0,0,0,0,0,0))
+                    
+                    CT_object.append(object_class.object(1800,1700,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,6,0,0))
+
+                    
+                    strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
+                    strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))
+                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_1.png"))
+                    strength_bar[1] = pygame.transform.scale(strength_bar[1], (screen_width/9, screen_height/12))
+                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_2.png"))
+                    strength_bar[2] = pygame.transform.scale(strength_bar[2], (screen_width/9, screen_height/12))
+                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_3.png"))
+                    strength_bar[3] = pygame.transform.scale(strength_bar[3], (screen_width/9, screen_height/12))
+                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
+                    strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
 
 
 
