@@ -292,7 +292,7 @@ while True:
                     scene_ctrl.T_edge = -2200 + screen_height //2
                     scene_ctrl.B_edge = -250
 
-                    scene.append(pygame.image.load("Image/Background/IMG_2794.jpg"))                                 #導入背景圖片
+                    scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
                     scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
@@ -358,7 +358,7 @@ while True:
                     scene_ctrl.B_edge = 2000
 
 
-                    scene.append(pygame.image.load("Image/Background/IMG_2794.jpg"))                                 #導入背景圖片
+                    scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
                     scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
@@ -435,7 +435,7 @@ while True:
                     scene_ctrl.B_edge = 2000
 
 
-                    scene.append(pygame.image.load("Image/Background/IMG_2794.jpg"))                                 #導入背景圖片
+                    scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
                     scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
@@ -507,7 +507,7 @@ while True:
                     scene_ctrl.T_edge = -1800 + screen_height//2
 
 
-                    scene.append(pygame.image.load("Image/Background/IMG_2794.jpg"))                                 #導入背景圖片
+                    scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*7, screen_height*7))  # 調整大小
                     scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
@@ -574,7 +574,7 @@ while True:
                     BUTTON.empty()
 
 
-                    scene.append(pygame.image.load("Image/Background/IMG_2794.jpg"))                                 #導入背景圖片
+                    scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*7, screen_height*7))  # 調整大小
                     scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
