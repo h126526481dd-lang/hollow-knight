@@ -290,30 +290,30 @@ while True:
                     scene_ctrl.R_edge = 1800 - screen_width//2
                     scene_ctrl.L_edge = -1500 + screen_width//2
                     scene_ctrl.T_edge = -2200 + screen_height //2
+                    scene_ctrl.B_edge = -250
 
                     scene.append(pygame.image.load("Image/Background/IMG_2794.jpg"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
                     scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
                     
-                    NT_object.append(object_class.object(-300,100,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-250,100,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
 
 
-                    NT_object.append(object_class.object(400,-1800,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
-                    NT_object.append(object_class.object(-1200,-1800,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-1300,100,tool.HRZ_combine("Image/Background/floor.png",6),"wall",0,0,0,0,0,0))
 
 
 
-                    NT_object.append(object_class.object(-1200,800,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
 
                     door = pygame.image.load("Image/Object/door.png")
-                    door = pygame.transform.scale(door, (200, 1200))  # 調整大小
+                    door = pygame.transform.scale(door, (350, 200))  # 調整大小
 
                     save_point=pygame.image.load("Image/Object/save_point.png")
                     save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
+                    CT_object.append(object_class.object(-550,200,door,"path",0,0,0,0,0,[-1,1]))
 
-                    CT_object.append(object_class.object(2000,600,save_point,"save_point",0,0,0,0,0,0))
+                    CT_object.append(object_class.object(0,-100,save_point,"save_point",0,0,0,0,0,0))
                     CT_object.append(object_class.object(2000,500,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,5,0,0))
 
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
@@ -331,8 +331,11 @@ while True:
                 
                 
                 case -1:
-                    Exit = [(2400,600)]
+                    Exit = [(2400,600),(200,-1800)]
                     if scene_ctrl.pre_game == 0:
+                        (Main.x,Main.y) = Exit[scene_ctrl.From]
+                        (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)   
+                    if scene_ctrl.pre_game == -2:
                         (Main.x,Main.y) = Exit[scene_ctrl.From]
                         (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)    
 
@@ -352,6 +355,8 @@ while True:
                     scene_ctrl.R_edge = 1800 - screen_width//2
                     scene_ctrl.L_edge = -1500 + screen_width//2
                     scene_ctrl.T_edge = -2200 + screen_height //2
+                    scene_ctrl.B_edge = 2000
+
 
                     scene.append(pygame.image.load("Image/Background/IMG_2794.jpg"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
@@ -427,6 +432,8 @@ while True:
                     
                     scene_ctrl.R_edge = 2150 - screen_width//2
                     scene_ctrl.L_edge = -1500 + screen_width//2
+                    scene_ctrl.B_edge = 2000
+
 
                     scene.append(pygame.image.load("Image/Background/IMG_2794.jpg"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
