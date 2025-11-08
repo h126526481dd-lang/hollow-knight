@@ -43,6 +43,7 @@ class scene_c():
         self.init = 0
         self.back_cd = 0
         self.From = 0
+        self.backpack = 0
         
 
 def Load(save):
@@ -679,6 +680,31 @@ while True:
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, strength_bar, trans, scene_ctrl)
                 
 
+                if keys[pygame.K_b] and not pre_keys[pygame.K_b]:
+
+                    scene_ctrl.backpack = 1
+
+                    while scene_ctrl.backpack > 0:
+
+                        match   scene_ctrl.backpack:
+                            
+                            case 1:
+
+                                BUTTON.empty()
+
+                                while scene_ctrl.backpack == 1:
+
+                                    if scene_ctrl.button_cd > 0:
+                                        scene_ctrl.button_cd-=1
+
+                                    if keys[pygame.K_b] and not pre_keys[pygame.K_b]:
+
+                                        scene_ctrl.backpack = 0
+
+                                    for event in pygame.event.get():                               #偵測事件
+                                        if event.type == pygame.QUIT:
+                                            pygame.quit()
+                                            exit()
 
 
                 if keys[pygame.K_ESCAPE] and not pre_keys[pygame.K_ESCAPE]:                               #按ESC後暫停
@@ -781,9 +807,8 @@ while True:
                                             
                                 BUTTON.empty()
 
-                                button_change_FPS = button.Button(screen_width//2, screen_height//3, "change FPS", lambda:button.change_FPS(scene_ctrl))   
                                 button_back = button.Button(screen_width//2, screen_height//3*2, "Go back", lambda:button.resuming(scene_ctrl, 2))
-                                BUTTON.add(button_back, button_change_FPS)
+                                BUTTON.add(button_back)
                                         
                                 while scene_ctrl.menu == 4 :                                 #影像調整
                         
