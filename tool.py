@@ -238,6 +238,7 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
 
             if object2.can_be_through == 0 :               #角色跟不可穿越物件 的右碰撞(右阻擋)偵測
                 object1.now_NT_Touch.append("1_R")      #若往右調沒碰撞，表示物件1的右部碰撞到了物件2，新增標籤到碰撞清單
+                object1.inertia = 0
                 T_rect.x -= (max(abs(object1.vx),11))
 
                     
@@ -245,12 +246,10 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                 for i in range(max(abs(object1.vx),11)):       #把物件1往左調整，直到不碰撞為止
                     object1.x -= 1
                     object1.rect.x -= 1    
-                    print("moving")                                                                                
                     
                     if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測往左調整後是否還有碰撞  
                         object1.x += 1
                         object1.rect.x += 1
-                        print("finish")
                         break
                 
                 if object1.vx > 0:
@@ -723,5 +722,5 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     
 #=========================================================================刷新畫面
 
-    #print(Main.hurt_flashing)
+   
     show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,strength_bar[Main.endurance],trans,scene_ctrl)    #最終印刷

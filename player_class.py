@@ -289,6 +289,10 @@ class enemy():
         self.back = 1
         self.back_check=0
         self.back_cd = 0
+        
+        self.inertia = 0
+        self.pre_vx = 0
+        self.pre_vy = 0
 
         match self.type:
             
@@ -336,6 +340,8 @@ class enemy():
             
             
             case _: 
+                self.pre_vx = self.vx
+                self.pre_vy = self.vy
                 
                 self.back_check=0
 
@@ -357,6 +363,12 @@ class enemy():
                     if self.Test_rect.colliderect(obj.rect):
                         self.back_check += 1
 
+                if "1_L" in self.now_NT_Touch or "1_L" in self.now_NT_Touch:
+                    self.back *= -1
+                    self.back_check=0
+                    self.back_cd =1
+                    self.surface = pygame.transform.flip(self.surface, True, False)
+                                    
                 if self.back_check == 0 and self.back_cd == 0:
                     self.back *= -1
                     self.back_check=0

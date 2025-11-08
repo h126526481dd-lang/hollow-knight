@@ -646,6 +646,7 @@ while True:
                     break
 
                 clock.tick(scene_ctrl.fps)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
+                print(clock.get_fps())
 
                 if not get_current_input_lang() == 0x0409:
                     force_english_input()
