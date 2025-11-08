@@ -297,8 +297,16 @@ class enemy():
         match self.type:
             
             case 1:    
-                pass
-            
+                self.surface =pygame.image.load("Image\Character\Enemy\zombie.png")
+                self.rect = self.surface.get_rect(topleft=(self.x, self.y))
+
+
+
+                self.right_down_x = self.x+self.rect.width
+                self.right_down_y = self.y+self.rect.height
+
+                self.Test_rect = pygame.rect.Rect(self.right_down_x,self.right_down_y,20,20)
+                            
             
             case 2:    
                 pass
@@ -396,8 +404,29 @@ class enemy():
                     self.y += self.vy
                     self.rect.y += self.vy  
                     
-                    
-                    
+    def Find(self,player,NT_object):
+        X = (player.x - self.x)//10
+        Y = (player.y - self.y)//10
+        
+        RAY = F_RAY(self.x,self.y)
+        
+        for i in range(10):
+            RAY.rect.x += X
+            RAY.rect.y += Y
+            for obj in NT_object:
+                if tool.Touch(RAY,obj):
+                    del RAY
+                    return False
+                if tool.Touch(RAY,player):
+                    del RAY
+                    return True
+                        
+class F_RAY():
+    def __init__(self,x,y):
+        self.rect = pygame.Rect.center(x,y,50,50)
+        
+
+            
                     
 class NPC():
     def __init__(self,x,y,who,IMG,phase,ani):
@@ -408,3 +437,4 @@ class NPC():
         self.surface = IMG
         self.ani = ani
         self.is_talked = 0
+        
