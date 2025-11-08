@@ -271,10 +271,13 @@ while True:
             match scene_ctrl.game:
 
                 case -2:
-                    Exit = [(0,0)]
+                    Exit = [(-350,0)]
                     if scene_ctrl.pre_game == -1:
                         (Main.x,Main.y) = Exit[scene_ctrl.From]
-                        (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)   
+                        (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)
+                        Main.vy = -20
+                        Main.inertia = 30
+                        Main.vx = 5   
                     
                     scene = []
                     NT_object = []
