@@ -274,13 +274,11 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                 for i in range(max(abs(object1.vx),11)):       #把物件1往右調整，直到不碰撞為止
                     object1.x += 1
                     object1.rect.x += 1    
-                    print("moving")
                                                                                                     
                     
                     if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測往右調整後是否還有碰撞  
                         object1.x -= 1
                         object1.rect.x -= 1
-                        print("finish")
 
                         break
                     
@@ -293,7 +291,6 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
             return True
         
         if object2.can_be_through == 0:
-            print(object1.pre_vx)
             object1.vx = object1.pre_vx*-1
             object1.vy = object1.pre_vy*-1
 
@@ -616,7 +613,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         enemy.now_CT_Touch = []
         enemy.now_NT_Touch = []
                     
-        player_class.enemy.Move(enemy,NT_object)
+        player_class.enemy.Move(enemy,NT_object,Main)
 
         if Touch(Main,enemy):
             if Main.unhurtable_cd <= 0 and Main.HP > 1:
@@ -687,7 +684,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         Main.surface = pygame.transform.flip(Main.Hurt[0], Main.flip, False)
 
 #===================================================================最終更新判定區
-    print(Main.now_NT_Touch)
     Main.y += Main.vy                                       #更新角色位置
     Main.x += Main.vx
 

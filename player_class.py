@@ -278,6 +278,7 @@ class enemy():
         self.now_NT_Touch = []                                      #敵人目前碰撞清單
         self.now_CT_Touch = []                                   
         self.unhurtable_cd = 0
+        self.wait = 0
 
         self.type = type
         self.image = 0                                        #敵人圖片
@@ -294,6 +295,8 @@ class enemy():
         self.pre_vx = 0
         self.pre_vy = 0
 
+        self.found = 0
+
         match self.type:
             
             case 1:    
@@ -305,8 +308,7 @@ class enemy():
                 self.right_down_x = self.x+self.rect.width
                 self.right_down_y = self.y+self.rect.height
 
-                self.Test_rect = pygame.rect.Rect(self.right_down_x,self.right_down_y,20,20)
-                            
+                self.Test_rect = pygame.rect.Rect(self.right_down_x,self.right_down_y,20,20)            
             
             case 2:    
                 pass
@@ -331,100 +333,253 @@ class enemy():
 
 
 
-    def Move(self,NT_object):
 
-        match self.type:
-            
-            case 1:    
-                pass
-            
-            
-            case 2:    
-                pass
-            
-            
-            case 3:    
-                pass
-            
-            
-            case _: 
-                self.pre_vx = self.vx
-                self.pre_vy = self.vy
-                
-                self.back_check=0
-
-                if self.back==1:
-                    self.right_down_x = self.x+self.rect.width
-                    self.right_down_y = self.y+self.rect.height
-                    self.Test_rect.x = self.x+self.rect.width
-                    self.Test_rect.y = self.y+self.rect.height
-                else:
-                    self.right_down_x = self.x
-                    self.right_down_y = self.y+self.rect.height
-                    self.Test_rect.x = self.x
-                    self.Test_rect.y = self.y+self.rect.height
-
-
-
-                for obj in NT_object:
-                    tool.Touch(self, obj)
-                    if self.Test_rect.colliderect(obj.rect):
-                        self.back_check += 1
-
-                if "1_L" in self.now_NT_Touch or "1_L" in self.now_NT_Touch:
-                    self.back *= -1
-                    self.back_check=0
-                    self.back_cd =1
-                    self.surface = pygame.transform.flip(self.surface, True, False)
-                                    
-                if self.back_check == 0 and self.back_cd == 0:
-                    self.back *= -1
-                    self.back_check=0
-                    self.back_cd =1
-                    self.surface = pygame.transform.flip(self.surface, True, False)
-
-
-                if self.back_check > 0:
-                    self.back_cd =0
-
-
-                if "1_D" in self.now_NT_Touch:
-                    self.on_ground = True
-                else:
-                    self.on_ground =False
-                
-                if self.on_ground :
-                    self.vy = 0
-                    self.vx = 5*self.back
-                    self.x += self.vx
-                    self.rect.x += self.vx
-                else:
-                    
-                    self.vy+=1
-                    self.y += self.vy
-                    self.rect.y += self.vy  
-                    
     def Find(self,player,NT_object):
-        X = (player.x - self.x)//10
-        Y = (player.y - self.y)//10
-        
+
         RAY = F_RAY(self.x,self.y)
-        
+            
         for i in range(10):
-            RAY.rect.x += X
-            RAY.rect.y += Y
+            RAY.rect.x += (player.x - self.x)//10
+            RAY.rect.y += (player.y - self.y)//10
+            print (RAY.rect.x,RAY.rect.y)
             for obj in NT_object:
                 if tool.Touch(RAY,obj):
                     del RAY
+                    print("walled")
                     return False
-                if tool.Touch(RAY,player):
-                    del RAY
-                    return True
+            if RAY.rect.colliderect(player.rect):
+                del RAY
+                print("found!")
+                return True
+        del RAY
+        return False
+
+    def Move(self,NT_object,player):
+
+        if self.wait > 0:
+            self.wait -= 1
+        
+        else:
+
+            match self.type:
+                
+                case 1:    
+
+                    if self.found == 0:
+                        if player.rect.x - (self.rect.x+self.rect.width//2) < 0 and self.back == -1:
+                            
+                            if  pow((player.rect.x - (self.rect.x+self.rect.width//2)),2) + pow((player.rect.y - (self.rect.y+self.rect.height//2)),2) <= pow(1000,2):
+                                print("found_Test_left")
+
+                                if self.Find(player,NT_object):
+                                    self.wait = 30
+                                    self.found = 1
+                                    
+                                    
+                        if player.rect.x - (self.rect.x+self.rect.width//2) > 0 and self.back == 1:
+                            
+                            if  pow((player.rect.x - (self.rect.x+self.rect.width//2)),2) + pow((player.rect.y - (self.rect.y+self.rect.height//2)),2) <= pow(1000,2):
+                                print("found_Test_right")
+                                
+                                if self.Find(player,NT_object):
+                                    self.wait = 30
+                                    self.found = 1                        
+
+                        self.pre_vx = self.vx
+                        self.pre_vy = self.vy
+                        
+                        self.back_check=0
+
+                        if self.back==1:
+                            self.right_down_x = self.x+self.rect.width
+                            self.right_down_y = self.y+self.rect.height
+                            self.Test_rect.x = self.x+self.rect.width
+                            self.Test_rect.y = self.y+self.rect.height
+                        else:
+                            self.right_down_x = self.x
+                            self.right_down_y = self.y+self.rect.height
+                            self.Test_rect.x = self.x
+                            self.Test_rect.y = self.y+self.rect.height
+
+
+
+                        for obj in NT_object:
+                            tool.Touch(self, obj)
+                            if self.Test_rect.colliderect(obj.rect):
+                                self.back_check += 1
+
+                        if "1_L" in self.now_NT_Touch or "1_L" in self.now_NT_Touch:
+                            self.back *= -1
+                            self.back_check=0
+                            self.back_cd =1
+                            self.surface = pygame.transform.flip(self.surface, True, False)
+                                            
+                        if self.back_check == 0 and self.back_cd == 0:
+                            self.back *= -1
+                            self.back_check=0
+                            self.back_cd =1
+                            self.surface = pygame.transform.flip(self.surface, True, False)
+
+
+                        if self.back_check > 0:
+                            self.back_cd =0
+
+
+                        if "1_D" in self.now_NT_Touch:
+                            self.on_ground = True
+                        else:
+                            self.on_ground =False
+                        
+                        if self.on_ground :
+                            self.vy = 0
+                            self.vx = 5*self.back
+                            self.x += self.vx
+                            self.rect.x += self.vx
+                        else:
+                            
+                            self.vy+=1
+                            self.y += self.vy
+                            self.rect.y += self.vy  
+                    
+                    else:
+                        self.pre_vx = self.vx
+                        self.pre_vy = self.vy
+                        
+                        self.back_check=0
+
+                        if self.back==1:
+                            self.right_down_x = self.x+self.rect.width
+                            self.right_down_y = self.y+self.rect.height
+                            self.Test_rect.x = self.x+self.rect.width
+                            self.Test_rect.y = self.y+self.rect.height
+                        else:
+                            self.right_down_x = self.x
+                            self.right_down_y = self.y+self.rect.height
+                            self.Test_rect.x = self.x
+                            self.Test_rect.y = self.y+self.rect.height
+
+
+
+                        for obj in NT_object:
+                            tool.Touch(self, obj)
+                            if self.Test_rect.colliderect(obj.rect):
+                                self.back_check += 1
+
+                        if "1_L" in self.now_NT_Touch or "1_L" in self.now_NT_Touch:
+                            self.back *= -1
+                            self.back_check=0
+                            self.back_cd =1
+                            self.surface = pygame.transform.flip(self.surface, True, False)
+                                            
+                        if self.back_check == 0 and self.back_cd == 0:
+                            self.back *= -1
+                            self.back_check=0
+                            self.back_cd =1
+                            self.surface = pygame.transform.flip(self.surface, True, False)
+
+
+                        if self.back_check > 0:
+                            self.back_cd =0
+
+
+                        if "1_D" in self.now_NT_Touch:
+                            self.on_ground = True
+                        else:
+                            self.on_ground =False
+                        
+                        if self.on_ground :
+                            self.vy = 0
+                            self.vx = 20*self.back
+                            self.x += self.vx
+                            self.rect.x += self.vx
+                        else:
+                            
+                            self.vy+=1
+                            self.y += self.vy
+                            self.rect.y += self.vy  
+                
+                case 2:    
+                    pass
+                
+                
+                case 3:    
+                    pass
+                
+                
+                case _: 
+                    self.pre_vx = self.vx
+                    self.pre_vy = self.vy
+                    
+                    self.back_check=0
+
+                    if self.back==1:
+                        self.right_down_x = self.x+self.rect.width
+                        self.right_down_y = self.y+self.rect.height
+                        self.Test_rect.x = self.x+self.rect.width
+                        self.Test_rect.y = self.y+self.rect.height
+                    else:
+                        self.right_down_x = self.x
+                        self.right_down_y = self.y+self.rect.height
+                        self.Test_rect.x = self.x
+                        self.Test_rect.y = self.y+self.rect.height
+
+
+
+                    for obj in NT_object:
+                        tool.Touch(self, obj)
+                        if self.Test_rect.colliderect(obj.rect):
+                            self.back_check += 1
+
+                    if "1_L" in self.now_NT_Touch or "1_L" in self.now_NT_Touch:
+                        self.back *= -1
+                        self.back_check=0
+                        self.back_cd =1
+                        self.surface = pygame.transform.flip(self.surface, True, False)
+                                        
+                    if self.back_check == 0 and self.back_cd == 0:
+                        self.back *= -1
+                        self.back_check=0
+                        self.back_cd =1
+                        self.surface = pygame.transform.flip(self.surface, True, False)
+
+
+                    if self.back_check > 0:
+                        self.back_cd =0
+
+
+                    if "1_D" in self.now_NT_Touch:
+                        self.on_ground = True
+                    else:
+                        self.on_ground =False
+                    
+                    if self.on_ground :
+                        self.vy = 0
+                        self.vx = 5*self.back
+                        self.x += self.vx
+                        self.rect.x += self.vx
+                    else:
+                        
+                        self.vy+=1
+                        self.y += self.vy
+                        self.rect.y += self.vy  
+                    
+                    
+
                         
 class F_RAY():
     def __init__(self,x,y):
-        self.rect = pygame.Rect.center(x,y,50,50)
-        
+        self.x=x
+        self.y=y
+        self.vx=0
+        self.vy=0
+        self.inertia=0
+        self.pre_vx=0
+        self.pre_vy=0
+        self.rect = pygame.Rect(self.x,self.y,200,200)
+        self.rect.center = (self.x,self.y)
+        self.now_NT_Touch = []
+        self.now_CT_Touch = []
+        self.on_ground = False
 
             
                     
