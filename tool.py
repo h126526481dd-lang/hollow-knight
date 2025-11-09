@@ -681,10 +681,19 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         enemy.x -= atk_al.KB
                         enemy.rect.x -= atk_al.KB
                         enemy.unhurtable_cd = 60
+                        
+                    if enemy.type == 1:
+                        if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
+                            enemy.back = 1
+                        else:
+                            enemy.back = -1
+                            
+                        enemy.found = 1
 
         for atk_en in ATKs_EN:
             
             if atk_en.dif == "bullet":
+                
                 atk_en.dur -= 1
                 
                 if atk_en.dur == 0:
@@ -719,11 +728,11 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         
                             else:
                                 Main.vx =- 10
-                                Main.y -= 10
-                                Main.rect.y -= 10
-                                Main.vy = -15
-                                Main.is_hurt = 30
-                                Main.get_hit()
+                            Main.y -= 10
+                            Main.rect.y -= 10
+                            Main.vy = -15
+                            Main.is_hurt = 30
+                            Main.get_hit()
                                     
                         elif Main.unhurtable_cd <= 0 and Main.HP == 1:
                             Main.get_hit()
