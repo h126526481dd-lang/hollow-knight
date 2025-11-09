@@ -419,7 +419,7 @@ class enemy():
                             if self.Test_rect.colliderect(obj.rect):
                                 self.back_check += 1
 
-                        if "1_L" in self.now_NT_Touch or "1_L" in self.now_NT_Touch:
+                        if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
                             self.back *= -1
                             self.back_check=0
                             self.back_cd =1
@@ -477,7 +477,7 @@ class enemy():
                             if self.Test_rect.colliderect(obj.rect):
                                 self.back_check += 1
 
-                        if "1_L" in self.now_NT_Touch or "1_L" in self.now_NT_Touch:
+                        if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
                             self.back *= -1
                             self.back_check=0
                             self.back_cd =1
@@ -499,20 +499,25 @@ class enemy():
                         else:
                             self.on_ground =False
                         
-                        if self.on_ground :
-                            self.vy = 0
-                            self.vx = 7*self.back
-                            self.x += self.vx
-                            self.rect.x += self.vx
-                        else:
+                        
+                        if self.phase == 0:
+                            pass
                             
-                            self.vy+=1
-                            self.y += self.vy
-                            self.rect.y += self.vy
+                        else:    
+                            if self.on_ground :
+                                self.vy = 0
+                                self.vx = 7*self.back
+                                self.x += self.vx
+                                self.rect.x += self.vx
+                            else:
+                                
+                                self.vy+=1
+                                self.y += self.vy
+                                self.rect.y += self.vy
                             
                         
                         if self.phase_cd == 0:
-                            self.phase=random.randint(0,5)
+                            self.phase=random.randint(0,10)
                             self.phase_cd = 30
                         
                         else:
@@ -540,7 +545,7 @@ class enemy():
                         if self.Test_rect.colliderect(obj.rect):
                             self.back_check += 1
 
-                    if "1_L" in self.now_NT_Touch or "1_L" in self.now_NT_Touch:
+                    if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
                         self.back *= -1
                         self.back_check=0
                         self.back_cd =1

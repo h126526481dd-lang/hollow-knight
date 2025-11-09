@@ -620,10 +620,19 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     
     
             
-        if enemy.type == 1 and enemy.found == 1 and enemy.phase_cd == 0:
+        if enemy.type == 1 and enemy.found == 1 and enemy.phase_cd == 30:
             match enemy.phase:
                 case 0:
-                    pass
+                    
+                    enemy.vx = 0
+                    enemy.vy = 0
+                    
+                    if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
+                        enemy.back = 1
+                    else:
+                        enemy.back = -1
+                    print ("orgback=",enemy.back)
+                    
                 case 1:
                     pass
                 case 2:
@@ -637,11 +646,50 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     ATKs_EN.append(object_class.object(enemy.x-300,enemy.y-100,pygame.transform.scale(pygame.image.load("Image\Object\\1.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
                     ATKs_EN.append(object_class.object(enemy.x,enemy.y-200,pygame.transform.scale(pygame.image.load("Image\Object\\1.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
                     ATKs_EN.append(object_class.object(enemy.x+300,enemy.y-100,pygame.transform.scale(pygame.image.load("Image\Object\\1.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
+                case 6:
+                    pass
+                case 7:
+                    pass
+                case 8:
+                    pass
+                case 9:
+                    pass
+                case 10:
+                    pass         
+            #print (enemy.phase)
+                         
+                         
+                         
+                         
+                         
                                     
-        
-    
+        elif enemy.type == 1 and enemy.found == 1 and not enemy.phase_cd == 0:
+            match enemy.phase:
+                case 0:
+                    
+                    if enemy.phase_cd >= 15:
+                        
+                        enemy.vx += 3 
+
+                    elif enemy.phase_cd > 0 and abs(enemy.vx) > 3:
+                    
+                        enemy.vx -= 3 
+
+                        
+                    enemy.x += enemy.vx * enemy.back
+                    enemy.rect.x += enemy.vx * enemy.back
+                    
+                    print ("back=",enemy.back)
+                    print ("v=",enemy.vx)                    
+                    print ("sum=",enemy.vx * enemy.back)
+                    enemy.y += enemy.vy *enemy.back
+                    enemy.rect.y += enemy.vy * enemy.back
+
+
+
       
         player_class.enemy.Move(enemy,NT_object,Main)
+
 
         if Touch(Main,enemy):
             if Main.unhurtable_cd <= 0 and Main.HP > 1:
@@ -690,57 +738,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                             
                         enemy.found = 1
 
-        for atk_en in ATKs_EN:
-            
-            if atk_en.dif == "bullet":
-                
-                atk_en.dur -= 1
-                
-                if atk_en.dur == 0:
-                    atk_en.delete = 1
-                
-                atk_en.surface = atk_en.frames[atk_en.index//5]
-                atk_en.index += 1
-                if atk_en.index > 29:
-                    atk_en.index = 0
-                
-                if atk_en.tag_x == None:
-                    atk_en.tag_x = (Main.rect.x - atk_en.rect.x)//30 
-                if atk_en.tag_y == None:
-                    atk_en.tag_y = (Main.rect.y - atk_en.rect.y)//30
-                
-                atk_en.rect.x += atk_en.tag_x
-                atk_en.rect.y += atk_en.tag_y
-                atk_en.x = atk_en.rect.x
-                atk_en.y = atk_en.rect.y
-                
-                for obj in NT_object:
-                    if atk_en.rect.colliderect(obj.rect):
-                        atk_en.delete = 1
-                        
-                if atk_en.rect.colliderect(Main.rect):
-        
-                    if Main.unhurtable_cd <= 0:
-                                    
-                        if Main.unhurtable_cd <= 0 and Main.HP > 1:
-                            if Main.rect.x-atk_en.rect.x > 0:
-                                Main.vx = 10
-                                        
-                            else:
-                                Main.vx =- 10
-                            Main.y -= 10
-                            Main.rect.y -= 10
-                            Main.vy = -15
-                            Main.is_hurt = 30
-                            Main.get_hit()
-                                    
-                        elif Main.unhurtable_cd <= 0 and Main.HP == 1:
-                            Main.get_hit()
-                        atk_en.delete = 1
-                    
-            if atk_en.delete == 1:        
-                ATKs_EN.remove(atk_en)
-                del atk_en            
+       
 
 
         if enemy.HP <= 0:
@@ -749,6 +747,58 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     Main.now_NT_Touch = []                                      #角色目前碰撞清單
 
+
+
+    for atk_en in ATKs_EN:
+            
+        if atk_en.dif == "bullet":
+                
+            atk_en.dur -= 1
+                
+            if atk_en.dur == 0:
+                atk_en.delete = 1
+                
+            atk_en.surface = atk_en.frames[atk_en.index//5]
+            atk_en.index += 1
+            if atk_en.index > 29:
+                atk_en.index = 0
+                
+            if atk_en.tag_x == None:
+                atk_en.tag_x = (Main.rect.x - atk_en.rect.x)//30 
+            if atk_en.tag_y == None:
+                atk_en.tag_y = (Main.rect.y - atk_en.rect.y)//30
+                
+            atk_en.rect.x += atk_en.tag_x
+            atk_en.rect.y += atk_en.tag_y
+            atk_en.x = atk_en.rect.x
+            atk_en.y = atk_en.rect.y
+                
+            for obj in NT_object:
+                if atk_en.rect.colliderect(obj.rect):
+                    atk_en.delete = 1
+                        
+            if atk_en.rect.colliderect(Main.rect):
+                        
+                if Main.unhurtable_cd <= 0:
+                                    
+                    if Main.unhurtable_cd <= 0 and Main.HP > 1:
+                        if Main.rect.x-atk_en.rect.x > 0:
+                            Main.vx = 10
+                        else:
+                            Main.vx =- 10
+                        Main.y -= 10
+                        Main.rect.y -= 10
+                        Main.vy = -15
+                        Main.is_hurt = 30
+                        Main.get_hit()
+                                    
+                    elif Main.unhurtable_cd <= 0 and Main.HP == 1:
+                        Main.get_hit()
+                    atk_en.delete = 1
+                    
+        if atk_en.delete == 1:        
+            ATKs_EN.remove(atk_en)
+            del atk_en            
     for obj in NT_object:
         Touch(Main,obj)
 
