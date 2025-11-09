@@ -98,13 +98,12 @@ while True:
             scene = []
             BUTTON.empty()
 
-            button1 = button.Button(screen_width//2, screen_height//7*3, "Start", lambda:button.on_click(scene_ctrl,10))
-            button2 = button.Button(screen_width//2, screen_height//7*4, "Savings", lambda:button.on_click(scene_ctrl,5))
-            button3 = button.Button(screen_width//2, screen_height//8*7, "Achievement", lambda:button.on_click(scene_ctrl,2))
-            button4 = button.Button(screen_width//7, screen_height//8*7, "Menu", lambda:button.on_click(scene_ctrl,1))
+            button_start = button.Button(screen_width//2, screen_height//7*3, "Start", lambda:button.on_click(scene_ctrl,5))
+            button_achievement = button.Button(screen_width//2, screen_height//8*7, "Achievement", lambda:button.on_click(scene_ctrl,2))
+            button_menu = button.Button(screen_width//7, screen_height//8*7, "Menu", lambda:button.on_click(scene_ctrl,1))
             button_quit = button.Button(screen_width//7*6, screen_height//8*7, "Quit", button.quit_button)
 
-            BUTTON.add(button1,button2,button3,button4,button_quit)
+            BUTTON.add(button_start,button_achievement,button_menu,button_quit)
             
             while scene_ctrl.num == 0: 
                 
