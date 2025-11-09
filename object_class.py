@@ -118,6 +118,7 @@ class object():
                         self.tag_x = None
                         self.tag_y = None
                         self.delete = 0
+                        self.dur = 500
                 
 
 

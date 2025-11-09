@@ -685,6 +685,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         for atk_en in ATKs_EN:
             
             if atk_en.dif == "bullet":
+                atk_en.dur -= 1
+                
+                if atk_en.dur == 0:
+                    atk_en.delete = 1
                 
                 atk_en.surface = atk_en.frames[atk_en.index//5]
                 atk_en.index += 1
