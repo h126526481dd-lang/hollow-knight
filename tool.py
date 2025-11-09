@@ -681,6 +681,14 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         enemy.x -= atk_al.KB
                         enemy.rect.x -= atk_al.KB
                         enemy.unhurtable_cd = 60
+                        
+                    if enemy.type == 1:
+                        if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
+                            enemy.back = 1
+                        else:
+                            enemy.back = -1
+                            
+                        enemy.found = 1
 
         for atk_en in ATKs_EN:
             
@@ -791,6 +799,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     
     
     if Main.HP<=0:
+        Main.Dead_sound.play()
         Main.death_cd+=1
         Main.move_lock=1
         if Main.flip:
