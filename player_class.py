@@ -61,6 +61,9 @@ class player():
         self.attack1 = "Image\Character\mainchacter\Attack_1.png"
         self.attack2 = "Image\Character\mainchacter\Attack_2.png" 
         self.attack3 = "Image\Character\mainchacter\Attack_3.png" 
+
+        self.attack_sound = "Sound/blade.wav"
+        self.dead_sound = "Sound\dead.wav"
         
         #匯入Jump.png圖片並切分成動畫
         self.jumping = "Image\Character\mainchacter\Jump.png"
@@ -120,6 +123,8 @@ class player():
         self.Walk = None
         self.surface = None
         self.rect = None
+        self.Attack_sound = None
+        self.Dead_sound = None
 
         #設定蹬牆跳方向(0是沒使用 1向右跳 2向左跳)
         self.Walljump_direct = 0
@@ -193,6 +198,7 @@ class player():
 
 
     def attack(self):
+        self.Attack_sound.play()
         if self.atk_next > 0:  # 在緩衝時間內
             if self.atk_procedure == 1:
                 tool.start_animation(self.attack_state, self.Attack2, 5, self.flip, False)   #第二段攻擊
@@ -220,6 +226,8 @@ class player():
         self.Attack1 = None
         self.Attack2 = None
         self.Attack3 = None
+        self.Attack_sound = None
+        self.Dead_sound = None
         
         #匯入Jump.png圖片並切分成動畫
         self.Jump = None
@@ -250,6 +258,8 @@ class player():
         self.Attack1 = tool.split(self.attack1, 6)
         self.Attack2 = tool.split(self.attack2, 4) 
         self.Attack3 = tool.split(self.attack3, 3) 
+        self.Attack_sound = pygame.mixer.Sound(self.attack_sound)
+        self.Dead_sound = pygame.mixer.Sound(self.dead_sound)
         
         #匯入Jump.png圖片並切分成動畫
         self.Jump = tool.split(self.jumping, 12)

@@ -790,6 +790,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     
     
     if Main.HP<=0:
+        Main.Dead_sound.play()
         Main.death_cd+=1
         Main.move_lock=1
         if Main.flip:
