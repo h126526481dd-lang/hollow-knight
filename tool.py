@@ -587,6 +587,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     Main.Wall_slip = 0
                 else:
                     Main.Wall_slip = 1
+            else:
+                Main.vy = 10
 
         elif Main.vy <= 30 and not Main.skill_key[6] == 2:           #重力加速度(有設上限)
             Main.vy += 1
