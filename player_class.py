@@ -464,6 +464,7 @@ class enemy():
                             self.right_down_y = self.y+self.rect.height
                             self.Test_rect.x = self.x+self.rect.width
                             self.Test_rect.y = self.y+self.rect.height
+                            
                         else:
                             self.right_down_x = self.x
                             self.right_down_y = self.y+self.rect.height
@@ -471,27 +472,27 @@ class enemy():
                             self.Test_rect.y = self.y+self.rect.height
 
 
+                        if not self.phase == 7:    
+                            for obj in NT_object:
+                                tool.Touch(self, obj)
+                                if self.Test_rect.colliderect(obj.rect):
+                                    self.back_check += 1
 
-                        for obj in NT_object:
-                            tool.Touch(self, obj)
-                            if self.Test_rect.colliderect(obj.rect):
-                                self.back_check += 1
-
-                        if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
-                            self.back *= -1
-                            self.back_check=0
-                            self.back_cd =1
-                            self.surface = pygame.transform.flip(self.surface, True, False)
-                                            
-                        if self.back_check == 0 and self.back_cd == 0:
-                            self.back *= -1
-                            self.back_check=0
-                            self.back_cd =1
-                            self.surface = pygame.transform.flip(self.surface, True, False)
+                            if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
+                                self.back *= -1
+                                self.back_check=0
+                                self.back_cd =1
+                                self.surface = pygame.transform.flip(self.surface, True, False)
+                                                
+                            if self.back_check == 0 and self.back_cd == 0:
+                                self.back *= -1
+                                self.back_check=0
+                                self.back_cd =1
+                                self.surface = pygame.transform.flip(self.surface, True, False)
 
 
                         if self.back_check > 0:
-                            self.back_cd =0
+                            self.back_cd = 0
 
 
                         if "1_D" in self.now_NT_Touch:
@@ -500,7 +501,7 @@ class enemy():
                             self.on_ground =False
                         
                         
-                        if self.phase == 0:
+                        if self.phase == 0 or self.phase == 7:
                             pass
                             
                         else:    
@@ -517,11 +518,13 @@ class enemy():
                             
                         
                         if self.phase_cd == 0:
-                            self.phase=random.randint(0,10)
+                            self.phase=random.randint(0,7)
                             self.phase_cd = 30
                         
                         else:
                             self.phase_cd -= 1
+                            
+                            
                 case _:
                     self.pre_vx = self.vx
                     self.pre_vy = self.vy
@@ -553,13 +556,12 @@ class enemy():
                                             
                     if self.back_check == 0 and self.back_cd == 0:
                         self.back *= -1
-                        self.back_check=0
-                        self.back_cd =1
+                        self.back_cd = 1
                         self.surface = pygame.transform.flip(self.surface, True, False)
 
 
                     if self.back_check > 0:
-                        self.back_cd =0
+                        self.back_cd = 0
 
 
                     if "1_D" in self.now_NT_Touch:

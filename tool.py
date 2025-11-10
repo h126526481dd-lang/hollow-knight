@@ -71,6 +71,7 @@ def load_s(save,scene_ctrl):
             scene_ctrl.R_edge = 0
             scene_ctrl.L_edge = 0
             scene_ctrl.From = 0
+            scene_ctrl.done = 0
 
         case 2:
             with open('save\save_2.json', 'r', encoding='utf-8') as f:
@@ -631,7 +632,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         enemy.back = 1
                     else:
                         enemy.back = -1
-                    print ("orgback=",enemy.back)
                     
                 case 1:
                     pass
@@ -648,15 +648,22 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     ATKs_EN.append(object_class.object(enemy.x+300,enemy.y-100,pygame.transform.scale(pygame.image.load("Image\Object\\1.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
                 case 6:
                     pass
+                
                 case 7:
-                    pass
-                case 8:
-                    pass
-                case 9:
-                    pass
-                case 10:
-                    pass         
-            #print (enemy.phase)
+                    
+                    enemy.vy = -30
+                    enemy.vx = 0
+                    
+                    enemy.back_cd = 0
+                    
+                    enemy.y += enemy.vy
+                    enemy.rect.y += enemy.vy
+                    
+                    if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
+                        enemy.back = 1
+                    else:
+                        enemy.back = -1
+                    print("phase7")
                          
                          
                          
@@ -678,12 +685,41 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         
                     enemy.x += enemy.vx * enemy.back
                     enemy.rect.x += enemy.vx * enemy.back
+                    enemy.y += enemy.vy 
+                    enemy.rect.y += enemy.vy 
                     
+                    
+                case 7:
                     print ("back=",enemy.back)
-                    print ("v=",enemy.vx)                    
-                    print ("sum=",enemy.vx * enemy.back)
-                    enemy.y += enemy.vy *enemy.back
-                    enemy.rect.y += enemy.vy * enemy.back
+                    for obj in NT_object:
+                        Touch(enemy, obj)
+
+                    if ("1_L" in enemy.now_NT_Touch or "1_R" in enemy.now_NT_Touch) and enemy.back_cd == 0 :
+                        enemy.back *= -1
+                        enemy.back_cd = 1
+                        enemy.surface = pygame.transform.flip(enemy.surface, True, False)
+                        
+                    else:
+
+                        enemy.vy+=2
+                            
+                        if enemy.vy >= 0:
+                            enemy.vx = 40
+                                
+                        enemy.x += enemy.vx * enemy.back
+                        enemy.rect.x += enemy.vx * enemy.back
+                        enemy.y += enemy.vy 
+                        enemy.rect.y += enemy.vy 
+                        
+                        
+                        if enemy.phase_cd == 1:
+                            ATKs_EN.append(object_class.object(Main.x-200,Main.y-200,pygame.transform.scale(pygame.image.load("Image\Object\\1.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
+                            ATKs_EN.append(object_class.object(Main.x,Main.y-300,pygame.transform.scale(pygame.image.load("Image\Object\\1.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
+                            ATKs_EN.append(object_class.object(Main.x+200,Main.y-200,pygame.transform.scale(pygame.image.load("Image\Object\\1.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
+                
+                            
+                        
+                        
 
 
 
@@ -716,7 +752,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         
         for atk_al in ATKs_AL:
             
-            if enemy.unhurtable_cd <= 0:
+            if enemy.unhurtable_cd <= 0 :
                             
                 if Touch(enemy,atk_al):
                     if atk_al.rect.x - enemy.rect.x < 0:

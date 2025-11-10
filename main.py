@@ -44,6 +44,7 @@ class scene_c():
         self.back_cd = 0
         self.From = 0
         self.backpack = 0
+        self.done = 0
         
 
 def Load(save):
@@ -271,6 +272,7 @@ while True:
 
                 case -2:
                     Exit = [(-350,0)]
+                    scene_ctrl.done = 0
                     if scene_ctrl.pre_game == -1:
                         (Main.x,Main.y) = Exit[scene_ctrl.From]
                         (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)
@@ -302,10 +304,11 @@ while True:
                     
                     NT_object.append(object_class.object(-250,100,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
 
+                    NT_object.append(object_class.object(2300,-1500,pygame.transform.scale(tool.V_combine("Image/Background/floor.png",10),(600,2100)),"wall",0,0,0,0,0,0))
 
                     NT_object.append(object_class.object(-1300,100,tool.HRZ_combine("Image/Background/floor.png",6),"wall",0,0,0,0,0,0))
 
-                    Enemy.append(player_class.enemy("The_Second",500,-100,100,1))
+                    Enemy.append(player_class.enemy("The_Second",500,-100,200,1))
 
 
 
@@ -644,6 +647,25 @@ while True:
             scene_ctrl.pre_game = scene_ctrl.game
 
             while scene_ctrl.num == 10 and scene_ctrl.game == scene_ctrl.pre_game :                                                     #遊戲主迴圈
+                
+                
+                match scene_ctrl.game:
+                    case -2:
+                        if Main.rect.x >= 600 and scene_ctrl.done == 0:                     
+                            NT_object.append(object_class.object(400,-1500,tool.V_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+                            scene_ctrl.done = 1
+
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 
                 if scene_ctrl.init == 1:
                     scene_ctrl.init = 0
