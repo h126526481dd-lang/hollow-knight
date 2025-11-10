@@ -396,61 +396,6 @@ class enemy():
                                     self.wait = 30
                                     self.found = 1                        
 
-                        self.pre_vx = self.vx
-                        self.pre_vy = self.vy
-                        
-                        self.back_check=0
-
-                        if self.back==1:
-                            self.right_down_x = self.x+self.rect.width
-                            self.right_down_y = self.y+self.rect.height
-                            self.Test_rect.x = self.x+self.rect.width
-                            self.Test_rect.y = self.y+self.rect.height
-                        else:
-                            self.right_down_x = self.x
-                            self.right_down_y = self.y+self.rect.height
-                            self.Test_rect.x = self.x
-                            self.Test_rect.y = self.y+self.rect.height
-
-
-
-                        for obj in NT_object:
-                            tool.Touch(self, obj)
-                            if self.Test_rect.colliderect(obj.rect):
-                                self.back_check += 1
-
-                        if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
-                            self.back *= -1
-                            self.back_check=0
-                            self.back_cd =1
-                            self.surface = pygame.transform.flip(self.surface, True, False)
-                                            
-                        if self.back_check == 0 and self.back_cd == 0:
-                            self.back *= -1
-                            self.back_check=0
-                            self.back_cd =1
-                            self.surface = pygame.transform.flip(self.surface, True, False)
-
-
-                        if self.back_check > 0:
-                            self.back_cd =0
-
-
-                        if "1_D" in self.now_NT_Touch:
-                            self.on_ground = True
-                        else:
-                            self.on_ground =False
-                        
-                        if self.on_ground :
-                            self.vy = 0
-                            self.vx = 5*self.back
-                            self.x += self.vx
-                            self.rect.x += self.vx
-                        else:
-                            
-                            self.vy+=1
-                            self.y += self.vy
-                            self.rect.y += self.vy  
                     
                     else:
                         
