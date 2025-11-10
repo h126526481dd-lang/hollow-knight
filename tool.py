@@ -752,6 +752,15 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         
         for atk_al in ATKs_AL:
             
+            
+            for atk_en in ATKs_EN:
+                if atk_en.dif == "bullet":
+                    if atk_al.rect.colliderect(atk_en.rect):
+                        atk_en.delete = 1
+
+                    
+            
+            
             if enemy.unhurtable_cd <= 0 :
                             
                 if Touch(enemy,atk_al):
@@ -812,6 +821,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             for obj in NT_object:
                 if atk_en.rect.colliderect(obj.rect):
                     atk_en.delete = 1
+
                         
             if atk_en.rect.colliderect(Main.rect):
                         
