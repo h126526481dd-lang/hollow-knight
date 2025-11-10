@@ -294,7 +294,7 @@ while True:
                     
                     scene_ctrl.R_edge = 1800 - screen_width//2
                     scene_ctrl.L_edge = -1500 + screen_width//2
-                    scene_ctrl.T_edge = -2200 + screen_height //2
+                    scene_ctrl.T_edge = -1900 + screen_height //2
                     scene_ctrl.B_edge = -250
 
                     scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
@@ -307,6 +307,10 @@ while True:
                     NT_object.append(object_class.object(2300,-1500,pygame.transform.scale(tool.V_combine("Image/Background/floor.png",10),(600,2100)),"wall",0,0,0,0,0,0))
 
                     NT_object.append(object_class.object(-1300,100,tool.HRZ_combine("Image/Background/floor.png",6),"wall",0,0,0,0,0,0))
+                    
+                    
+                    NT_object.append(object_class.object(400,-1500,tool.HRZ_combine("Image/Background/floor.png",15),"wall",0,0,0,0,0,0))
+
 
                     Enemy.append(player_class.enemy("The_Second",500,-100,200,1))
 
