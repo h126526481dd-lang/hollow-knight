@@ -633,6 +633,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if enemy.phase_cd == 0 and not enemy.attack_state["playing"]:
                 match enemy.phase:
                     case 0: #零前搖衝刺
+                        if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
+                            enemy.back = 1
+                        else:
+                            enemy.back = -1
                         start_animation(enemy.attack_state, enemy.boss_attack3, 10, enemy.back-1, False, (320,300))       
             
                     case 1: #射2子彈
@@ -642,6 +646,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         start_animation(enemy.attack_state, enemy.boss_attack1, 6, enemy.back-1, False, (320,300))
 
                     case 3:  #因果律起跳
+                        if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
+                            enemy.back = 1
+                        else:
+                            enemy.back = -1
                         start_animation(enemy.attack_state, enemy.boss_attack4, 3, enemy.back-1, False, (320,300))
                         enemy.vy = -40
                         enemy.vx = 0
