@@ -102,13 +102,6 @@ class object():
                         self.vy = 0
                         self.can_be_through = 1                                         #物件是否可通過(布林值)
                         self.surface= pygame.transform.scale(self.surface,(32,32))
-                        self.frames = [pygame.transform.scale(pygame.image.load("Image\Object\\1.png"), (32, 32)),
-                                       pygame.transform.scale(pygame.image.load("Image\Object\\2.png"), (32, 32)),
-                                       pygame.transform.scale(pygame.image.load("Image\Object\\3.png"), (32, 32)),
-                                       pygame.transform.scale(pygame.image.load("Image\Object\\4.png"), (32, 32)),
-                                       pygame.transform.scale(pygame.image.load("Image\Object\\5.png"), (32, 32)),
-                                       pygame.transform.scale(pygame.image.load("Image\Object\\6.png"), (32, 32))]
-
 
                         self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
                         self.ATK=ATK

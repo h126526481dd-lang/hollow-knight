@@ -306,11 +306,18 @@ class enemy():
         self.pre_vy = 0
 
         self.found = 0
+        self.attack_state = {}
+        self.attack_state["playing"] = False
+        self.anime = False
+        
 
         match self.type:
             
             case 1:    
-                self.surface =pygame.image.load("Image\Character\Enemy\zombie.png")
+                self.boss_idle = tool.split("Image\Character\Enemy\Boss\Idle.png",4)
+                self.boss_attack1 = tool.split("Image\Character\Enemy\Boss\Attack1.png",8)
+                self.boss_attack2 = tool.split("Image\Character\Enemy\Boss\Attack2.png",6)
+                self.surface = pygame.transform.scale(self.boss_idle[0],(320,230))        #pygame.image.load("Image\Character\Enemy\zombie.png")
                 self.rect = self.surface.get_rect(topleft=(self.x, self.y))
 
                 self.phase = 0
@@ -417,9 +424,9 @@ class enemy():
                             self.Test_rect.y = self.y+self.rect.height
 
 
-                        if not self.phase == 7:    
-                            for obj in NT_object:
-                                tool.Touch(self, obj)
+                        for obj in NT_object:
+                            tool.Touch(self, obj)
+                            if not self.phase == 3:    
                                 if self.Test_rect.colliderect(obj.rect):
                                     self.back_check += 1
 
@@ -446,9 +453,9 @@ class enemy():
                             self.on_ground =False
                         
                         
-                        if self.phase == 0 or self.phase == 7:
-                            pass
-                            
+                        if (self.phase == 0 or self.phase == 3) and not self.phase_cd > 30:
+                            if self.on_ground :
+                                self.vy = 0                            
                         else:    
                             if self.on_ground :
                                 self.vy = 0
@@ -462,12 +469,7 @@ class enemy():
                                 self.rect.y += self.vy
                             
                         
-                        if self.phase_cd == 0:
-                            self.phase=random.randint(0,7)
-                            self.phase_cd = 30
-                        
-                        else:
-                            self.phase_cd -= 1
+
                             
                             
                 case _:

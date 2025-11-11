@@ -312,7 +312,7 @@ while True:
                     NT_object.append(object_class.object(400,-1500,tool.HRZ_combine("Image/Background/floor.png",15),"wall",0,0,0,0,0,0))
 
 
-                    Enemy.append(player_class.enemy("The_Second",1200,-85,200,1))
+                    Enemy.append(player_class.enemy("The_Second",1200,-135,200,1))
 
 
 
@@ -658,19 +658,7 @@ while True:
                         if Main.rect.x >= 600 and scene_ctrl.done == 0:                     
                             NT_object.append(object_class.object(400,-1500,tool.V_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
                             scene_ctrl.done = 1
-
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+     
                 if scene_ctrl.init == 1:
                     scene_ctrl.init = 0
                     break
