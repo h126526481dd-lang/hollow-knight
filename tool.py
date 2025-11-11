@@ -140,7 +140,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_
     for enemy in Enemy:
         if camera_rect.colliderect(enemy.rect):
             screen.blit(enemy.surface, (enemy.x - camera_x, enemy.y - camera_y))
-            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.x - camera_x, enemy.y - camera_y, enemy.rect.width, enemy.rect.height),1)
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.rect.x - camera_x, enemy.rect.y - camera_y, enemy.rect.width, enemy.rect.height),1)
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down_x - enemy.Test_rect.width - camera_x,  enemy.right_down_y - camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
     
 
@@ -628,21 +628,21 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
             if enemy.phase_cd > 0:
                 enemy.phase_cd -= 1
-                anime_update(enemy, 4 ,enemy.back-1 , 6, enemy.boss_walk, (320,230))
+                anime_update(enemy, 4 ,enemy.back-1 , 6, enemy.boss_walk, (320,300))
 
             if enemy.phase_cd == 0 and not enemy.attack_state["playing"]:
                 match enemy.phase:
                     case 0: #零前搖衝刺
-                        start_animation(enemy.attack_state, enemy.boss_attack3, 10, enemy.back-1, False, (320,230))       
+                        start_animation(enemy.attack_state, enemy.boss_attack3, 10, enemy.back-1, False, (320,300))       
             
                     case 1: #射2子彈
-                        start_animation(enemy.attack_state, enemy.boss_attack2, 6, enemy.back-1, False, (320,230))
+                        start_animation(enemy.attack_state, enemy.boss_attack2, 6, enemy.back-1, False, (320,300))
 
                     case 2: #射3子彈
-                        start_animation(enemy.attack_state, enemy.boss_attack1, 6, enemy.back-1, False, (320,230))
+                        start_animation(enemy.attack_state, enemy.boss_attack1, 6, enemy.back-1, False, (320,300))
 
                     case 3:  #因果律起跳
-                        start_animation(enemy.attack_state, enemy.boss_attack4, 3, enemy.back-1, False, (320,230))
+                        start_animation(enemy.attack_state, enemy.boss_attack4, 3, enemy.back-1, False, (320,300))
                         enemy.vy = -40
                         enemy.vx = 0
                                 

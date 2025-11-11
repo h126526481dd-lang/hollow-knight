@@ -325,24 +325,24 @@ class enemy():
                 del self.boss_attack4[4:6]
 
 
-                self.surface = pygame.transform.scale(self.boss_idle[0],(320,230))        #pygame.image.load("Image\Character\Enemy\zombie.png")
+                self.surface = pygame.transform.scale(self.boss_idle[0],(320,300))        #pygame.image.load("Image\Character\Enemy\zombie.png")
                 self.rect = self.surface.get_rect(topleft=(self.x, self.y))
 
-                self.rect.width -= 30
-                self.rect.x += 15
-                self.rect.height -= 50
-                self.rect.y += 50
 
-                self.x += 15
-                self.y += 50
+                self.rect.x = self.x + 21
+                self.rect.y = self.y + 80
+
+                self.rect.width -= 41
+                self.rect.height -= 80
+
 
                 self.skill_time = 0
 
                 self.phase = 3
                 self.phase_cd = 0
 
-                self.right_down_x = self.x+self.rect.width
-                self.right_down_y = self.y+self.rect.height
+                self.right_down_x = self.rect.x+self.rect.width
+                self.right_down_y = self.rect.y+self.rect.height
 
                 self.Test_rect = pygame.rect.Rect(self.right_down_x,self.right_down_y,20,20)            
             
@@ -430,16 +430,16 @@ class enemy():
                         self.back_check=0
 
                         if self.back==1:
-                            self.right_down_x = self.x+self.rect.width
-                            self.right_down_y = self.y+self.rect.height
-                            self.Test_rect.x = self.x+self.rect.width
-                            self.Test_rect.y = self.y+self.rect.height
+                            self.right_down_x = self.rect.x+self.rect.width
+                            self.right_down_y = self.rect.y+self.rect.height
+                            self.Test_rect.x = self.rect.x+self.rect.width
+                            self.Test_rect.y = self.rect.y+self.rect.height
                             
                         else:
-                            self.right_down_x = self.x
-                            self.right_down_y = self.y+self.rect.height
-                            self.Test_rect.x = self.x
-                            self.Test_rect.y = self.y+self.rect.height
+                            self.right_down_x = self.rect.x
+                            self.right_down_y = self.rect.y+self.rect.height
+                            self.Test_rect.x = self.rect.x
+                            self.Test_rect.y = self.rect.y+self.rect.height
 
 
                         for obj in NT_object:
