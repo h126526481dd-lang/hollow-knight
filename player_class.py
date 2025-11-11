@@ -305,22 +305,40 @@ class enemy():
         self.pre_vx = 0
         self.pre_vy = 0
 
-        self.found = 0
+        self.found = False
         self.attack_state = {}
         self.attack_state["playing"] = False
         self.anime = False
-        
+        self.image = 0
+        self.anime_time = 0        
 
         match self.type:
             
             case 1:    
                 self.boss_idle = tool.split("Image\Character\Enemy\Boss\Idle.png",4)
+                self.boss_walk = tool.split("Image\Character\Enemy\Boss\Walk.png",6)
                 self.boss_attack1 = tool.split("Image\Character\Enemy\Boss\Attack1.png",8)
                 self.boss_attack2 = tool.split("Image\Character\Enemy\Boss\Attack2.png",6)
+                self.boss_attack3 = tool.split("Image\Character\Enemy\Boss\Attack4.png",6)
+                del self.boss_attack3[4:6]
+                self.boss_attack4 = tool.split("Image\Character\Enemy\Boss\Attack4.png",6)
+                del self.boss_attack4[4:6]
+
+
                 self.surface = pygame.transform.scale(self.boss_idle[0],(320,230))        #pygame.image.load("Image\Character\Enemy\zombie.png")
                 self.rect = self.surface.get_rect(topleft=(self.x, self.y))
 
-                self.phase = 0
+                self.rect.width -= 30
+                self.rect.x += 15
+                self.rect.height -= 50
+                self.rect.y += 50
+
+                self.x += 15
+                self.y += 50
+
+                self.skill_time = 0
+
+                self.phase = 3
                 self.phase_cd = 0
 
                 self.right_down_x = self.x+self.rect.width
@@ -382,8 +400,8 @@ class enemy():
             match self.type:
                 
                 case 1:    
-
-                    if self.found == 0:
+                    
+                    if not self.found:
                         if player.rect.x - (self.rect.x+self.rect.width//2) < 0 and self.back == -1:
                             
                             if  pow((player.rect.x - (self.rect.x+self.rect.width//2)),2) + pow((player.rect.y - (self.rect.y+self.rect.height//2)),2) <= pow(1000,2):
@@ -391,7 +409,7 @@ class enemy():
 
                                 if self.Find(player,NT_object):
                                     self.wait = 30
-                                    self.found = 1
+                                    self.found = True
                                     
                                     
                         if player.rect.x - (self.rect.x+self.rect.width//2) > 0 and self.back == 1:
@@ -401,7 +419,7 @@ class enemy():
                                 
                                 if self.Find(player,NT_object):
                                     self.wait = 30
-                                    self.found = 1                        
+                                    self.found = True                        
 
                     
                     else:
@@ -426,21 +444,19 @@ class enemy():
 
                         for obj in NT_object:
                             tool.Touch(self, obj)
-                            if not self.phase == 3:    
-                                if self.Test_rect.colliderect(obj.rect):
-                                    self.back_check += 1
 
-                            if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
-                                self.back *= -1
-                                self.back_check=0
-                                self.back_cd =1
-                                self.surface = pygame.transform.flip(self.surface, True, False)
+                            if self.Test_rect.colliderect(obj.rect):
+                               self.back_check += 1
+
+                        if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
+                            self.back *= -1
+                            self.back_check = 1
+                            self.surface = pygame.transform.flip(self.surface, True, False)
                                                 
-                            if self.back_check == 0 and self.back_cd == 0:
-                                self.back *= -1
-                                self.back_check=0
-                                self.back_cd =1
-                                self.surface = pygame.transform.flip(self.surface, True, False)
+                        if self.back_check == 0 and self.back_cd == 0:
+                            self.back *= -1
+                            self.back_cd = 1
+                            self.surface = pygame.transform.flip(self.surface, True, False)
 
 
                         if self.back_check > 0:
@@ -452,14 +468,32 @@ class enemy():
                         else:
                             self.on_ground =False
                         
-                        
-                        if (self.phase == 0 or self.phase == 3) and not self.phase_cd > 30:
+
+
+                        if (self.phase == 0 or self.phase == 3) and self.skill_time > 0:
+
                             if self.on_ground :
-                                self.vy = 0                            
+                                self.vy = 0    
+                                self.x += self.vx * self.back
+                                self.rect.x += self.vx * self.back
+                                self.y += self.vy
+                                self.rect.y += self.vy        
+
+                            else:
+                                self.vy+=1
+                                self.x += self.vx * self.back
+                                self.rect.x += self.vx * self.back
+                                self.y += self.vy
+                                self.rect.y += self.vy                       
+
                         else:    
                             if self.on_ground :
+
+
                                 self.vy = 0
                                 self.vx = 7*self.back
+                                if self.attack_state["playing"]:
+                                    self.vx = 0
                                 self.x += self.vx
                                 self.rect.x += self.vx
                             else:
@@ -497,8 +531,7 @@ class enemy():
 
                     if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
                         self.back *= -1
-                        self.back_check=0
-                        self.back_cd =1
+                        self.back_check = 1
                         self.surface = pygame.transform.flip(self.surface, True, False)
                                             
                     if self.back_check == 0 and self.back_cd == 0:

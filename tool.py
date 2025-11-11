@@ -340,7 +340,7 @@ def V_combine(picture, times):
 
 
 #播放動畫(物件, 幾偵動一下, 是否翻轉, 圖片數, 圖片清單)
-def anime_update(object, change_time ,flip , image_num, image_list):
+def anime_update(object, change_time ,flip , image_num, image_list, scale = None):
     object.anime_time += 1
     if object.anime_time >= change_time:
         object.image += 1
@@ -349,13 +349,15 @@ def anime_update(object, change_time ,flip , image_num, image_list):
             object.image = 0
     
     object.surface = image_list[object.image]
+    if scale != None:
+        object.surface = pygame.transform.scale(object.surface, scale)
     if flip:
         object.surface = pygame.transform.flip(object.surface, True, False)
 
 
 
-#初始化動畫設定
-def start_animation(state, image_list, change_time, flip, loop): 
+#初始化動畫設定(物件字典(宣告時需加playing), 圖片清單, 幾偵換下一張, 是否循環, 大小(預設則不填))
+def start_animation(state, image_list, change_time, flip, loop, scale = None): 
     state["playing"] = True
     state["current_frame"] = 0
     state["timer"] = 0
@@ -363,6 +365,7 @@ def start_animation(state, image_list, change_time, flip, loop):
     state["change_time"] = change_time
     state["flip"] = flip
     state["loop"] = loop
+    state["scale"] = scale
 
 
 
@@ -387,6 +390,8 @@ def update_animation(obj, state):
 
     # 更新圖片
     frame = state["image_list"][state["current_frame"]]
+    if state["scale"] != None:
+        frame = pygame.transform.scale(frame, state["scale"])
     obj.surface = pygame.transform.flip(frame, True, False) if state["flip"] else frame
     return False
 
@@ -606,10 +611,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     CT_object.remove(obj)
                     del obj
 
-#===============================================================碰撞清單清除、傷害判定以及敵人區
+#===============================================================敵人邏輯區
 
     for enemy in Enemy:
-        print("cd=",enemy.phase_cd,",phase=",enemy.phase)
+        print("cd=",enemy.phase_cd,",phase=",enemy.phase,",skill_time=",enemy.skill_time,",back=",enemy.back,",vx=",enemy.vx)
 
         if enemy.unhurtable_cd > 0:
             enemy.unhurtable_cd -= 3
@@ -619,122 +624,132 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
        
         enemy.anime = update_animation(enemy, enemy.attack_state)
         enemy.attack_state["playing"]
-        if enemy.type == 1 and enemy.found == 1 and enemy.phase_cd > -1:
-            enemy.phase_cd -= 1
+        if enemy.type == 1 and enemy.found:
 
+            if enemy.phase_cd > 0:
+                enemy.phase_cd -= 1
+                anime_update(enemy, 4 ,enemy.back-1 , 6, enemy.boss_walk, (320,230))
 
-        if enemy.type == 1 and enemy.found == 1 and enemy.phase_cd == 0 and not enemy.attack_state["playing"]:
-            match enemy.phase:
-                case 0: #零前搖衝刺
-                    start_animation(enemy.attack_state, enemy.boss_attack1, 4, enemy.back, False)        
-                    enemy.vx = 0
-                    enemy.vy = 0
-                            
-                    if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
-                        enemy.back = 1
-                    else:
-                        enemy.back = -1
-                            
-                case 1: #射2子彈
-                    start_animation(enemy.attack_state, enemy.boss_attack1, 4, enemy.back, False)
-                    print(enemy.attack_state)
-                    ATKs_EN.append(object_class.object(enemy.x,enemy.y-100,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
-                    ATKs_EN.append(object_class.object(enemy.x+100,enemy.y-150,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
-                    
-                    enemy.phase=random.randint(0,3)
-                    enemy.phase_cd = random.randint(180,420)
+            if enemy.phase_cd == 0 and not enemy.attack_state["playing"]:
+                match enemy.phase:
+                    case 0: #零前搖衝刺
+                        start_animation(enemy.attack_state, enemy.boss_attack3, 10, enemy.back-1, False, (320,230))       
+            
+                    case 1: #射2子彈
+                        start_animation(enemy.attack_state, enemy.boss_attack2, 6, enemy.back-1, False, (320,230))
 
-                case 2: #射3子彈
-                    start_animation(enemy.attack_state, enemy.boss_attack2, 4, enemy.back, False)
-                    print(enemy.attack_state)
-                    ATKs_EN.append(object_class.object(enemy.x-300,enemy.y-100,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
-                    ATKs_EN.append(object_class.object(enemy.x,enemy.y-200,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
-                    ATKs_EN.append(object_class.object(enemy.x+300,enemy.y-100,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
-                    
-                    enemy.phase=random.randint(0,3)
-                    enemy.phase_cd = random.randint(180,420)
+                    case 2: #射3子彈
+                        start_animation(enemy.attack_state, enemy.boss_attack1, 6, enemy.back-1, False, (320,230))
 
-                case 3:  #因果律起跳
-                    start_animation(enemy.attack_state, enemy.boss_attack1, 4, enemy.back, False)        
-                    enemy.vy = -30
-                    enemy.vx = 0
-                            
-                    enemy.back_cd = 0
-                            
-                    enemy.y += enemy.vy
-                    enemy.rect.y += enemy.vy
-                            
-                    if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
-                        enemy.back = 1
-                    else:
-                        enemy.back = -1
-
-        elif enemy.attack_state["playing"]:         #動畫執行中
-            enemy.phase_cd = -2
-        
-        elif enemy.anime:       #動畫播放完畢
-            enemy.phase_cd = 0
-
-        elif enemy.type == 1 and enemy.found == 1 and not enemy.phase_cd == -1 and not enemy.phase_cd >= 0:
-            match enemy.phase:
-                case 0:
-                        
-                    if enemy.phase_cd >= 14:
-                            
-                        enemy.vx += 3 
-
-                    elif enemy.phase_cd > 0 and abs(enemy.vx) > 3:
-                        
-                        enemy.vx -= 3
-
-                    enemy.x += enemy.vx * enemy.back
-                    enemy.rect.x += enemy.vx * enemy.back
-                    enemy.y += enemy.vy 
-                    enemy.rect.y += enemy.vy 
-                        
-                        
-                case 3:
-                    for obj in NT_object:
-                        Touch(enemy, obj)
-
-                    if ("1_L" in enemy.now_NT_Touch or "1_R" in enemy.now_NT_Touch) and enemy.back_cd == 0 :
-                        enemy.back *= -1
-                        enemy.back_cd = 1
-                        enemy.surface = pygame.transform.flip(enemy.surface, True, False)
-                            
-                    else:
-
-                        enemy.vy+=2
+                    case 3:  #因果律起跳
+                        start_animation(enemy.attack_state, enemy.boss_attack4, 3, enemy.back-1, False, (320,230))
+                        enemy.vy = -40
+                        enemy.vx = 0
                                 
+                        enemy.back_cd = 0
+                                
+                        enemy.y += enemy.vy
+                        enemy.rect.y += enemy.vy
+                                
+            elif enemy.attack_state["playing"]:         #動畫執行中
+                enemy.phase_cd = -1
+                if enemy.phase == 3:
+                    enemy.vy+=2
+
+            elif enemy.anime:                           #動畫播放完畢
+                enemy.phase_cd = -2
+
+            elif enemy.phase_cd == -2:
+
+                match enemy.phase:
+                    case 0:     #零前搖衝刺
+                        enemy.skill_time = 30
+                        enemy.vx = 0
+                        enemy.vy = 0
+                                
+                        if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
+                            enemy.back = 1
+                        else:
+                            enemy.back = -1
+                                
+                    case 1:     #射2子彈
+                        enemy.skill_time = 0
+
+                        ATKs_EN.append(object_class.object(enemy.x,enemy.y-100,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
+                        ATKs_EN.append(object_class.object(enemy.x+100,enemy.y-150,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
+                        
+                        enemy.phase=random.randint(0,3)
+                        enemy.phase_cd = random.randint(180,420)
+
+                    case 2:     #射3子彈
+                        enemy.skill_time = 0
+
+                        ATKs_EN.append(object_class.object(enemy.x-300,enemy.y-100,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
+                        ATKs_EN.append(object_class.object(enemy.x,enemy.y-200,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
+                        ATKs_EN.append(object_class.object(enemy.x+300,enemy.y-100,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
+                        
+                        enemy.phase=random.randint(0,3)
+                        enemy.phase_cd = random.randint(180,420)
+
+                    case 3:     #因果律起跳
+                        enemy.skill_time = 18
+                        enemy.wait = 15
+                        if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
+                            enemy.back = 1
+                        else:
+                            enemy.back = -1
+
+
+                enemy.phase_cd = -3
+
+            elif enemy.phase_cd == -3 and enemy.skill_time > 0 and enemy.wait == 0:
+
+                enemy.skill_time -= 1
+
+                match enemy.phase:
+                    
+                    case 0:
+                            
+                        if enemy.skill_time >= 15:
+                                
+                            enemy.vx += 3 
+
+                        elif enemy.skill_time >= 0 and abs(enemy.vx) > 3:
+                            
+                            enemy.vx -= 3
+                        if enemy.skill_time == 0:
+                            if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
+                                enemy.back = 1
+                            else:
+                                enemy.back = -1
+                            
+                    case 3:
+                    
+                        for obj in NT_object:
+                            Touch(enemy, obj)
+
+                        enemy.vy += 1
+
                         if enemy.vy >= 0:
                             enemy.vx = 40
-                                    
-                        enemy.x += enemy.vx * enemy.back
-                        enemy.rect.x += enemy.vx * enemy.back
-                        enemy.y += enemy.vy 
-                        enemy.rect.y += enemy.vy 
-                            
-                            
-                        if enemy.phase_cd == 0:
+
+                                
+                        if enemy.skill_time == 0:
                             ATKs_EN.append(object_class.object(Main.x-200,Main.y-200,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
                             ATKs_EN.append(object_class.object(Main.x,Main.y-300,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
                             ATKs_EN.append(object_class.object(Main.x+200,Main.y-200,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
+                            if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
+                                enemy.back = 1
+                            else:
+                                enemy.back = -1
 
-            
-        elif enemy.type == 1 and enemy.found == 1 and enemy.phase_cd == -1:
-            enemy.phase=random.randint(0,3)
-            enemy.phase_cd = random.randint(180,420)
+            elif enemy.phase_cd == -3 and enemy.skill_time == 0:
+                enemy.phase=random.randint(0,3)
+                enemy.phase_cd = random.randint(10,40)
 
-                            
-                        
-                        
-
-
-
-      
         player_class.enemy.Move(enemy,NT_object,Main)
 
-
+#====================================================================碰撞清單清除、傷害判定
         if Touch(Main,enemy):
             if Main.unhurtable_cd <= 0 and Main.HP > 1:
 
@@ -751,13 +766,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 
             elif Main.unhurtable_cd <= 0 and Main.HP == 1:
                 Main.get_hit()
-
-        
-        
-
             
-            
-                        
         for atk_al in ATKs_AL:
             
             
@@ -766,9 +775,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     if atk_al.rect.colliderect(atk_en.rect):
                         atk_en.delete = 1
 
-                    
-            
-            
             if enemy.unhurtable_cd <= 0 :
                             
                 if Touch(enemy,atk_al):
@@ -789,7 +795,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         else:
                             enemy.back = -1
                             
-                        enemy.found = 1
+                        enemy.found = True
 
        
 
