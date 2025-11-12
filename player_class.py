@@ -328,6 +328,7 @@ class enemy():
                 self.surface = pygame.transform.scale(self.boss_idle[0],(320,300))        #pygame.image.load("Image\Character\Enemy\zombie.png")
                 self.rect = self.surface.get_rect(topleft=(self.x, self.y))
 
+                self.broke = 0
 
                 self.rect.x = self.x + 21
                 self.rect.y = self.y + 80
@@ -394,6 +395,27 @@ class enemy():
 
         if self.wait > 0:
             self.wait -= 1
+            for obj in NT_object:
+                tool.Touch(self, obj)
+            if "1_D" in self.now_NT_Touch:
+                self.on_ground = True
+            else:
+                self.on_ground =False
+            
+            if self.on_ground :
+                self.vy = 0
+                if abs(self.vx) > 0:
+                    self.x += self.vx
+                    self.rect.x += self.vx
+
+                    self.vx = 0
+
+            else:
+                self.vx = 0
+                self.vy+=1
+                self.y += self.vy
+                self.rect.y += self.vy  
+            
         
         else:
 
@@ -455,10 +477,10 @@ class enemy():
                             self.back_cd = 1
                             self.surface = pygame.transform.flip(self.surface, True, False)
                                                 
-                        #if self.back_check == 0 and self.back_cd == 0:
-                         #   self.back *= -1
-                          #  self.back_cd = 1
-                           # self.surface = pygame.transform.flip(self.surface, True, False)
+                        if not (self.phase_cd == -3 and self.skill_time > 0 and self.wait == 0) and self.back_check == 0 and self.back_cd == 0:
+                            self.back *= -1
+                            self.back_cd = 1
+                            self.surface = pygame.transform.flip(self.surface, True, False)
 
 
                         if self.back_check > 0:
@@ -467,6 +489,7 @@ class enemy():
 
                         if "1_D" in self.now_NT_Touch:
                             self.on_ground = True
+
                         else:
                             self.on_ground =False
                         

@@ -634,7 +634,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
        
         enemy.anime = update_animation(enemy, enemy.attack_state)
         enemy.attack_state["playing"]
-        if enemy.type == 1 and enemy.found:
+        if enemy.type == 1 and enemy.found and enemy.wait == 0:
 
             if enemy.phase_cd > 0:
                 enemy.phase_cd -= 1
@@ -710,7 +710,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         enemy.phase_cd = random.randint(180,420)
 
                     case 3:     #因果律起跳
-                        enemy.skill_time = 18
+                        enemy.skill_time = 15
                         enemy.wait = 10
                         if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
                             enemy.back = 1
@@ -720,7 +720,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                 enemy.phase_cd = -3
 
-            elif enemy.phase_cd == -3 and enemy.skill_time > 0 and enemy.wait == 0:
+            elif enemy.phase_cd == -3 and enemy.skill_time > 0:
 
                 for obj in NT_object:
                     Touch(enemy, obj)
@@ -766,6 +766,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             elif enemy.phase_cd == -3 and enemy.skill_time == 0:
                 enemy.phase=random.randint(0,3)
                 enemy.phase_cd = random.randint(10,40)
+                enemy.broke += 1
+                if enemy.broke == 3 :
+                    enemy.wait = 180
+                    enemy.broke = 0
 
         player_class.enemy.Move(enemy,NT_object,Main)
 
@@ -798,15 +802,13 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if enemy.unhurtable_cd <= 0 :
                             
                 if Touch(enemy,atk_al):
-                    if atk_al.rect.x - enemy.rect.x < 0:
+                    if atk_al.rect.x - enemy.rect.x - enemy.rect.width//2 < 0:
                         enemy.HP -= atk_al.ATK
-                        enemy.x += atk_al.KB
-                        enemy.rect.x += atk_al.KB
+                        enemy.vx += atk_al.KB
                         enemy.unhurtable_cd = 60
                     else:
                         enemy.HP -= atk_al.ATK
-                        enemy.x -= atk_al.KB
-                        enemy.rect.x -= atk_al.KB
+                        enemy.vx -= atk_al.KB
                         enemy.unhurtable_cd = 60
                         
                     if enemy.type == 1:
@@ -839,8 +841,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 
             if atk_en.tag_x == None:
                 atk_en.tag_x = (Main.rect.x - atk_en.rect.x)//30 
-            if atk_en.tag_y == None:
                 atk_en.tag_y = (Main.rect.y - atk_en.rect.y)//30
+                atk_en.surface = pygame.transform.rotate(atk_en.surface,math.atan2(atk_en.tag_y,atk_en.tag_x))
+            
                 
             atk_en.rect.x += atk_en.tag_x
             atk_en.rect.y += atk_en.tag_y
