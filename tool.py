@@ -605,11 +605,21 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     if keys[pygame.K_w]:
         for obj in CT_object:
-            if obj.type == "skill":
-                if Touch(Main,obj):
-                    Main.skill_key[obj.num] = 1
-                    CT_object.remove(obj)
-                    del obj
+            if Touch(Main,obj):
+
+                if obj.type == "skill":
+                        Main.skill_key[obj.num] = 1
+                        CT_object.remove(obj)
+                        del obj
+                        
+                if obj.type == "path":
+                        scene_ctrl.game = obj.goto[0]
+                        scene_ctrl.From = obj.goto[1]
+                        
+                if obj.type == "save_point":
+                        Main.HP=Main.Max_HP
+                        save(Main,scene_ctrl)
+                        Main.read_surface()
 
 #===============================================================敵人邏輯區
 
@@ -701,7 +711,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                     case 3:     #因果律起跳
                         enemy.skill_time = 18
-                        enemy.wait = 15
+                        enemy.wait = 10
                         if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
                             enemy.back = 1
                         else:
@@ -712,6 +722,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
             elif enemy.phase_cd == -3 and enemy.skill_time > 0 and enemy.wait == 0:
 
+                for obj in NT_object:
+                    Touch(enemy, obj)
+                    
                 enemy.skill_time -= 1
 
                 match enemy.phase:
@@ -733,8 +746,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                             
                     case 3:
                     
-                        for obj in NT_object:
-                            Touch(enemy, obj)
 
                         enemy.vy += 1
 
@@ -746,6 +757,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                             ATKs_EN.append(object_class.object(Main.x-200,Main.y-200,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
                             ATKs_EN.append(object_class.object(Main.x,Main.y-300,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
                             ATKs_EN.append(object_class.object(Main.x+200,Main.y-200,pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"), (100, 100)),"dangerous",1,0,"bullet",None,None,None))
+                            
                             if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
                                 enemy.back = 1
                             else:

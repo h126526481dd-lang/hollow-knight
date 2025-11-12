@@ -312,7 +312,7 @@ while True:
                     NT_object.append(object_class.object(400,-1500,tool.HRZ_combine("Image/Background/floor.png",15),"wall",0,0,0,0,0,0))
 
 
-                    Enemy.append(player_class.enemy("The_Second",1200,-235,200,1))
+                    Enemy.append(player_class.enemy("The_Second",1200,-235,300,1))
 
 
 
@@ -525,13 +525,10 @@ while True:
                     
                     
                     NT_object.append(object_class.object(-1000,-600,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
-                    
                     NT_object.append(object_class.object(500,400,tool.V_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
                     NT_object.append(object_class.object(1000,700,tool.V_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
                     NT_object.append(object_class.object(1500,1100,tool.V_combine("Image/Background/floor.png",12),"wall",0,0,0,0,0,0))
-                    
                     NT_object.append(object_class.object(1800,-1000,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
-
                     NT_object.append(object_class.object(1800,1300,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
 
 
@@ -543,10 +540,8 @@ while True:
 
 
                     CT_object.append(object_class.object(3000,300,door,"path",0,0,0,0,0,[2,0]))
-
                     CT_object.append(object_class.object(-800,-900,door,"path",0,0,0,0,0,[0,0]))
                     CT_object.append(object_class.object(2000,1000,save_point,"save_point",0,0,0,0,0,0))
-                    
                     CT_object.append(object_class.object(1800,1700,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,6,0,0))
 
                     
@@ -652,12 +647,17 @@ while True:
 
             while scene_ctrl.num == 10 and scene_ctrl.game == scene_ctrl.pre_game :                                                     #遊戲主迴圈
                 
+     
+     
                 
                 match scene_ctrl.game:
                     case -2:
                         if Main.rect.x >= 600 and scene_ctrl.done == 0:                     
                             NT_object.append(object_class.object(400,-1500,tool.V_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
                             scene_ctrl.done = 1
+     
+     
+     
      
                 if scene_ctrl.init == 1:
                     scene_ctrl.init = 0
@@ -678,21 +678,6 @@ while True:
 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
-                for obj in CT_object:
-                    if keys[pygame.K_w]:                                #按下w進門
-
-                        if obj.type == "door":
-                            if tool.Touch(Main,obj):
-                                scene_ctrl.game = 1
-                    if obj.type == "path":
-                        if tool.Touch(Main,obj):
-                            scene_ctrl.game = obj.goto[0]
-                            scene_ctrl.From = obj.goto[1]
-                    if obj.type == "save_point":
-                        if keys[pygame.K_p]:
-                            Main.HP=Main.Max_HP
-                            tool.save(Main,scene_ctrl)
-                            Main.read_surface()
                                 
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, strength_bar, trans, scene_ctrl)
                 

@@ -341,7 +341,7 @@ class enemy():
                 self.phase = 3
                 self.phase_cd = 0
 
-                self.right_down_x = self.rect.x+self.rect.width
+                self.right_down_x = self.rect.x+self.rect.width +20
                 self.right_down_y = self.rect.y+self.rect.height
 
                 self.Test_rect = pygame.rect.Rect(self.right_down_x,self.right_down_y,20,20)            
@@ -430,7 +430,7 @@ class enemy():
                         self.back_check=0
 
                         if self.back==1:
-                            self.right_down_x = self.rect.x+self.rect.width
+                            self.right_down_x = self.rect.x+self.rect.width + 20
                             self.right_down_y = self.rect.y+self.rect.height
                             self.Test_rect.x = self.rect.x+self.rect.width
                             self.Test_rect.y = self.rect.y+self.rect.height
@@ -443,7 +443,8 @@ class enemy():
 
 
                         for obj in NT_object:
-                            tool.Touch(self, obj)
+                            if not (self.phase_cd == -3 and self.skill_time > 0 and self.wait == 0):
+                                tool.Touch(self, obj)
 
                             if self.Test_rect.colliderect(obj.rect):
                                self.back_check += 1
@@ -451,12 +452,13 @@ class enemy():
                         if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
                             self.back *= -1
                             self.back_check = 1
-                            self.surface = pygame.transform.flip(self.surface, True, False)
-                                                
-                        if self.back_check == 0 and self.back_cd == 0:
-                            self.back *= -1
                             self.back_cd = 1
                             self.surface = pygame.transform.flip(self.surface, True, False)
+                                                
+                        #if self.back_check == 0 and self.back_cd == 0:
+                         #   self.back *= -1
+                          #  self.back_cd = 1
+                           # self.surface = pygame.transform.flip(self.surface, True, False)
 
 
                         if self.back_check > 0:
