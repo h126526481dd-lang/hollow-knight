@@ -108,7 +108,7 @@ while True:
             
             while scene_ctrl.num == 0: 
                 
-                scene.append(pygame.image.load("Image/Background/title_scene.png"))                  #導入背景圖片
+                scene.append(pygame.image.load("Image/Background/title_scene.png"))         # 導入背景圖片
                 scene[0] = pygame.transform.scale(scene[0], (screen_width, screen_height))  # 調整大小
 
                 screen.blit(scene[0], (0,0))                  #繪製背景圖片
@@ -287,6 +287,7 @@ while True:
                     ATKs_AL = []
                     ATKs_EN = []
                     strength_bar = []
+
                     BUTTON.empty()
                     
                     
@@ -319,7 +320,7 @@ while True:
                     door = pygame.image.load("Image/Object/door.png")
                     door = pygame.transform.scale(door, (350, 200))  # 調整大小
 
-                    save_point=pygame.image.load("Image/Object/save_point.png")
+                    save_point = pygame.image.load("Image/Object/save_point.png")
                     save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
                     CT_object.append(object_class.object(-550,200,door,"path",0,0,0,0,0,[-1,1]))
@@ -336,7 +337,10 @@ while True:
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar_3.png"))
                     strength_bar[3] = pygame.transform.scale(strength_bar[3], (screen_width/9, screen_height/12))
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
-                    strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))                
+                    strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
+
+                    hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
+                    hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
 
 
                 
@@ -392,7 +396,7 @@ while True:
                     door = pygame.image.load("Image/Object/door.png")
                     door = pygame.transform.scale(door, (200, 1200))  # 調整大小
 
-                    save_point=pygame.image.load("Image/Object/save_point.png")
+                    save_point = pygame.image.load("Image/Object/save_point.png")
                     save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
                     CT_object.append(object_class.object(2000,500,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,4,0,0))
@@ -416,7 +420,8 @@ while True:
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
                     strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))                
                 
-                
+                    hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
+                    hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
                 
                 
                 
@@ -461,7 +466,7 @@ while True:
                     door = pygame.image.load("Image/Object/door.png")
                     door = pygame.transform.scale(door, (200, 1200))  # 調整大小
 
-                    save_point=pygame.image.load("Image/Object/save_point.png")
+                    save_point = pygame.image.load("Image/Object/save_point.png")
                     save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
 
@@ -483,13 +488,8 @@ while True:
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
                     strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
 
-                    # button_home = button.Button(200, 200, "Home", lambda:button.on_click(scene_ctrl,0))
-
-                    # BUTTON.add(button_home)
-
-                    button_pause = button.Button(screen_width//8, screen_height//8, "Pause", lambda:button.paused(scene_ctrl))
-
-                    BUTTON.add(button_pause)
+                    hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
+                    hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
 
                 case 1:
 
@@ -535,7 +535,7 @@ while True:
                     door = pygame.image.load("Image/Object/door.png")
                     door = pygame.transform.scale(door, (200, 1200))  # 調整大小
 
-                    save_point=pygame.image.load("Image/Object/save_point.png")
+                    save_point = pygame.image.load("Image/Object/save_point.png")
                     save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
 
@@ -555,6 +555,9 @@ while True:
                     strength_bar[3] = pygame.transform.scale(strength_bar[3], (screen_width/9, screen_height/12))
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
                     strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
+
+                    hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
+                    hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
 
 
 
@@ -599,7 +602,7 @@ while True:
                     door = pygame.image.load("Image/Object/door.png")
                     door = pygame.transform.scale(door, (200, 1200))  # 調整大小
 
-                    save_point=pygame.image.load("Image/Object/save_point.png")
+                    save_point = pygame.image.load("Image/Object/save_point.png")
                     save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
 
@@ -621,6 +624,9 @@ while True:
                     strength_bar[3] = pygame.transform.scale(strength_bar[3], (screen_width/9, screen_height/12))
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
                     strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
+
+                    hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
+                    hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
 
 
 
@@ -681,7 +687,7 @@ while True:
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
                                 
-                tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, strength_bar, trans, scene_ctrl)
+                tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, strength_bar, hint_backpack, trans, scene_ctrl)
                 
 
                 if keys[pygame.K_b] and not pre_keys[pygame.K_b]:

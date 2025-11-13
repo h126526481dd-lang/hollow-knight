@@ -104,7 +104,7 @@ def load_s(save,scene_ctrl):
 
           
 
-def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_bar,trans,scene_ctrl):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
+def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_bar,hint_backpack,trans,scene_ctrl):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     Info = pygame.display.Info()                                      #偵測用戶顯示參數
     screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
@@ -161,6 +161,8 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_
     #pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
 
     screen.blit(strength_bar, (screen_width//25, screen_height//6))
+
+    screen.blit(hint_backpack, (screen_width//100, screen_height//40*39))
 
     pygame.draw.rect(screen, (255,255,255), (screen_width//20-5, screen_height//8-5, (screen_width//20+(player.Max_HP-5)*10)+10, screen_height//50+10))
     pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, (screen_width//20+((player.Max_HP-5)*10))-(screen_width//20+((player.Max_HP-5)*10))*((player.Max_HP-player.HP)/player.Max_HP), screen_height//50))
@@ -397,7 +399,7 @@ def update_animation(obj, state):
 
 
 
-def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys,strength_bar,trans,scene_ctrl):
+def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys,strength_bar,hint_backpack,trans,scene_ctrl):
 
     if Main.endurance < 4:
         Main.endurance_cd -= 1
@@ -1019,4 +1021,4 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 #=========================================================================刷新畫面
 
    
-    show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,strength_bar[Main.endurance],trans,scene_ctrl)    #最終印刷
+    show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,strength_bar[Main.endurance],hint_backpack,trans,scene_ctrl)    #最終印刷
