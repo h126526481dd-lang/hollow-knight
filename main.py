@@ -270,7 +270,7 @@ while True:
             
             match scene_ctrl.game:
 
-                case -2:
+                case -2:                                                    #場景控制區
                     Exit = [(-350,0)]
                     scene_ctrl.done = 0
                     if scene_ctrl.pre_game == -1:
@@ -312,7 +312,7 @@ while True:
                     NT_object.append(object_class.object(400,-1500,tool.HRZ_combine("Image/Background/floor.png",15),"wall",0,0,0,0,0,0))
 
 
-                    Enemy.append(player_class.enemy("The_Second",1200,-200,450,1))
+                    Enemy.append(player_class.enemy("The_Second",1200,-200,450,"boss","The_Tank"))
 
 
 
@@ -624,13 +624,14 @@ while True:
 
 
 
-                case "dead":
+                case "dead":                                                #死亡緩衝區
                     Main.HP=Main.Max_HP
                     Main.death_cd = 0
                     Load(1)
                     scene_ctrl.init = 1
 
-
+#=========================================================================================================
+                                                                            #轉場區(前半)
             if scene_ctrl.init == 0 :
                 scene_ctrl.trans = 60
                 trans.x = -1*screen_width
@@ -644,7 +645,7 @@ while True:
 
 
             scene_ctrl.pre_game = scene_ctrl.game
-
+#==========================================================================================================
             while scene_ctrl.num == 10 and scene_ctrl.game == scene_ctrl.pre_game :                                                     #遊戲主迴圈
                 
      
@@ -659,11 +660,12 @@ while True:
      
      
      
-                if scene_ctrl.init == 1:
+                if scene_ctrl.init == 1:                                    #重返初始化(死亡回歸)
                     scene_ctrl.init = 0
                     break
 
-                clock.tick(scene_ctrl.fps)                                             #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
+
+                clock.tick(scene_ctrl.fps)                                  #控制每秒最多執行 FPS 次(固定每台電腦的執行速度)
                 #print(clock.get_fps())
 
                 if not get_current_input_lang() == 0x0409:
