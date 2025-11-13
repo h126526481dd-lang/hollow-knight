@@ -323,6 +323,8 @@ class enemy():
                 del self.boss_attack3[4:6]
                 self.boss_attack4 = tool.split("Image\Character\Enemy\Boss\Attack4.png",6)
                 del self.boss_attack4[4:6]
+                self.boss_break = tool.split("Image\Character\Enemy\Boss\Death.png", 6)
+                self.boss_up = list(reversed(self.boss_break))
 
 
                 self.surface = pygame.transform.scale(self.boss_idle[0],(320,300))        #pygame.image.load("Image\Character\Enemy\zombie.png")
@@ -424,13 +426,16 @@ class enemy():
                 case 1:    
                     
                     if not self.found:
+                        
+                        self.surface = pygame.transform.scale(self.boss_break[5], (320, 300))
+                        
                         if player.rect.x - (self.rect.x+self.rect.width//2) < 0 and self.back == -1:
                             
                             if  pow((player.rect.x - (self.rect.x+self.rect.width//2)),2) + pow((player.rect.y - (self.rect.y+self.rect.height//2)),2) <= pow(1000,2):
                                 print("found_Test_left")
 
                                 if self.Find(player,NT_object):
-                                    self.wait = 30
+                                    self.wait = 31
                                     self.found = True
                                     
                                     
@@ -440,7 +445,7 @@ class enemy():
                                 print("found_Test_right")
                                 
                                 if self.Find(player,NT_object):
-                                    self.wait = 30
+                                    self.wait = 31
                                     self.found = True                        
 
                     
