@@ -38,6 +38,9 @@ def resuming(scene_ctrl, num1):
 def backpack(scene_ctrl, num2):
     scene_ctrl.backpack = num2
 
+def reset(scene_ctrl, num3):
+    scene_ctrl.reset = num3
+
 def go_home(scene_ctrl):
     scene_ctrl.num = 0
     scene_ctrl.menu = 0

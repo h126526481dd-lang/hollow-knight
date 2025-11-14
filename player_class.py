@@ -303,6 +303,8 @@ class enemy():
         self.back_check=0
         self.back_cd = 0
         
+        self.TDamage = 1
+        self.NoGravity = 0
         self.inertia = 0
         self.pre_vx = 0
         self.pre_vy = 0
@@ -358,6 +360,23 @@ class enemy():
 
                         self.Test_rect = pygame.rect.Rect(self.right_down_x,self.right_down_y,20,20)     
 
+                    case "The_Sun":
+                        self.surface = pygame.transform.scale(pygame.image.load("Image\Character\Enemy\zombie.png"),(320,300))        #
+                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))
+
+                        self.broke = 0
+
+                        self.TDamage = 0
+                        self.NoGravity = 1
+                        self.skill_time = 0
+
+                        self.phase = 3
+                        self.phase_cd = 0
+
+                        self.right_down_x = self.rect.x+self.rect.width +20
+                        self.right_down_y = self.rect.y+self.rect.height
+
+                        self.Test_rect = pygame.rect.Rect(self.right_down_x,self.right_down_y,20,20)     
 
 
 
@@ -429,7 +448,7 @@ class enemy():
 
                     self.vx = 0
 
-            else:
+            elif self.on_ground == 0 and self.NoGravity == 0:
                 self.vx = 0
                 self.vy+=1
                 self.y += self.vy
@@ -555,6 +574,89 @@ class enemy():
                                         self.vy+=1
                                         self.y += self.vy
                                         self.rect.y += self.vy
+                                        
+                                        
+                        case "The_Sun":
+                            if not self.found:
+
+                                if  pow((player.rect.x - (self.rect.x+self.rect.width//2)),2) + pow((player.rect.y - (self.rect.y+self.rect.height//2)),2) <= pow(1000,2):
+                                    print("found_Test_right")
+                                        
+                                    if self.Find(player,NT_object):
+                                        self.wait = 32
+                                        self.found = True     
+                                        
+                            else:
+
+                                self.pre_vx = self.vx
+                                self.pre_vy = self.vy
+                                
+                                self.back_check=0
+
+                                if self.back==1:
+                                    self.right_down_x = self.rect.x+self.rect.width + 20
+                                    self.right_down_y = self.rect.y+self.rect.height
+                                    self.Test_rect.x = self.rect.x+self.rect.width
+                                    self.Test_rect.y = self.rect.y+self.rect.height
+                                    
+                                else:
+                                    self.right_down_x = self.rect.x
+                                    self.right_down_y = self.rect.y+self.rect.height
+                                    self.Test_rect.x = self.rect.x
+                                    self.Test_rect.y = self.rect.y+self.rect.height
+
+
+                                for obj in NT_object:
+                                    if not (self.phase_cd == -3 and self.skill_time > 0 and self.wait == 0):
+                                        tool.Touch(self, obj)
+
+                                    if self.Test_rect.colliderect(obj.rect):
+                                        self.back_check += 1
+
+                                if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
+                                    self.back *= -1
+                                    self.back_check = 1
+                                    self.back_cd = 1
+                                    self.surface = pygame.transform.flip(self.surface, True, False)
+                                                        
+                                if not (self.phase_cd == -3 and self.skill_time > 0 and self.wait == 0) and self.back_check == 0 and self.back_cd == 0:
+                                    self.back *= -1
+                                    self.back_cd = 1
+                                    self.surface = pygame.transform.flip(self.surface, True, False)
+
+
+                                if self.back_check > 0:
+                                    self.back_cd = 0
+
+
+                                if "1_D" in self.now_NT_Touch:
+                                    self.on_ground = True
+
+                                else:
+                                    self.on_ground =False
+                                
+                        
+                                if self.on_ground :
+                                    self.vy = 0    
+                                    self.x += self.vx * self.back
+                                    self.rect.x += self.vx * self.back
+                                    self.y += self.vy
+                                    self.rect.y += self.vy  
+                                
+                                
+                                elif self.on_ground == 0 and self.NoGravity == 0:
+                                    self.vy+=1
+                                    self.x += self.vx * self.back
+                                    self.rect.x += self.vx * self.back
+                                    self.y += self.vy
+                                    self.rect.y += self.vy                      
+                                    
+                                else :
+                                    self.x += self.vx * self.back
+                                    self.rect.x += self.vx * self.back
+                                    self.y += self.vy
+                                    self.rect.y += self.vy     
+                                    self.vx = 0
                             
                         
                             

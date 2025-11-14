@@ -45,6 +45,7 @@ class scene_c():
         self.From = 0
         self.backpack = 0
         self.done = 0
+        self.reset = 0
         
 
 def Load(save):
@@ -223,40 +224,71 @@ while True:
 
         case 5:                                                                 #讀檔
 
-            BUTTON.empty()
+            match scene_ctrl.reset:
 
-            scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
-            text = font.render("Savings", True, (0,0,0))      #存檔標題
-            text_rect = text.get_rect(center=(screen_width//4, screen_height//6))
+                case 0:
 
-            button_saving1 = button.Button(screen_width//4, screen_height//8*3, "Saving 1", lambda:Load(1))
-            button_saving2 = button.Button(screen_width//4, screen_height//8*4, "Saving 2", lambda:Load(2))
-            button_saving3 = button.Button(screen_width//4, screen_height//8*5, "Saving 3", lambda:Load(3))
-            button_saving4 = button.Button(screen_width//4, screen_height//8*6, "Saving 4", lambda:Load(4))
-            button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
+                    BUTTON.empty()
 
+                    text = font.render("Savings", True, (0,0,0))      #存檔標題
+                    text_rect = text.get_rect(center=(screen_width//4, screen_height//6))
 
-            BUTTON.add(button_back)
-            BUTTON.add(button_saving1, button_saving2, button_saving3, button_saving4)
+                    button_saving1 = button.Button(screen_width//4, screen_height//8*3, "Saving 1", lambda:Load(1))
+                    button_saving2 = button.Button(screen_width//4, screen_height//8*4, "Saving 2", lambda:Load(2))
+                    button_saving3 = button.Button(screen_width//4, screen_height//8*5, "Saving 3", lambda:Load(3))
+                    button_saving4 = button.Button(screen_width//4, screen_height//8*6, "Saving 4", lambda:Load(4))
+                    button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
+                    button_reset = button.Button(screen_width//4*3, screen_height//8*6, "reset saving", lambda:button.reset(scene_ctrl, 1))
 
-            while scene_ctrl.num == 5:
+                    BUTTON.add(button_back)
+                    BUTTON.add(button_saving1, button_saving2, button_saving3, button_saving4, button_reset)
 
+                    while scene_ctrl.num == 5 and scene_ctrl.reset == 0:
 
-                if scene_ctrl.button_cd > 0:
-                    scene_ctrl.button_cd-=1
+                        if scene_ctrl.button_cd > 0:
+                            scene_ctrl.button_cd-=1
 
+                        screen.fill((255,255,255))
+                        screen.blit(text, text_rect)
 
-                screen.fill((255,255,255))
-                screen.blit(text, text_rect)
+                        BUTTON.update(scene_ctrl)
+                        BUTTON.draw(screen)
+                        pygame.display.flip()
 
-                BUTTON.update(scene_ctrl)
-                BUTTON.draw(screen)
-                pygame.display.flip()
+                        for event in pygame.event.get():                               #偵測事件
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                exit()
 
-                for event in pygame.event.get():                               #偵測事件
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        exit()
+                case 1:                                                                #等待修復reset功能
+
+                    BUTTON.empty()
+
+                    button_reset1 = button.Button(screen_width//4, screen_height//8*3, "Reset 1", lambda:Load(1))
+                    button_reset2 = button.Button(screen_width//4, screen_height//8*4, "Reset 2", lambda:Load(2))
+                    button_reset3 = button.Button(screen_width//4, screen_height//8*5, "Reset 3", lambda:Load(3))
+                    button_reset4 = button.Button(screen_width//4, screen_height//8*6, "Reset 4", lambda:Load(4))
+                    button_reset_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.reset(scene_ctrl, 0))
+
+                    BUTTON.add(button_reset1, button_reset2, button_reset3, button_reset4, button_reset_back)
+
+                    while scene_ctrl.num == 5 and scene_ctrl.reset == 1:
+
+                        if scene_ctrl.button_cd > 0:
+                            scene_ctrl.button_cd-=1
+
+                        screen.fill((255,255,255))
+                        screen.blit(text, text_rect)
+
+                        BUTTON.update(scene_ctrl)
+                        BUTTON.draw(screen)
+                        pygame.display.flip()
+
+                        for event in pygame.event.get():                               #偵測事件
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                exit()
+
 #=======================================================================================================
 
         #case 6:                                                               
@@ -314,7 +346,7 @@ while True:
 
 
                     Enemy.append(player_class.enemy("The_Second",1200,-200,450,"boss","The_Tank"))
-
+                    #Enemy.append(player_class.enemy("The_Third",1200,-600,200,"boss","The_Sun"))
 
 
                     door = pygame.image.load("Image/Object/door.png")
@@ -370,7 +402,7 @@ while True:
                     scene_ctrl.R_edge = 1800 - screen_width//2
                     scene_ctrl.L_edge = -1500 + screen_width//2
                     scene_ctrl.T_edge = -2200 + screen_height //2
-                    scene_ctrl.B_edge = 2000
+                    scene_ctrl.B_edge = 1300
 
 
                     scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
@@ -448,7 +480,7 @@ while True:
                     
                     scene_ctrl.R_edge = 2150 - screen_width//2
                     scene_ctrl.L_edge = -1500 + screen_width//2
-                    scene_ctrl.B_edge = 2000
+                    scene_ctrl.B_edge = 1500
 
 
                     scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
@@ -475,7 +507,7 @@ while True:
                     CT_object.append(object_class.object(2000,600,save_point,"save_point",0,0,0,0,0,0))
                     CT_object.append(object_class.object(2000,500,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,5,0,0))
 
-                    Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie"))
+                    Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie",None))
 
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
                     strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))
@@ -716,6 +748,21 @@ while True:
                                             pygame.quit()
                                             exit()
 
+                if keys[pygame.K_b] and not pre_keys[pygame.K_b]:                                         
+
+                    scene_ctrl.backpack = 1
+
+                    while scene_ctrl.backpack > 0:
+
+                        match scene_ctrl.backpack > 0:
+
+                            case 1:       #背包
+
+                                BUTTON.empty()
+
+                                screen.blit(scene[2], (0,0))
+
+                                
 
                 if keys[pygame.K_ESCAPE] and not pre_keys[pygame.K_ESCAPE]:                               #按ESC後暫停
 

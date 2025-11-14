@@ -128,43 +128,43 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_
     for obj in NT_object:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(obj.rect):
             screen.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
-            #pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1) 
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1) 
             
             
     for obj in CT_object:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(obj.rect):
             screen.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
-            #pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1)
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1)
     
 
     for enemy in Enemy:
         if camera_rect.colliderect(enemy.rect):
             screen.blit(enemy.surface, (enemy.x - camera_x, enemy.y - camera_y))
-            #pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.rect.x - camera_x, enemy.rect.y - camera_y, enemy.rect.width, enemy.rect.height),1)
-            #pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down_x - enemy.Test_rect.width - camera_x,  enemy.right_down_y - camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.rect.x - camera_x, enemy.rect.y - camera_y, enemy.rect.width, enemy.rect.height),1)
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down_x - enemy.Test_rect.width - camera_x,  enemy.right_down_y - camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
     
 
     for atk in ATKs_AL:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(atk.rect):
             screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))
-            #pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
     
 
     for atk in ATKs_EN:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(atk.rect):
             screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))
-            #pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
     
     if not player.hurt_flashing % 8 > 4:
         screen.blit(player.surface, ( player.x - camera_x,player.y - camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
     
-    #pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
+    pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
 
     screen.blit(strength_bar, (screen_width//25, screen_height//6))
 
     screen.blit(hint_backpack, (screen_width//100, screen_height//40*39))
 
-    pygame.draw.rect(screen, (255,255,255), (screen_width//20-5, screen_height//8-5, (screen_width//20+(player.Max_HP-5)*10)+10, screen_height//50+10))
+    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//8-5, (screen_width//20+(player.Max_HP-5)*10)+10, screen_height//50+10))
     pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, (screen_width//20+((player.Max_HP-5)*10))-(screen_width//20+((player.Max_HP-5)*10))*((player.Max_HP-player.HP)/player.Max_HP), screen_height//50))
     
     if scene_ctrl.trans > 0:
@@ -603,30 +603,37 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     
     if "1_L" in Main.now_NT_Touch or "1_R" in Main.now_NT_Touch:
         Main.inertia = 0
-#=================================================================撿技能球判定
+#=================================================================w判定
 
     if keys[pygame.K_w]:
         for obj in CT_object:
             if Touch(Main,obj):
+                
+                if obj.type == "save_point":
+                        Main.HP=Main.Max_HP
+                        save(Main,scene_ctrl)
+                        Main.read_surface()
+
 
                 if obj.type == "skill":
                         Main.skill_key[obj.num] = 1
                         CT_object.remove(obj)
                         del obj
                         
-                if obj.type == "path":
-                        scene_ctrl.game = obj.goto[0]
-                        scene_ctrl.From = obj.goto[1]
-                        
-                if obj.type == "save_point":
-                        Main.HP=Main.Max_HP
-                        save(Main,scene_ctrl)
-                        Main.read_surface()
+
+
+
+    for obj in CT_object:
+        if Touch(Main,obj):
+
+            if obj.type == "path":
+                scene_ctrl.game = obj.goto[0]
+                scene_ctrl.From = obj.goto[1]
 
 #===============================================================敵人邏輯區
 
     for enemy in Enemy:
-        print("enemy=",enemy.type,"、",enemy.dif,",cd=",enemy.phase_cd,",wait=",enemy.wait,",found=",enemy.found,",phase=",enemy.phase,",skill_time=",enemy.skill_time,",back=",enemy.back,",vx=",enemy.vx)
+        #print("enemy=",enemy.type,"、",enemy.dif,",cd=",enemy.phase_cd,",wait=",enemy.wait,",found=",enemy.found,",phase=",enemy.phase,",skill_time=",enemy.skill_time,",back=",enemy.back,",vx=",enemy.vx)
 
         if enemy.unhurtable_cd > 0:                             #無敵幀倒數
             enemy.unhurtable_cd -= 1
@@ -786,9 +793,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                 enemy.phase=random.randint(0,3)                                         #重骰招 & cd
                                 enemy.phase_cd = random.randint(10,40)
 
-                                if enemy.broke == 15 :                                                  #吃15刀癱瘓
+                                if enemy.broke == 18 :                                                  #吃15刀癱瘓
                                     start_animation(enemy.attack_state, enemy.boss_break, 5, enemy.back-1, False, (320,300))
-                                    enemy.wait = 3000
+                                    enemy.wait = 450
                                     enemy.broke = 0
                         
                         
@@ -822,7 +829,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 #====================================================================碰撞清單清除、傷害判定
 
         if enemy.wait == 0:                                         #怪停頓無碰撞傷害
-            if Touch(Main,enemy):
+            if Touch(Main,enemy) and enemy.TDamage == 1:
                 if Main.unhurtable_cd <= 0 and Main.HP > 1:         #碰撞傷害
 
                     if Main.rect.x-enemy.rect.x > 0:                #玩家受擊
@@ -850,15 +857,18 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if enemy.unhurtable_cd <= 0 :                           #怪受擊
                             
                 if Touch(enemy,atk_al):
-                    if atk_al.rect.x - enemy.rect.x - enemy.rect.width//2 < 0:
-                        enemy.HP -= atk_al.ATK
-                        enemy.vx += atk_al.KB
-                        enemy.unhurtable_cd = 20
-                    else:
-                        enemy.HP -= atk_al.ATK
-                        enemy.vx -= atk_al.KB
-                        enemy.unhurtable_cd = 20
+                    if not enemy.type == "boss":
                         
+                        if atk_al.rect.x + atk_al.rect.width //2 - enemy.rect.x - enemy.rect.width//2 < 0 :
+                            enemy.vx = atk_al.KB
+                            
+                        elif atk_al.rect.x + atk_al.rect.width //2 - enemy.rect.x - enemy.rect.width//2 > 0:
+                            enemy.vx = atk_al.KB * -1
+                    
+                    enemy.HP -= atk_al.ATK
+                    enemy.unhurtable_cd = 20
+
+
                     match enemy.type :
 
                         case "boss":
@@ -866,18 +876,18 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                             match enemy.dif:
 
                                 case "The_Tank":                #坦克背刀轉身、直接發現玩家 、 癱瘓計數
+                                    if not enemy.wait:
+                                        if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
+                                            enemy.back = 1
 
-                                    if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
-                                        enemy.back = 1
-
-                                    else:
-                                        enemy.back = -1
+                                        else:
+                                            enemy.back = -1
 
                                     if enemy.found==0:    
                                         enemy.found = True
                                         enemy.wait=32
 
-                                    if enemy.wait == 0 and enemy.broke < 15:
+                                    if enemy.wait == 0 and enemy.broke < 18:
                                         enemy.broke+=1
 
                                 case "Not_Yet":
@@ -897,7 +907,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             Enemy.remove(enemy)
             del enemy
 
-    Main.now_NT_Touch = []                                      #角色目前碰撞清單
+    Main.now_NT_Touch = []                                      #清除角色目前碰撞清單
+    Main.now_CT_Touch = []
 
 
 
