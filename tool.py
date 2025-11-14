@@ -209,6 +209,30 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
 
             
                 return True
+            
+            
+            elif object2.can_be_through == 2:
+                if object1.vy >= 0:
+  
+                    object1.now_NT_Touch.append("1_D")      #若往下調沒碰撞，表示物件1的底部碰撞到了物件2(D=Down)，新增標籤到碰撞清單
+                    T_rect.y-=(max(abs(object1.vy),32))
+
+                    
+                    for i in range(max(abs(object1.vy),32)):       #把物件1往上調整，直到不碰撞為止
+                        object1.y -= 1
+                        object1.rect.y -= 1    
+                                                                                                        
+                        
+                        if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測往上調整後是否還有碰撞  
+                            object1.y += 1
+                            object1.rect.y += 1
+                            break
+
+
+                    object1.on_ground = True
+                    object1.vy = 0
+                return True
+
 
         T_rect.y-=2*(max(abs(object1.vy),32))
 
