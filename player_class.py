@@ -47,6 +47,7 @@ class player():
         #角色目前碰撞清單
         self.now_NT_Touch = []
         self.now_CT_Touch = []
+        self.noe_Touch = []
 
         #attack字典用以紀錄attack動畫狀態
         self.attack_state = {}

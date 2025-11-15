@@ -1010,6 +1010,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     Main.now_NT_Touch = []                                      #清除角色目前碰撞清單
     Main.now_CT_Touch = []
+    Main.now_Touch = []
 
 
 
@@ -1068,8 +1069,13 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
     for obj in NT_object:
-        if not Touch(Main,obj):
-            Main.through = 0
+        Main.now_Touch.append(Touch(Main,obj))
+    if not any(Main.now_Touch):
+        print("?")
+        Main.through = 0
+            
+            
+    print(Main.now_Touch)
 
 
 #==================================================================蹬牆跳後的位移(動vx)
@@ -1089,15 +1095,14 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             Main.Walljump_direct = 0
 
 #===================================================================跳躍和受傷動畫轉向
-    print(Main.through, Main.on_ground)
+    #print(Main.through, Main.on_ground)
 
 
 
     #如果(按下空格, 在地上, 剛才沒按空格)
     if keys[pygame.K_SPACE] and keys[pygame.K_s] and "1_DP" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0 and Main.move_lock == 0:                      #按下空白鍵跳躍
         Main.through = 1
-        Main.y += 1
-        Main.rect.y += 1
+        Main.vy = 1
 
     elif keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0 and Main.move_lock == 0:                      #按下空白鍵跳躍
         Main.jump()
