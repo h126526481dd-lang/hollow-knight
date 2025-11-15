@@ -361,7 +361,7 @@ class enemy():
                         self.Test_rect = pygame.rect.Rect(self.right_down_x,self.right_down_y,20,20)     
 
                     case "The_Sun":
-                        self.surface = pygame.transform.scale(pygame.image.load("Image\Character\Enemy\zombie.png"),(320,300))        #
+                        self.surface = pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\sun1.png"),(320,300))        #
                         self.rect = self.surface.get_rect(topleft=(self.x, self.y))
 
                         self.broke = 0
