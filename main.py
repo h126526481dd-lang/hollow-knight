@@ -584,7 +584,7 @@ while True:
                     CT_object.append(object_class.object(2000,600,save_point,"save_point",0,0,0,0,0,0))
                     CT_object.append(object_class.object(2000,500,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,5,0,0))
 
-                    Enemy.append(player_class.enemy("The_First",1200,0,100,"zombie",None))
+                    Enemy.append(player_class.enemy("The_First",1200,0,100,"roadside",None))
 
                     strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
                     strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))

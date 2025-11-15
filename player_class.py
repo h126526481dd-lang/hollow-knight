@@ -370,7 +370,7 @@ class enemy():
                         self.NoGravity = 1
                         self.skill_time = 0
 
-                        self.phase = 3
+                        self.phase = 0
                         self.phase_cd = 0
 
                         self.right_down_x = self.rect.x+self.rect.width +20
@@ -385,15 +385,11 @@ class enemy():
 
 
             
-            case 2:    
+            case "elite":    
                 pass
             
             
-            case 3:    
-                pass
-            
-            
-            case _: 
+            case "roadside":    
         
 
                 self.surface =pygame.image.load("Image\Character\Enemy\zombie.png")
@@ -579,11 +575,11 @@ class enemy():
                         case "The_Sun":
                             if not self.found:
 
-                                if  pow((player.rect.x - (self.rect.x+self.rect.width//2)),2) + pow((player.rect.y - (self.rect.y+self.rect.height//2)),2) <= pow(1000,2):
+                                if  pow((player.rect.x - (self.rect.x+self.rect.width//2)),2) + pow((player.rect.y - (self.rect.y+self.rect.height//2)),2) <= pow(1000,2) and player.on_ground:
                                     print("found_Test_right")
                                         
                                     if self.Find(player,NT_object):
-                                        self.wait = 32
+                                        self.wait = 240
                                         self.found = True     
                                         
                             else:
@@ -644,7 +640,7 @@ class enemy():
                                     self.rect.y += self.vy  
                                 
                                 
-                                elif self.on_ground == 0 and self.NoGravity == 0:
+                                elif not self.on_ground and not self.NoGravity:
                                     self.vy+=1
                                     self.x += self.vx * self.back
                                     self.rect.x += self.vx * self.back
