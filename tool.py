@@ -181,8 +181,8 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
     
     T_rect = object2.surface.get_rect(topleft = (object2.x, object2.y))
   #物件2的碰撞盒複製(調整用)
-    if not "1_D" in object1.now_NT_Touch:
-        object1.on_ground = False
+    if not ("1_D" in object1.now_NT_Touch) and not ("1_DP" in object1.now_NT_Touch):
+        object1.on_ground = 0
 
     
     if object1.rect.colliderect(object2.rect):
@@ -204,17 +204,17 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                         object1.rect.y += 1
                         break
 
-                object1.on_ground = True
+                object1.on_ground = 1
                 object1.vy = 0
 
             
                 return True
             
             
-            elif object2.can_be_through == 2:
-                if object1.vy >= 0:
+            elif object2.can_be_through == 2 :
+                if object1.vy >= 0 and object1.through == 0:
   
-                    object1.now_NT_Touch.append("1_D")      #若往下調沒碰撞，表示物件1的底部碰撞到了物件2(D=Down)，新增標籤到碰撞清單
+                    object1.now_NT_Touch.append("1_DP")      #若往下調沒碰撞，表示物件1的底部碰撞到了物件2(D=Down)，新增標籤到碰撞清單
                     T_rect.y-=(max(abs(object1.vy),32))
 
                     
@@ -229,8 +229,8 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                             break
 
 
-                    object1.on_ground = True
                     object1.vy = 0
+                    object1.on_ground = 2
                 return True
 
 
@@ -464,7 +464,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         
         
     if Main.skill_key[4] == 2:
-        if Main.on_ground == True:
+        if Main.on_ground :
             Main.skill_key[4] = 1
         
 #===========================================================移動按鍵判定(動vx)(動角色圖片)
@@ -536,7 +536,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=====================================================================衝刺按鍵
 
-        if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground==True or (Main.on_ground==False and Main.skill_key[5]==1)) and Main.endurance > 0 and Main.HP > 0:
+        if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground or (Main.on_ground==False and Main.skill_key[5]==1)) and Main.endurance > 0 and Main.HP > 0 and Main.move_lock == 0:
             if Main.inertia == 0:
                 Main.vx = 0
             Main.unhurtable_cd = max(22,Main.unhurtable_cd)
@@ -828,11 +828,88 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
 
-                    case "Not_Yet":
-                        pass
 
 
 
+
+                    case "The_Sun":
+                        if enemy.found and enemy.wait == 0:                                         #已發現玩家且停頓幀==0
+                            
+                            if enemy.phase_cd > 0:                                                  #出招冷卻倒數
+                                enemy.phase_cd -= 1
+                                
+                            if  pow((Main.rect.x + Main.rect.width//2 - (enemy.rect.x+enemy.rect.width//2)),2) + pow((Main.rect.y + Main.rect.height//2 - (enemy.rect.y+enemy.rect.height//2)),2) <= pow(100,2):
+                                pass    #太陽閃焰！
+                            
+                            if enemy.phase_cd == 0 and not enemy.attack_state["playing"]:           #出招冷卻歸零播招式動畫 & 針對不同招式需求初始化
+                                match enemy.phase:
+
+
+                                    case 0: #輻(射)光(線)
+                                        pass    
+                            
+                                    case 1: #鏡反
+                                        pass
+
+                                    case 2: #光球
+                                        pass
+                                                
+
+                            elif enemy.attack_state["playing"]:         #動畫執行中，出招cd = -1
+                                enemy.phase_cd = -1
+
+                            elif enemy.anime:                           #動畫播放完畢，出招cd = -2
+                                enemy.phase_cd = -2
+
+
+                            elif enemy.phase_cd == -2:                  #前搖完二次初始化
+
+                                match enemy.phase:
+
+                                    case 0:     #輻(射)光(線)
+                                        pass
+                                                
+
+                                    case 1:     #鏡反
+                                        pass
+
+
+                                    case 2:     #光球
+                                        pass
+                                    
+
+
+                                enemy.phase_cd = -3                     #招式發動階段
+
+
+
+                            elif enemy.phase_cd == -3 and enemy.skill_time > 0: #技能時長內觸發
+
+                                for obj in NT_object:                           #讀碰撞(該狀態內不讀Move)
+                                    Touch(enemy, obj)
+                                    
+                                enemy.skill_time -= 1                           #扣時
+
+                                match enemy.phase:
+                                    
+                                    case 0:                                                 #輻(射)光(線)
+                                            
+                                        pass
+                                            
+
+
+                            elif enemy.phase_cd == -3 and enemy.skill_time == 0:                        #放完技能
+                                enemy.phase=random.randint(0,2)                                         #重骰招 & cd
+                                enemy.phase_cd = random.randint(60,90)
+
+                                if enemy.broke == 18 :                                                  #吃18刀癱瘓
+                                    start_animation(enemy.attack_state, enemy.boss_break, 5, enemy.back-1, False, (320,300))
+                                    enemy.wait = 450
+                                    enemy.broke = 0
+                        
+                        
+                        if enemy.wait == 31:                                                            #起身動畫
+                            pass
 
 
             case "elite":
@@ -914,7 +991,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     if enemy.wait == 0 and enemy.broke < 18:
                                         enemy.broke+=1
 
-                                case "Not_Yet":
+                                case "The_Sun":
                                     pass
 
                         case "elite":
@@ -991,7 +1068,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
     for obj in NT_object:
-        Touch(Main,obj)
+        if not Touch(Main,obj):
+            Main.through = 0
+
 
 #==================================================================蹬牆跳後的位移(動vx)
 
@@ -1009,10 +1088,18 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         if Main.Walljump_time == 0:
             Main.Walljump_direct = 0
 
-#===================================================================跳躍和受傷判定
+#===================================================================跳躍和受傷動畫轉向
+    print(Main.through, Main.on_ground)
+
+
 
     #如果(按下空格, 在地上, 剛才沒按空格)
-    if keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0:                                #按下空白鍵跳躍
+    if keys[pygame.K_SPACE] and keys[pygame.K_s] and "1_DP" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0 and Main.move_lock == 0:                      #按下空白鍵跳躍
+        Main.through = 1
+        Main.y += 1
+        Main.rect.y += 1
+
+    elif keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0 and Main.move_lock == 0:                      #按下空白鍵跳躍
         Main.jump()
     
     if Main.is_hurt > 0:

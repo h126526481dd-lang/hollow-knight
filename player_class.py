@@ -37,7 +37,8 @@ class player():
         self.pre_vy=0
 
         #角色是否在地面上
-        self.on_ground = False                                      
+        self.on_ground = 0             
+        self.through = 0                         
 
         self.anime_time = 0
 
@@ -64,6 +65,7 @@ class player():
 
         self.attack_sound = "Sound/blade.wav"
         self.dead_sound = "Sound\dead.wav"
+        self.hurt_sound = "Sound\hurt.wav"
         
         #匯入Jump.png圖片並切分成動畫
         self.jumping = "Image\Character\mainchacter\Jump.png"
@@ -125,6 +127,7 @@ class player():
         self.rect = None
         self.Attack_sound = None
         self.Dead_sound = None
+        self.Hurt_sound = None
 
         #設定蹬牆跳方向(0是沒使用 1向右跳 2向左跳)
         self.Walljump_direct = 0
@@ -160,7 +163,7 @@ class player():
     #四種跳躍模式
     def jump(self):
         #在地上跳
-        if self.on_ground == True:
+        if self.on_ground:
             self.vy = -20
         #蹬牆跳(左牆向右)
         elif  "1_L" in self.now_NT_Touch and self.skill_key[5] == 1:
@@ -191,6 +194,7 @@ class player():
 
     def get_hit(self):
         if self.unhurtable_cd <=0 and self.HP > 0:
+            self.Hurt_sound.play()
             self.HP -= 1  
             self.unhurtable_cd = max(120,self.unhurtable_cd)
         if self.HP != 0 :
@@ -260,6 +264,7 @@ class player():
         self.Attack3 = tool.split(self.attack3, 3) 
         self.Attack_sound = pygame.mixer.Sound(self.attack_sound)
         self.Dead_sound = pygame.mixer.Sound(self.dead_sound)
+        self.Hurt_sound = pygame.mixer.Sound(self.hurt_sound)
         
         #匯入Jump.png圖片並切分成動畫
         self.Jump = tool.split(self.jumping, 12)
@@ -296,7 +301,8 @@ class enemy():
         self.image = 0                                        #敵人圖片
         self.vx = 0                                                   #敵人速度
         self.vy = 0
-        self.on_ground = False                                      #敵人是否在地面上
+        self.through = 0
+        self.on_ground = 0                                      #敵人是否在地面上
         self.HP = HP
         self.can_be_through = 1
         self.back = 1
@@ -360,8 +366,9 @@ class enemy():
 
                         self.Test_rect = pygame.rect.Rect(self.right_down_x,self.right_down_y,20,20)     
 
+
                     case "The_Sun":
-                        self.surface = pygame.transform.scale(pygame.image.load("Image\Character\Enemy\zombie.png"),(320,300))        #
+                        self.surface = pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\sun1.png"),(320,300))        #
                         self.rect = self.surface.get_rect(topleft=(self.x, self.y))
 
                         self.broke = 0
@@ -370,7 +377,7 @@ class enemy():
                         self.NoGravity = 1
                         self.skill_time = 0
 
-                        self.phase = 3
+                        self.phase = 0
                         self.phase_cd = 0
 
                         self.right_down_x = self.rect.x+self.rect.width +20
@@ -385,15 +392,11 @@ class enemy():
 
 
             
-            case 2:    
+            case "elite":    
                 pass
             
             
-            case 3:    
-                pass
-            
-            
-            case _: 
+            case "roadside":    
         
 
                 self.surface =pygame.image.load("Image\Character\Enemy\zombie.png")
@@ -436,9 +439,11 @@ class enemy():
             for obj in NT_object:
                 tool.Touch(self, obj)
             if "1_D" in self.now_NT_Touch:
-                self.on_ground = True
+                self.on_ground = 1
+            elif "1_DP" in self.now_NT_Touch:
+                self.on_ground = 2
             else:
-                self.on_ground =False
+                self.on_ground = 0
             
             if self.on_ground :
                 self.vy = 0
@@ -536,10 +541,11 @@ class enemy():
 
 
                                 if "1_D" in self.now_NT_Touch:
-                                    self.on_ground = True
-
+                                    self.on_ground = 1
+                                elif "1_DP" in self.now_NT_Touch:
+                                    self.on_ground = 2
                                 else:
-                                    self.on_ground =False
+                                    self.on_ground = 0
                                 
 
 
@@ -579,11 +585,11 @@ class enemy():
                         case "The_Sun":
                             if not self.found:
 
-                                if  pow((player.rect.x - (self.rect.x+self.rect.width//2)),2) + pow((player.rect.y - (self.rect.y+self.rect.height//2)),2) <= pow(1000,2):
+                                if  pow((player.rect.x - (self.rect.x+self.rect.width//2)),2) + pow((player.rect.y - (self.rect.y+self.rect.height//2)),2) <= pow(1000,2) and player.on_ground:
                                     print("found_Test_right")
                                         
                                     if self.Find(player,NT_object):
-                                        self.wait = 32
+                                        self.wait = 240
                                         self.found = True     
                                         
                             else:
@@ -630,10 +636,11 @@ class enemy():
 
 
                                 if "1_D" in self.now_NT_Touch:
-                                    self.on_ground = True
-
+                                    self.on_ground = 1
+                                elif "1_DP" in self.now_NT_Touch:
+                                    self.on_ground = 2
                                 else:
-                                    self.on_ground =False
+                                    self.on_ground = 0
                                 
                         
                                 if self.on_ground :
@@ -644,7 +651,7 @@ class enemy():
                                     self.rect.y += self.vy  
                                 
                                 
-                                elif self.on_ground == 0 and self.NoGravity == 0:
+                                elif not self.on_ground and not self.NoGravity:
                                     self.vy+=1
                                     self.x += self.vx * self.back
                                     self.rect.x += self.vx * self.back
@@ -700,9 +707,11 @@ class enemy():
 
 
                     if "1_D" in self.now_NT_Touch:
-                        self.on_ground = True
+                        self.on_ground = 1
+                    elif "1_DP" in self.now_NT_Touch:
+                        self.on_ground = 2
                     else:
-                        self.on_ground =False
+                        self.on_ground = 0
                         
                     if self.on_ground :
                         self.vy = 0
