@@ -166,10 +166,14 @@ while True:
 
 
             BUTTON.empty()
-
-            scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
-
-            while scene_ctrl.num == 2: 
+            
+            button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
+            
+            BUTTON.add(button_back)
+            
+            while scene_ctrl.num == 2:
+                
+                
 
                 if scene_ctrl.button_cd > 0:
                     scene_ctrl.button_cd-=1
@@ -194,6 +198,7 @@ while True:
             while scene_ctrl==5:
                 
                 pass
+            
 #=======================================================================================================
 
         case 4:                                                                #畫面設定
@@ -341,8 +346,8 @@ while True:
 
                     
 
-                    #Enemy.append(player_class.enemy("The_Second",-400,-300,450,"boss","The_Tank"))
-                    Enemy.append(player_class.enemy("The_Third",-400,-300,200,"boss","The_Sun"))
+                    Enemy.append(player_class.enemy("The_Second",-400,-300,450,"boss","The_Tank"))
+                    #Enemy.append(player_class.enemy("The_Third",-400,-300,200,"boss","The_Sun"))
 
 
                     door = pygame.image.load("Image/Object/door.png")
@@ -804,7 +809,7 @@ while True:
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
                                 
-                tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, strength_bar, hint_backpack, trans, scene_ctrl)
+                tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, hint_backpack, trans, scene_ctrl)
                 
 
                 if keys[pygame.K_b] and not pre_keys[pygame.K_b]:

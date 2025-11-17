@@ -23,6 +23,7 @@ class player():
         self.Max_HP = 10
         self.ATK = 5
         self.endurance = 4
+        self.Max_endurance = 4
         self.endurance_cd = 120
         self.hurt_flashing = 0
         self.death_cd = 0
@@ -423,7 +424,7 @@ class enemy():
             RAY.rect.y += (player.y - self.y)//10
             print (RAY.rect.x,RAY.rect.y)
             for obj in NT_object:
-                if tool.Touch(RAY,obj):
+                if RAY.rect.colliderect(obj.rect):
                     del RAY
                     print("walled")
                     return False

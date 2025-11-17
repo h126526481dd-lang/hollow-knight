@@ -104,7 +104,7 @@ def load_s(save,scene_ctrl):
 
           
 
-def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_bar,hint_backpack,trans,scene_ctrl):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
+def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_backpack,trans,scene_ctrl):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     Info = pygame.display.Info()                                      #偵測用戶顯示參數
     screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
@@ -158,8 +158,8 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_
         if atk.dif == "light":
             match atk.num:
                 case 1:
-                    atk.tag_x = 3
-                    atk.tag_y = 9          
+                    atk.tag_x = -9
+                    atk.tag_y = 6          
                         
                 case 2:
                     atk.tag_x = 6
@@ -191,30 +191,49 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_
                     
                 for obj in NT_object:
                     if obj.type == "mirror_wall":
-                        Touch(atk,obj)
+                        if Touch(atk,obj):
+                            pass
                         if "1_DP" in atk.now_NT_Touch:
+                            
                             atk.tag_y *= -1
                                         
-                            atk.y += atk.tag_y
-                            atk.rect.y += atk.tag_y 
-                        if "1_UP" in atk.now_NT_Touch:
-                            atk.tag_y *= -1
-                                            
+                            atk.x += atk.tag_x
+                            atk.rect.x += atk.tag_x
                             atk.y += atk.tag_y
                             atk.rect.y += atk.tag_y
-                        if "1_L" in atk.now_NT_Touch:
+
+                        elif "1_UP" in atk.now_NT_Touch:
+                            atk.tag_y *= -1
+                            print("UP","V:",(atk.tag_x,atk.tag_y))
+           
+                            atk.x += atk.tag_x
+                            atk.rect.x += atk.tag_x
+                            atk.y += atk.tag_y
+                            atk.rect.y += atk.tag_y
+                            print(atk.x,atk.y)
+                            print("===================")
+                        elif "1_LP" in atk.now_NT_Touch:
+                            atk.tag_x *= -1
+                            print("LP","V:",(atk.tag_x,atk.tag_y))
+                            print("pre:",atk.x,atk.y)
+                            atk.x += atk.tag_x
+                            atk.rect.x += atk.tag_x
+                            atk.y += atk.tag_y
+                            atk.rect.y += atk.tag_y
+                            print(atk.x,atk.y)
+                            print("===================")
+                            
+                        elif "1_RP" in atk.now_NT_Touch:
                             atk.tag_x *= -1
                                                 
                             atk.x += atk.tag_x
                             atk.rect.x += atk.tag_x
-                        if "1_R" in atk.now_NT_Touch:
-                            atk.tag_x *= -1
-                                                
-                            atk.x += atk.tag_x
-                            atk.rect.x += atk.tag_x
-                        else:
-                            if Touch(atk,obj):
-                                atk.delete =1
+                            atk.y += atk.tag_y
+                            atk.rect.y += atk.tag_y
+                            
+                    else:
+                        if Touch(atk,obj):
+                            atk.delete =1
                     
                 if camera_rect.colliderect(atk.rect):
                     screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))
@@ -234,12 +253,17 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_
     
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
 
-    screen.blit(strength_bar, (screen_width//25, screen_height//6))
-
     screen.blit(hint_backpack, (screen_width//100, screen_height//40*39))
 
-    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//8-5, (screen_width//20+(player.Max_HP-5)*10)+10, screen_height//50+10))
-    pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, (screen_width//20+((player.Max_HP-5)*10))-(screen_width//20+((player.Max_HP-5)*10))*((player.Max_HP-player.HP)/player.Max_HP), screen_height//50))
+    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//8-5, player.Max_HP*50+10, screen_height//40+10))
+    pygame.draw.rect(screen, (255,255,255), (screen_width//20, screen_height//8, player.Max_HP*50, screen_height//40))
+    pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, player.HP*50, screen_height//40))
+    
+    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//20+145, player.Max_endurance*50+10, screen_height//50+10))
+    pygame.draw.rect(screen, (255,255,255), (screen_width//20, screen_height//20+150, player.Max_endurance*50, screen_height//50))
+    pygame.draw.rect(screen, (135,206,235), (screen_width//20, screen_height//20+150, player.endurance*50, screen_height//50))
+    
+    
     
     if scene_ctrl.trans > 0:
         trans.x+=screen_width//30
@@ -332,10 +356,11 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
             elif object2.can_be_through == 2 :
                 if object1.through == 0:
                     object1.now_NT_Touch.append("1_UP")      #若往下調沒碰撞，表示物件1的底部碰撞到了物件2(D=Down)，新增標籤到碰撞清單
+                    
             return True
 
         T_rect.y += (max(abs(object1.vy),32))
-        T_rect.x += (max(abs(object1.vx),11))
+        T_rect.x += (max(abs(object1.vx),20))
         
         if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件2往右調整後是否還有碰撞  
 
@@ -343,11 +368,11 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                 
                 object1.now_NT_Touch.append("1_R")      #若往右調沒碰撞，表示物件1的右部碰撞到了物件2，新增標籤到碰撞清單
                 object1.inertia = 0
-                T_rect.x -= (max(abs(object1.vx),11))
+                T_rect.x -= (max(abs(object1.vx),20))
 
                     
                 
-                for i in range(max(abs(object1.vx),11)):       #把物件1往左調整，直到不碰撞為止
+                for i in range(max(abs(object1.vx),20)):       #把物件1往左調整，直到不碰撞為止
                     object1.x -= 1
                     object1.rect.x -= 1    
                     
@@ -359,27 +384,28 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                 if object1.vx > 0:
                     object1.vx *= 0
 
+
             elif object2.can_be_through == 2 :               #角色跟不可穿越物件 的右碰撞(右阻擋)偵測
                 if object1.through == 0:
-
                     object1.now_NT_Touch.append("1_RP")      #若往右調沒碰撞，表示物件1的右部碰撞到了物件2，新增標籤到碰撞清單
+
 
             else:
                 object1.now_CT_Touch.append("1_R")      
             return True
 
-        T_rect.x -= 2*(max(abs(object1.vx),11))
+        T_rect.x -= 2*(max(abs(object1.vx),20))
         if not object1.rect.colliderect(T_rect):    #若當前有碰撞，則偵測物件2往左調整後是否還有碰撞  
 
 
             if object2.can_be_through == 0:               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
                 object1.now_NT_Touch.append("1_L")      #若往左調沒碰撞，表示物件1的左部碰撞到了物件2，新增標籤到碰撞清單
                 object1.inertia = 0
-                T_rect.x += (max(abs(object1.vx),11))
+                T_rect.x += (max(abs(object1.vx),20))
                 
 
                 
-                for i in range(max(abs(object1.vx),11)):       #把物件1往右調整，直到不碰撞為止
+                for i in range(max(abs(object1.vx),20)):       #把物件1往右調整，直到不碰撞為止
                     object1.x += 1
                     object1.rect.x += 1    
                                                                                                     
@@ -389,7 +415,7 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                         object1.rect.x -= 1
 
                         break
-                    
+
                 if object1.vx < 0:
                     object1.vx *= 0 
                     
@@ -508,8 +534,14 @@ def update_animation(obj, state):
 
 
 
-def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys,strength_bar,hint_backpack,trans,scene_ctrl):
-
+def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys,hint_backpack,trans,scene_ctrl):
+    
+    if Main.current_HP != Main.HP:
+        
+        Main.lost_HP = Main.HP-Main.current_HP
+    
+    Main.current_HP = Main.HP
+    
     if Main.endurance < 4:
         Main.endurance_cd -= 1
         if Main.endurance_cd == 0:
@@ -520,6 +552,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         Main.hurt_flashing -= 1
     
     Main.unhurtable_cd -= 1
+    
     if Main.inertia > 0:
         Main.inertia -= 1
 
@@ -932,10 +965,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                                     case 0: #輻(射)光(線)
                                         ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.transform.scale(pygame.image.load("Image\Object\skill.png"),(32,32)),"dangerous",1,0,"light",1,None,None)) 
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.transform.scale(pygame.image.load("Image\Object\skill.png"),(32,32)),"dangerous",1,0,"light",2,None,None)) 
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.transform.scale(pygame.image.load("Image\Object\skill.png"),(32,32)),"dangerous",1,0,"light",3,None,None)) 
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.transform.scale(pygame.image.load("Image\Object\skill.png"),(32,32)),"dangerous",1,0,"light",4,None,None)) 
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.transform.scale(pygame.image.load("Image\Object\skill.png"),(32,32)),"dangerous",1,0,"light",5,None,None)) 
+                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.transform.scale(pygame.image.load("Image\Object\skill.png"),(32,32)),"dangerous",1,0,"light",2,None,None)) 
+                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.transform.scale(pygame.image.load("Image\Object\skill.png"),(32,32)),"dangerous",1,0,"light",3,None,None)) 
+                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.transform.scale(pygame.image.load("Image\Object\skill.png"),(32,32)),"dangerous",1,0,"light",4,None,None)) 
                                         #enemy.phase_cd = -10
                                     case 1: #鏡反
                                         pass
@@ -1237,4 +1269,4 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 #=========================================================================刷新畫面
 
    
-    show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,strength_bar[Main.endurance],hint_backpack,trans,scene_ctrl)    #最終印刷
+    show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,hint_backpack,trans,scene_ctrl)    #最終印刷
