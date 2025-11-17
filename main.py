@@ -340,14 +340,15 @@ while True:
                     NT_object.append(object_class.object(2500,-1400,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
                     NT_object.append(object_class.object(-1720,-1400,tool.HRZ_combine("Image/Background/floor.png",33),"fake_wall",0,0,0,0,0,0))
                     
-                    NT_object.append(object_class.object(-1100,700,tool.HRZ_combine("Image/Background/floor.png",15),"mirror_wall",0,0,0,0,0,0))
-                    NT_object.append(object_class.object(-1300,250,tool.HRZ_combine("Image/Background/floor.png",3),"mirror_wall",0,0,0,0,0,0))
-                    NT_object.append(object_class.object(650,250,tool.HRZ_combine("Image/Background/floor.png",3),"mirror_wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-700,700,tool.HRZ_combine("Image/Background/floor.png",10),"mirror_wall",0,0,0,0,0,0))
+                    
+                    NT_object.append(object_class.object(-1000,250,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(700,250,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,0,0,0,0))
 
                     
 
-                    Enemy.append(player_class.enemy("The_Second",-400,-300,450,"boss","The_Tank"))
-                    #Enemy.append(player_class.enemy("The_Third",-400,-300,200,"boss","The_Sun"))
+                    #Enemy.append(player_class.enemy("The_Second",-400,-300,450,"boss","The_Tank"))
+                    Enemy.append(player_class.enemy("The_Third",-400,-300,200,"boss","The_Sun"))
 
 
                     door = pygame.image.load("Image/Object/door.png")
