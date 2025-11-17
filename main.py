@@ -341,8 +341,8 @@ while True:
 
                     
 
-                    Enemy.append(player_class.enemy("The_Second",-400,-300,450,"boss","The_Tank"))
-                    #Enemy.append(player_class.enemy("The_Third",-400,-300,200,"boss","The_Sun"))
+                    #Enemy.append(player_class.enemy("The_Second",-400,-300,450,"boss","The_Tank"))
+                    Enemy.append(player_class.enemy("The_Third",-400,-300,200,"boss","The_Sun"))
 
 
                     door = pygame.image.load("Image/Object/door.png")
