@@ -331,6 +331,7 @@ while True:
                     scene_ctrl.L_edge = -3200 + screen_width//2
                     scene_ctrl.T_edge = -2300 + screen_height //2
                     scene_ctrl.B_edge = 350
+                    
 
                     scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
@@ -342,13 +343,13 @@ while True:
                     
                     NT_object.append(object_class.object(-700,700,tool.HRZ_combine("Image/Background/floor.png",10),"mirror_wall",0,0,0,0,0,0))
                     
-                    NT_object.append(object_class.object(-1000,250,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,0,0,0,0))
-                    NT_object.append(object_class.object(700,250,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-1200,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,1,0,0,0))
+                    NT_object.append(object_class.object(800,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,1,0,0,0))
 
                     
 
                     #Enemy.append(player_class.enemy("The_Second",-400,-300,450,"boss","The_Tank"))
-                    Enemy.append(player_class.enemy("The_Third",-400,-300,200,"boss","The_Sun"))
+                    Enemy.append(player_class.enemy("The_Third",-200,-300,200,"boss","The_Sun"))
 
 
                     door = pygame.image.load("Image/Object/door.png")
@@ -783,7 +784,9 @@ while True:
                                 if obj.type == "fake_wall":
                                     if tool.Touch(Main,obj):
                                         NT_object.remove(obj)
-                                        del obj                     
+                                        del obj
+                            scene_ctrl.done = 1                     
+                            
 
      
      

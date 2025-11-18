@@ -371,9 +371,20 @@ class enemy():
 
                     case "The_Sun":
                         self.surface = pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\sun1.png"),(320,300))        #
+                        
+                        self.boss_idle = [pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\sun1.png"),(320,300)), 
+                                          pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\sun2.png"),(320,300))]
                         self.rect = self.surface.get_rect(topleft=(self.x, self.y))
 
 
+                        
+                        self.I = (0,0)
+                        self.II =(0,0)
+                        self.III =(0,0)
+                        self.IV = (0,0)
+                        self.V =(0,0)
+                        
+                        
                         self.broke = 0
 
                         self.TDamage = 0
