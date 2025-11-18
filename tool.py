@@ -1038,7 +1038,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
                                     case 0: #輻(射)光(線)
-                                        start_animation(enemy.attack_state,enemy.boss_idle, 30, enemy.back, False) 
+                                        start_animation(enemy.attack_state,enemy.boss_idle, 45, enemy.back, False) 
                                         theta =random.uniform(math.pi*4/6,math.pi*5/6)
                                         enemy.I = (16*math.cos(theta),16*math.sin(theta))
                                         theta =random.uniform(math.pi*3/6,math.pi*4/6)
@@ -1051,6 +1051,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         enemy.V =(16,0)
                                         
                                         scene_ctrl.done = 2
+
                                     case 1: #鏡反
                                         pass
 
@@ -1059,6 +1060,11 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                 
 
                             elif enemy.attack_state["playing"]:         #動畫執行中，出招cd = -1
+
+                                for obj in NT_object:
+                                    if obj.type == "mirror_wall" and obj.dif == 1 and scene_ctrl.done == 2:
+                                        obj.angle += 1
+                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle*-1)
                                 
                                 enemy.phase_cd = -1
                                 match enemy.phase:
@@ -1075,13 +1081,14 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     case 2:
                                         pass
 
-                                for obj in NT_object:
-                                    if obj.type == "mirror_wall" and obj.dif == 1 and scene_ctrl.done == 2:
-                                        obj.angle += 3
-                                        obj.surface = pygame.transform.rotate(obj.surface,-3)
+
 
                             elif enemy.anime:                           #動畫播放完畢，出招cd = -2
                                 enemy.phase_cd = -2
+                                for obj in NT_object:
+                                    if obj.type == "mirror_wall" and obj.dif == 1 and scene_ctrl.done == 2:
+                                        obj.angle += 1
+                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle*-1)
 
 
                             elif enemy.phase_cd == -2:                  #前搖完二次初始化
