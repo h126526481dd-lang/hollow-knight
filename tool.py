@@ -7,98 +7,141 @@ import object_class
 import json
 
 def save(player,scene_ctrl):
-    p_path="save\save1\player.json"
+
+    match scene_ctrl.Save:
+        case 1:
+            p_path="save\save1\player.json"
+            s_path="save\save1\scene.json"
+        case 2:
+            p_path="save\save2\player.json"
+            s_path="save\save2\scene.json"
+        case 3:
+            p_path="save\save3\player.json"
+            s_path="save\save3\scene.json"
+        case 4:
+            p_path="save\save4\player.json"
+            s_path="save\save4\scene.json"
+
+
+
 
     with open(p_path,'w',encoding='utf-8') as f:
         json.dump(player.to_dict(),f)
 
-    s_path="save\save1\scene.json"
     
     with open(s_path,'w',encoding='utf-8') as f:
         json.dump(scene_ctrl.__dict__,f)
 
 
 
-def load_p(save):
+
+def reset(save,scene_ctrl):
+
+
     match save:
         case 1:
-            with open("save\save1\player.json", 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            p_path="save\save1\player.json"
+        case 2:
+            p_path="save\save2\player.json"
+        case 3:
+            p_path="save\save3\player.json"
+        case 4:
+            p_path="save\save4\player.json"
+
+
+
+    with open(p_path, 'w', encoding='utf-8') as f:
+        with open("save\init\player.json", 'r', encoding='utf-8') as F:
+            data = json.load(F)
             player=player_class.player.from_dict(data)
             player.read_surface()
 
-            with open("save\save1\scene.json", 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            json.dump(player.to_dict(),f)
 
 
+
+
+
+
+    match save:
+        case 1:
+            s_path="save\save1\scene.json"
         case 2:
-            with open('save\save_2.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-                # 現在 data 變數中包含了 JSON 檔案的內容
-                print(data)
-
-
+            s_path="save\save2\scene.json"
         case 3:
-            with open('save\save_3.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-                # 現在 data 變數中包含了 JSON 檔案的內容
-                print(data)
-
-
+            s_path="save\save3\scene.json"
         case 4:
-            with open('save\save_4.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            s_path="save\save4\scene.json"
 
-                # 現在 data 變數中包含了 JSON 檔案的內容
-                print(data)  
+    with open(s_path, 'w', encoding='utf-8') as f:
+        with open("save\init\scene.json", 'r', encoding='utf-8') as F:
+            data = json.load(F)
+
+        scene_ctrl.menu = data["menu"]
+        scene_ctrl.fps = data["fps"]
+        scene_ctrl.button_cd = data["button_cd"]
+        scene_ctrl.game = data["game"]
+        scene_ctrl.pre_game = data["pre_game"]
+        scene_ctrl.trans = data["trans"]
+        scene_ctrl.R_edge = 0
+        scene_ctrl.L_edge = 0
+        scene_ctrl.From = 0
+        scene_ctrl.done = 0
+
+        json.dump(scene_ctrl.__dict__,f)
+
+
+
+            
+
+    
+
+
+
+def load_p(save):
+    match save:
+        case 1:
+            p_path="save\save1\player.json"
+        case 2:
+            p_path="save\save2\player.json"
+        case 3:
+            p_path="save\save3\player.json"
+        case 4:
+            p_path="save\save4\player.json"
+
+    with open(p_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+        player=player_class.player.from_dict(data)
+        player.read_surface()
+
     return player   
 
 def load_s(save,scene_ctrl):
     match save:
         case 1:
-            with open("save\save1\scene.json", 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-            scene_ctrl.num = data["num"]
-            scene_ctrl.menu = data["menu"]
-            scene_ctrl.fps = data["fps"]
-            scene_ctrl.button_cd = data["button_cd"]
-            scene_ctrl.game = data["game"]
-            scene_ctrl.pre_game = data["pre_game"]
-            scene_ctrl.trans = data["trans"]
-            scene_ctrl.R_edge = 0
-            scene_ctrl.L_edge = 0
-            scene_ctrl.From = 0
-            scene_ctrl.done = 0
-
+            s_path="save\save1\scene.json"
         case 2:
-            with open('save\save_2.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-            scene_ctrl.num = data["num"]
-            scene_ctrl.menu = data["menu"]
-            scene_ctrl.fps = data["fps"]
-            scene_ctrl.button_cd = data["button_cd"]
-
-
+            s_path="save\save2\scene.json"
         case 3:
-            with open('save\save_3.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-            scene_ctrl.num = data["num"]
-            scene_ctrl.menu = data["menu"]
-            scene_ctrl.fps = data["fps"]
-            scene_ctrl.button_cd = data["button_cd"]
-
+            s_path="save\save3\scene.json"
         case 4:
-            with open('save\save_4.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            scene_ctrl.num = data["num"]
-            scene_ctrl.menu = data["menu"]
-            scene_ctrl.fps = data["fps"]
-            scene_ctrl.button_cd = data["button_cd"]
+            s_path="save\save4\scene.json"
+    
+    with open(s_path, 'r', encoding='utf-8') as f:
+
+        data = json.load(f)
+
+    scene_ctrl.num = 10
+    scene_ctrl.menu = data["menu"]
+    scene_ctrl.fps = data["fps"]
+    scene_ctrl.button_cd = data["button_cd"]
+    scene_ctrl.game = data["game"]
+    scene_ctrl.pre_game = data["pre_game"]
+    scene_ctrl.trans = data["trans"]
+    scene_ctrl.R_edge = 0
+    scene_ctrl.L_edge = 0
+    scene_ctrl.From = 0
+    scene_ctrl.done = 0
 
     return scene_ctrl
 
@@ -789,6 +832,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if Touch(Main,obj):
                 
                 if obj.type == "save_point":
+                        
+
                         Main.HP=Main.Max_HP
                         save(Main,scene_ctrl)
                         Main.read_surface()

@@ -46,6 +46,7 @@ class scene_c():
         self.backpack = 0
         self.done = 0
         self.reset = 0
+        self.Save = None
         
 
 def Load(save):
@@ -53,6 +54,7 @@ def Load(save):
     global scene_ctrl
     Main = tool.load_p(save)
     scene_ctrl = tool.load_s(save,scene_ctrl)
+    scene_ctrl.Szave = save
 
 #=======================================================================================================
 
@@ -269,10 +271,10 @@ while True:
 
                     BUTTON.empty()
 
-                    button_reset1 = button.Button(screen_width//4, screen_height//8*3, "Reset 1", lambda:Load(1))
-                    button_reset2 = button.Button(screen_width//4, screen_height//8*4, "Reset 2", lambda:Load(2))
-                    button_reset3 = button.Button(screen_width//4, screen_height//8*5, "Reset 3", lambda:Load(3))
-                    button_reset4 = button.Button(screen_width//4, screen_height//8*6, "Reset 4", lambda:Load(4))
+                    button_reset1 = button.Button(screen_width//4, screen_height//8*3, "Reset 1", lambda:tool.reset(1,scene_ctrl))
+                    button_reset2 = button.Button(screen_width//4, screen_height//8*4, "Reset 2", lambda:tool.reset(2,scene_ctrl))
+                    button_reset3 = button.Button(screen_width//4, screen_height//8*5, "Reset 3", lambda:tool.reset(3,scene_ctrl))
+                    button_reset4 = button.Button(screen_width//4, screen_height//8*6, "Reset 4", lambda:tool.reset(4,scene_ctrl))
                     button_reset_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.reset(scene_ctrl, 0))
 
                     BUTTON.add(button_reset1, button_reset2, button_reset3, button_reset4, button_reset_back)
