@@ -130,7 +130,7 @@ class object():
                         
                         self.num = num
                         
-                        self.through = 0
+                        self.through = 1
                         
                         self.vx = 0
                         self.vy = 0
@@ -145,12 +145,13 @@ class object():
                         self.tag_y = None
                         self.delete = 0
                         self.dur = 200
+                        self.reflect = 0
                         
                     case "pre_light":
                         
                         self.num = num
                         
-                        self.through = 0
+                        self.through = 1
                         
                         self.vx = 0
                         self.vy = 0
@@ -169,4 +170,5 @@ class object():
                         self.delete = 0
                         self.dur = 200
 
+                        self.reflect = 0
 

@@ -192,47 +192,23 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                                     
                     elif player.unhurtable_cd <= 0 and player.HP == 1:
                         player.get_hit()                                  
+                        
                 atk.now_NT_Touch = []
                     
                 for obj in NT_object:
                     if Touch(atk,obj):
 
-                        if obj.type == "mirror_wall":
+                        if obj.type == "mirror_wall" and atk.reflect == 0:
                             
-                            if "1_DP" in atk.now_NT_Touch:
-                                
-                                atk.tag_y *= -1
-                                            
-                                atk.x += atk.tag_x
-                                atk.rect.x += atk.tag_x
-                                atk.y += atk.tag_y
-                                atk.rect.y += atk.tag_y
+                            atk.tag_x = math.cos(math.radians(obj.angle)*2) * atk.tag_x + math.sin(math.radians(obj.angle)*2) * atk.tag_y
+                            atk.tag_y = math.sin(math.radians(obj.angle)*2) * atk.tag_x - math.cos(math.radians(obj.angle)*2) * atk.tag_y  
+                            atk.reflect = 1
 
-                            if "1_UP" in atk.now_NT_Touch:
-                                atk.tag_y *= -1
-            
-                                atk.x += atk.tag_x
-                                atk.rect.x += atk.tag_x
-                                atk.y += atk.tag_y
-                                atk.rect.y += atk.tag_y
-                                
-                            if "1_LP" in atk.now_NT_Touch:
-                                atk.tag_x *= -1
-                                atk.x += atk.tag_x
-                                atk.rect.x += atk.tag_x
-                                atk.y += atk.tag_y
-                                atk.rect.y += atk.tag_y
-                                
-                            if "1_RP" in atk.now_NT_Touch:
-                                atk.tag_x *= -1
-                                                    
-                                atk.x += atk.tag_x
-                                atk.rect.x += atk.tag_x
-                                atk.y += atk.tag_y
-                                atk.rect.y += atk.tag_y
-                                
-                        else:
+                        elif obj.type != "mirror_wall":
                             atk.delete =1
+                            
+                    elif atk.now_NT_Touch == []:
+                        atk.reflect = 0
                         
                 if camera_rect.colliderect(atk.rect):
                     screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))                
@@ -271,42 +247,24 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                 for obj in NT_object:
                     if Touch(atk,obj):
 
-                        if obj.type == "mirror_wall":
+                        if obj.type == "mirror_wall" and atk.reflect == 0:
                             
-                            if "1_DP" in atk.now_NT_Touch:
-                                
-                                atk.tag_y *= -1
-                                            
-                                atk.x += atk.tag_x
-                                atk.rect.x += atk.tag_x
-                                atk.y += atk.tag_y
-                                atk.rect.y += atk.tag_y
-
-                            if "1_UP" in atk.now_NT_Touch:
-                                atk.tag_y *= -1
-            
-                                atk.x += atk.tag_x
-                                atk.rect.x += atk.tag_x
-                                atk.y += atk.tag_y
-                                atk.rect.y += atk.tag_y
-                                
-                            if "1_LP" in atk.now_NT_Touch:
-                                atk.tag_x *= -1
-                                atk.x += atk.tag_x
-                                atk.rect.x += atk.tag_x
-                                atk.y += atk.tag_y
-                                atk.rect.y += atk.tag_y
-                                
-                            if "1_RP" in atk.now_NT_Touch:
-                                atk.tag_x *= -1
-                                                    
-                                atk.x += atk.tag_x
-                                atk.rect.x += atk.tag_x
-                                atk.y += atk.tag_y
-                                atk.rect.y += atk.tag_y
-                                
-                        else:
+                            atk.tag_x = math.cos(math.radians(obj.angle)*2) * atk.tag_x + math.sin(math.radians(obj.angle)*2) * atk.tag_y
+                            atk.tag_y = math.sin(math.radians(obj.angle)*2) * atk.tag_x - math.cos(math.radians(obj.angle)*2) * atk.tag_y    
+                            atk.reflect = 1
+                            
+                                                       
+                        elif obj.type != "mirror_wall":
                             atk.delete =1
+                            
+                            
+                        if obj.type == "mirror_wall" and obj.dif == 1:
+                            print("angle=",obj.angle,"light_xy=",(atk.tag_x,atk.tag_y))
+                            print("==================================")
+                            
+                            
+                    elif atk.now_NT_Touch == []:
+                        atk.reflect = 0
                         
                 if camera_rect.colliderect(atk.rect):
                     screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))                
@@ -349,7 +307,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
 
 def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞偵測
     
-    T_rect = object2.surface.get_rect(topleft = (object2.x, object2.y))
+    T_rect = pygame.Rect(object2.rect.x,object2.rect.y,object2.rect.width,object2.rect.height)
   #物件2的碰撞盒複製(調整用)
     if not ("1_D" in object1.now_NT_Touch) and not ("1_DP" in object1.now_NT_Touch):
         object1.on_ground = 0
@@ -400,7 +358,9 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                     object1.vy = 0
                     object1.on_ground = 2
                 return True
-
+            else :
+                object1.now_CT_Touch.append("1_D")      
+                return True
 
         T_rect.y-=2*(max(abs(object1.vy),32))
 
@@ -429,6 +389,9 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                 if object1.through == 0:
                     object1.now_NT_Touch.append("1_UP")      #若往下調沒碰撞，表示物件1的底部碰撞到了物件2(D=Down)，新增標籤到碰撞清單
                     
+                return True
+            else :
+                object1.now_CT_Touch.append("1_U")      
                 return True
 
         T_rect.y += (max(abs(object1.vy),32))
@@ -863,7 +826,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         match enemy.type:                                       #分流 (波鼠 菁英 路邊) 
 
             case "boss":
-                print("enemy=",enemy.type,"、",enemy.dif,",cd=",enemy.phase_cd,",wait=",enemy.wait,",found=",enemy.found,",phase=",enemy.phase,",skill_time=",enemy.skill_time,",back=",enemy.back,",vx=",enemy.vx)
+                #print("enemy=",enemy.type,"、",enemy.dif,",cd=",enemy.phase_cd,",wait=",enemy.wait,",found=",enemy.found,",phase=",enemy.phase,",skill_time=",enemy.skill_time,",back=",enemy.back,",vx=",enemy.vx)
 
 
                 match enemy.dif:                                #分流不同波鼠
@@ -1051,7 +1014,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         enemy.V =(16,0)
                                         
                                         scene_ctrl.done = 2
-
+                                        
                                     case 1: #鏡反
                                         pass
 
@@ -1062,18 +1025,31 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                             elif enemy.attack_state["playing"]:         #動畫執行中，出招cd = -1
 
                                 for obj in NT_object:
-                                    if obj.type == "mirror_wall" and obj.dif == 1 and scene_ctrl.done == 2:
+                                    if obj.type == "mirror_wall" and obj.dif == 1:# and abs(obj.angle) % 360 < 135:
+                                        obj.angle -= 1
+                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle)
+                                        obj.rect = obj.surface.get_rect(topleft=(obj.x, obj.y))
+                                        if obj.angle > 360:
+                                            obj.angle -= 360
+                                        elif obj.angle < 0 :
+                                            obj.angle += 360
+                                    elif obj.type == "mirror_wall" and obj.dif == 2:# and abs(obj.angle) % 360 < 135:
                                         obj.angle += 1
-                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle*-1)
+                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle)
+                                        obj.rect = obj.surface.get_rect(topleft=(obj.x, obj.y))
+                                        if obj.angle > 360:
+                                            obj.angle -= 360
+                                        elif obj.angle < 0 :
+                                            obj.angle += 360
                                 
                                 enemy.phase_cd = -1
                                 match enemy.phase:
                                     case 0:
                                         ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",1,None,None)) 
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",2,None,None)) 
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",3,None,None)) 
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",4,None,None))
-                                        ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",5,None,None))
+                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",2,None,None)) 
+                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",3,None,None)) 
+                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",4,None,None))
+                                        #ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",5,None,None))
 
                                         
                                     case 1:
@@ -1086,10 +1062,15 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                             elif enemy.anime:                           #動畫播放完畢，出招cd = -2
                                 enemy.phase_cd = -2
                                 for obj in NT_object:
-                                    if obj.type == "mirror_wall" and obj.dif == 1 and scene_ctrl.done == 2:
+                                    if obj.type == "mirror_wall" and obj.dif == 2 :#and abs(obj.angle) % 360 < 135:
                                         obj.angle += 1
-                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle*-1)
+                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle)
+                                        obj.rect = obj.surface.get_rect(topleft=(obj.x, obj.y))
 
+                                    elif obj.type == "mirror_wall" and obj.dif == 1: # and abs(obj.angle) % 360 < 135:
+                                        obj.angle -= 1
+                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle)
+                                        obj.rect = obj.surface.get_rect(topleft=(obj.x, obj.y))
 
                             elif enemy.phase_cd == -2:                  #前搖完二次初始化
 
@@ -1126,10 +1107,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                             
                                         
                                         ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",1,None,None)) 
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",2,None,None)) 
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",3,None,None)) 
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",4,None,None))
-                                        ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",5,None,None))
+                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",2,None,None)) 
+                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",3,None,None)) 
+                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",4,None,None))
+                                        #ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",5,None,None))
 
 
 

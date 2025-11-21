@@ -343,8 +343,11 @@ while True:
                     
                     NT_object.append(object_class.object(-700,700,tool.HRZ_combine("Image/Background/floor.png",10),"mirror_wall",0,0,0,0,0,0))
                     
-                    NT_object.append(object_class.object(-1200,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,1,0,0,0))
-                    NT_object.append(object_class.object(800,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,1,0,0,0))
+                    NT_object.append(object_class.object(-1000,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,1,0,0,0))
+                    NT_object.append(object_class.object(800,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,2,0,0,0))
+
+                    NT_object.append(object_class.object(-200,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,3,0,0,0))
+
 
                     
 
