@@ -9,6 +9,7 @@ import json
 def save(player,scene_ctrl):
 
     match scene_ctrl.Save:
+        
         case 1:
             p_path="save\save1\player.json"
             s_path="save\save1\scene.json"
@@ -301,7 +302,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                             atk.delete =1
                             
                             
-                        if obj.type == "mirror_wall" and obj.dif == 1:
+                        if obj.type == "mirror_wall" and obj.dif == 1 and atk.reflect == 1:
                             print("angle=",obj.angle,"light_xy=",(atk.tag_x,atk.tag_y))
                             print("==================================")
                             

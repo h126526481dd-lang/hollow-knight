@@ -54,7 +54,7 @@ def Load(save):
     global scene_ctrl
     Main = tool.load_p(save)
     scene_ctrl = tool.load_s(save,scene_ctrl)
-    scene_ctrl.Szave = save
+    scene_ctrl.Save = save
 
 #=======================================================================================================
 
