@@ -21,6 +21,11 @@ class player():
 
         self.HP = 10
         self.Max_HP = 10
+
+        self.current_HP = 10
+        self.Hurt_HP = 0
+
+
         self.ATK = 5
         self.endurance = 4
         self.Max_endurance = 4
@@ -240,12 +245,13 @@ class player():
         self.Dead = None
         #匯入Hurt.png圖片並切分成動畫
         self.Hurt = None
-        
+        self.Hurt_sound = None
         self.Walk = None
         self.surface = None
         self.rect = None
         self.attack_state = {}
         self.attack_state["playing"] = False
+        
 
         return self.__dict__
     
