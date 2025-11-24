@@ -76,6 +76,7 @@ class player():
         self.walk = "Image\Character\mainchacter\Walk.png"
         
         self.dead = "Image\Character\mainchacter\Dead.png"
+        self.shield = "Image\Character\mainchacter\Shield.png"
         
         self.is_hurt = 0
         self.unhurtable_cd = 0
@@ -121,6 +122,8 @@ class player():
 
         #匯入Hurt.png圖片並切分成動畫
         self.Hurt = None
+
+        self.Shield = None
         
         self.Walk = None
         self.surface = None
