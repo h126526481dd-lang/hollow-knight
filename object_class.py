@@ -146,6 +146,8 @@ class object():
                         self.delete = 0
                         self.dur = 200
                         self.reflect = 0
+                        self.now_Touch =[]
+                        self.L_mirror = None
                         
                     case "pre_light":
                         
@@ -171,4 +173,6 @@ class object():
                         self.dur = 200
 
                         self.reflect = 0
+                        self.now_Touch =[]
+                        self.L_mirror = None
 
