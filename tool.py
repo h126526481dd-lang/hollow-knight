@@ -668,12 +668,18 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if Main.skill_key[4] == 2:
         if Main.on_ground :
             Main.skill_key[4] = 1
+
+#=====================================================================格擋
+
+    update_animation(Main, Main.block_state)
+    if keys[pygame.K_l] and Main.on_ground and not Main.attack_state["playing"] and not Main.block_state["playing"]:
+        Main.block()
         
 #===========================================================移動按鍵判定(動vx)(動角色圖片)
 
     if Main.is_hurt == 0:
 
-        if not Main.attack_state["playing"] or Main.atk_procedure != 0 :     #如果不是第三段攻擊
+        if (not Main.attack_state["playing"] and not Main.block_state["playing"]) or Main.atk_procedure != 0:     #如果不是第三段攻擊
             if keys[pygame.K_d] and keys[pygame.K_a] and Main.move_lock == 0:                       #避免同時按兩個方向鍵
                 if  Main.inertia == 0:
                     Main.idle() 
@@ -707,7 +713,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=================================================偵測角色攻擊按鍵(是否按下j鍵, 是否在撥放攻擊動畫, 前一偵是否按著j鍵)
 
-        if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j] and Main.HP > 0 :
+        if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j] and Main.HP > 0 and not Main.block_state["playing"]:
 
             #如果未銜接攻擊，攻擊步驟歸零
             if Main.atk_next <= 0:
@@ -752,6 +758,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     else:
         Main.is_hurt-=1
+
+
 
 #==================================================================斬擊朝向(動vx)
 
@@ -1369,7 +1377,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         Main.through = 1
         Main.vy = 1
 
-    elif keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0 and Main.move_lock == 0:                      #按下空白鍵跳躍
+    elif keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0 and Main.move_lock == 0 and not Main.block_state["playing"]:                      #按下空白鍵跳躍
         Main.jump()
     
     if Main.is_hurt > 0:
