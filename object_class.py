@@ -33,8 +33,10 @@ class object():
                 
                 
             case "mirror_wall":
-                self.can_be_through = 2                                         #物件是否可通過      
-                self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)                
+                self.can_be_through = 2                                         #物件是否可通過 
+                self.dif = dif     
+                self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)       
+                self.angle = 0         
                 
         
             case "door":
@@ -123,6 +125,54 @@ class object():
                         self.tag_y = None
                         self.delete = 0
                         self.dur = 300
-                
 
+                    case "light":
+                        
+                        self.num = num
+                        
+                        self.through = 1
+                        
+                        self.vx = 0
+                        self.vy = 0
+                        self.can_be_through = 1                                         #物件是否可通過(布林值)
+                        self.surface= pygame.transform.scale(self.surface,(50,50))
+
+                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
+                        self.ATK=ATK
+                        self.KB=KB
+                        
+                        self.tag_x = None
+                        self.tag_y = None
+                        self.delete = 0
+                        self.dur = 200
+                        self.reflect = 0
+                        self.now_Touch =[]
+                        self.L_mirror = None
+                        
+                    case "pre_light":
+                        
+                        self.num = num
+                        
+                        self.through = 1
+                        
+                        self.vx = 0
+                        self.vy = 0
+                        self.can_be_through = 1                                         #物件是否可通過(布林值)
+                        self.surface= pygame.transform.scale(self.surface,(50,50))
+
+                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
+
+                        self.surface= pygame.transform.scale(self.surface,(10,10))
+
+                        self.ATK=ATK
+                        self.KB=KB
+                        
+                        self.tag_x = None
+                        self.tag_y = None
+                        self.delete = 0
+                        self.dur = 200
+
+                        self.reflect = 0
+                        self.now_Touch =[]
+                        self.L_mirror = None
 

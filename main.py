@@ -46,6 +46,7 @@ class scene_c():
         self.backpack = 0
         self.done = 0
         self.reset = 0
+        self.Save = None
         
 
 def Load(save):
@@ -53,6 +54,7 @@ def Load(save):
     global scene_ctrl
     Main = tool.load_p(save)
     scene_ctrl = tool.load_s(save,scene_ctrl)
+    scene_ctrl.Save = save
 
 #=======================================================================================================
 
@@ -166,10 +168,14 @@ while True:
 
 
             BUTTON.empty()
-
-            scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
-
-            while scene_ctrl.num == 2: 
+            
+            button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
+            
+            BUTTON.add(button_back)
+            
+            while scene_ctrl.num == 2:
+                
+                
 
                 if scene_ctrl.button_cd > 0:
                     scene_ctrl.button_cd-=1
@@ -194,6 +200,7 @@ while True:
             while scene_ctrl==5:
                 
                 pass
+            
 #=======================================================================================================
 
         case 4:                                                                #畫面設定
@@ -264,10 +271,10 @@ while True:
 
                     BUTTON.empty()
 
-                    button_reset1 = button.Button(screen_width//4, screen_height//8*3, "Reset 1", lambda:Load(1))
-                    button_reset2 = button.Button(screen_width//4, screen_height//8*4, "Reset 2", lambda:Load(2))
-                    button_reset3 = button.Button(screen_width//4, screen_height//8*5, "Reset 3", lambda:Load(3))
-                    button_reset4 = button.Button(screen_width//4, screen_height//8*6, "Reset 4", lambda:Load(4))
+                    button_reset1 = button.Button(screen_width//4, screen_height//8*3, "Reset 1", lambda:tool.reset(1,scene_ctrl))
+                    button_reset2 = button.Button(screen_width//4, screen_height//8*4, "Reset 2", lambda:tool.reset(2,scene_ctrl))
+                    button_reset3 = button.Button(screen_width//4, screen_height//8*5, "Reset 3", lambda:tool.reset(3,scene_ctrl))
+                    button_reset4 = button.Button(screen_width//4, screen_height//8*6, "Reset 4", lambda:tool.reset(4,scene_ctrl))
                     button_reset_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.reset(scene_ctrl, 0))
 
                     BUTTON.add(button_reset1, button_reset2, button_reset3, button_reset4, button_reset_back)
@@ -326,6 +333,7 @@ while True:
                     scene_ctrl.L_edge = -3200 + screen_width//2
                     scene_ctrl.T_edge = -2300 + screen_height //2
                     scene_ctrl.B_edge = 350
+                    
 
                     scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
@@ -335,14 +343,18 @@ while True:
                     NT_object.append(object_class.object(2500,-1400,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
                     NT_object.append(object_class.object(-1720,-1400,tool.HRZ_combine("Image/Background/floor.png",33),"fake_wall",0,0,0,0,0,0))
                     
-                    NT_object.append(object_class.object(-1100,700,tool.HRZ_combine("Image/Background/floor.png",15),"mirror_wall",0,0,0,0,0,0))
-                    NT_object.append(object_class.object(-1300,250,tool.HRZ_combine("Image/Background/floor.png",3),"mirror_wall",0,0,0,0,0,0))
-                    NT_object.append(object_class.object(650,250,tool.HRZ_combine("Image/Background/floor.png",3),"mirror_wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-700,700,tool.HRZ_combine("Image/Background/floor.png",10),"mirror_wall",0,0,0,0,0,0))
+                    
+                    NT_object.append(object_class.object(-1000,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,1,0,0,0))
+                    NT_object.append(object_class.object(800,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,2,0,0,0))
+
+                    #NT_object.append(object_class.object(-200,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,3,0,0,0))
+
 
                     
 
-                    Enemy.append(player_class.enemy("The_Second",-400,-300,450,"boss","The_Tank"))
-                    #Enemy.append(player_class.enemy("The_Third",-400,-300,200,"boss","The_Sun"))
+                    #Enemy.append(player_class.enemy("The_Second",-400,-300,450,"boss","The_Tank"))
+                    Enemy.append(player_class.enemy("The_Third",-200,-300,200,"boss","The_Sun"))
 
 
                     door = pygame.image.load("Image/Object/door.png")
@@ -742,7 +754,7 @@ while True:
                 case "dead":                                                #死亡緩衝區
                     Main.HP=Main.Max_HP
                     Main.death_cd = 0
-                    Load(1)
+                    Load(scene_ctrl.Save)
                     scene_ctrl.init = 1
 
 #=========================================================================================================
@@ -777,7 +789,9 @@ while True:
                                 if obj.type == "fake_wall":
                                     if tool.Touch(Main,obj):
                                         NT_object.remove(obj)
-                                        del obj                     
+                                        del obj
+                            scene_ctrl.done = 1                     
+                            
 
      
      
@@ -804,7 +818,7 @@ while True:
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
                                 
-                tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, strength_bar, hint_backpack, trans, scene_ctrl)
+                tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, hint_backpack, trans, scene_ctrl)
                 
 
                 if keys[pygame.K_b] and not pre_keys[pygame.K_b]:

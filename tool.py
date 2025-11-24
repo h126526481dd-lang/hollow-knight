@@ -7,104 +7,148 @@ import object_class
 import json
 
 def save(player,scene_ctrl):
-    p_path="save\save1\player.json"
+
+    match scene_ctrl.Save:
+        
+        case 1:
+            p_path="save\save1\player.json"
+            s_path="save\save1\scene.json"
+        case 2:
+            p_path="save\save2\player.json"
+            s_path="save\save2\scene.json"
+        case 3:
+            p_path="save\save3\player.json"
+            s_path="save\save3\scene.json"
+        case 4:
+            p_path="save\save4\player.json"
+            s_path="save\save4\scene.json"
+
+
+
 
     with open(p_path,'w',encoding='utf-8') as f:
         json.dump(player.to_dict(),f)
 
-    s_path="save\save1\scene.json"
     
     with open(s_path,'w',encoding='utf-8') as f:
         json.dump(scene_ctrl.__dict__,f)
 
 
 
-def load_p(save):
+
+def reset(save,scene_ctrl):
+
+
     match save:
         case 1:
-            with open("save\save1\player.json", 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            p_path="save\save1\player.json"
+        case 2:
+            p_path="save\save2\player.json"
+        case 3:
+            p_path="save\save3\player.json"
+        case 4:
+            p_path="save\save4\player.json"
+
+
+
+    with open(p_path, 'w', encoding='utf-8') as f:
+        with open("save\init\player.json", 'r', encoding='utf-8') as F:
+            data = json.load(F)
             player=player_class.player.from_dict(data)
             player.read_surface()
 
-            with open("save\save1\scene.json", 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            json.dump(player.to_dict(),f)
 
 
+
+
+
+
+    match save:
+        case 1:
+            s_path="save\save1\scene.json"
         case 2:
-            with open('save\save_2.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-                # 現在 data 變數中包含了 JSON 檔案的內容
-                print(data)
-
-
+            s_path="save\save2\scene.json"
         case 3:
-            with open('save\save_3.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-                # 現在 data 變數中包含了 JSON 檔案的內容
-                print(data)
-
-
+            s_path="save\save3\scene.json"
         case 4:
-            with open('save\save_4.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            s_path="save\save4\scene.json"
 
-                # 現在 data 變數中包含了 JSON 檔案的內容
-                print(data)  
+    with open(s_path, 'w', encoding='utf-8') as f:
+        with open("save\init\scene.json", 'r', encoding='utf-8') as F:
+            data = json.load(F)
+
+        scene_ctrl.menu = data["menu"]
+        scene_ctrl.fps = data["fps"]
+        scene_ctrl.button_cd = data["button_cd"]
+        scene_ctrl.game = data["game"]
+        scene_ctrl.pre_game = data["pre_game"]
+        scene_ctrl.trans = data["trans"]
+        scene_ctrl.R_edge = 0
+        scene_ctrl.L_edge = 0
+        scene_ctrl.From = 0
+        scene_ctrl.done = 0
+
+        json.dump(scene_ctrl.__dict__,f)
+
+
+
+            
+
+    
+
+
+
+def load_p(save):
+    match save:
+        case 1:
+            p_path="save\save1\player.json"
+        case 2:
+            p_path="save\save2\player.json"
+        case 3:
+            p_path="save\save3\player.json"
+        case 4:
+            p_path="save\save4\player.json"
+
+    with open(p_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+        player=player_class.player.from_dict(data)
+        player.read_surface()
+
     return player   
 
 def load_s(save,scene_ctrl):
     match save:
         case 1:
-            with open("save\save1\scene.json", 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-            scene_ctrl.num = data["num"]
-            scene_ctrl.menu = data["menu"]
-            scene_ctrl.fps = data["fps"]
-            scene_ctrl.button_cd = data["button_cd"]
-            scene_ctrl.game = data["game"]
-            scene_ctrl.pre_game = data["pre_game"]
-            scene_ctrl.trans = data["trans"]
-            scene_ctrl.R_edge = 0
-            scene_ctrl.L_edge = 0
-            scene_ctrl.From = 0
-            scene_ctrl.done = 0
-
+            s_path="save\save1\scene.json"
         case 2:
-            with open('save\save_2.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-            scene_ctrl.num = data["num"]
-            scene_ctrl.menu = data["menu"]
-            scene_ctrl.fps = data["fps"]
-            scene_ctrl.button_cd = data["button_cd"]
-
-
+            s_path="save\save2\scene.json"
         case 3:
-            with open('save\save_3.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
-
-            scene_ctrl.num = data["num"]
-            scene_ctrl.menu = data["menu"]
-            scene_ctrl.fps = data["fps"]
-            scene_ctrl.button_cd = data["button_cd"]
-
+            s_path="save\save3\scene.json"
         case 4:
-            with open('save\save_4.json', 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            scene_ctrl.num = data["num"]
-            scene_ctrl.menu = data["menu"]
-            scene_ctrl.fps = data["fps"]
-            scene_ctrl.button_cd = data["button_cd"]
+            s_path="save\save4\scene.json"
+    
+    with open(s_path, 'r', encoding='utf-8') as f:
+
+        data = json.load(f)
+
+    scene_ctrl.num = 10
+    scene_ctrl.menu = data["menu"]
+    scene_ctrl.fps = data["fps"]
+    scene_ctrl.button_cd = data["button_cd"]
+    scene_ctrl.game = data["game"]
+    scene_ctrl.pre_game = data["pre_game"]
+    scene_ctrl.trans = data["trans"]
+    scene_ctrl.R_edge = 0
+    scene_ctrl.L_edge = 0
+    scene_ctrl.From = 0
+    scene_ctrl.done = 0
 
     return scene_ctrl
 
           
 
-def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_bar,hint_backpack,trans,scene_ctrl):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
+def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_backpack,trans,scene_ctrl):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     Info = pygame.display.Info()                                      #偵測用戶顯示參數
     screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
@@ -154,18 +198,149 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_
         if camera_rect.colliderect(atk.rect):
             screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
+            
+        if atk.dif == "light":
+            for enemy in Enemy:
+                if enemy.dif == "The_Sun":
+                    match atk.num:
+                        case 1:
+                            (atk.tag_x,atk.tag_y) = enemy.I 
+                        case 2:
+                            (atk.tag_x,atk.tag_y) = enemy.II
+                        case 3:
+                            (atk.tag_x,atk.tag_y) = enemy.III
+                        case 4:
+                            (atk.tag_x,atk.tag_y) = enemy.IV
+                        case 5:
+                            (atk.tag_x,atk.tag_y) = enemy.V
+                
+            for i in range(atk.dur):
+                        #print(atk.tag_x,atk.tag_y)
+                        
+                atk.x += atk.tag_x
+                atk.rect.x += atk.tag_x
+                atk.y += atk.tag_y
+                atk.rect.y += atk.tag_y
+                                                    
+                if atk.rect.colliderect(player.rect) and player.unhurtable_cd <= 0:
+                    if player.unhurtable_cd <= 0 and player.HP > 1:
+                        if player.rect.x-atk.rect.x -atk.rect.width//2 > 0:
+                            player.vx = 10
+                        else:
+                            player.vx =- 10
+                        player.y -= 10
+                        player.rect.y -= 10
+                        player.vy = -15
+                        player.is_hurt = 30
+                        player.get_hit()
+                                    
+                    elif player.unhurtable_cd <= 0 and player.HP == 1:
+                        player.get_hit()                                  
+                        
+                    
+
+                for obj in NT_object:
+                    
+                    if atk.rect.colliderect(obj.rect):
+
+                        if obj.type == "mirror_wall" and  not atk.L_mirror == obj:
+                            
+                            tem_x = atk.tag_x
+                            tem_y = atk.tag_y
+                            
+                            atk.tag_x = (math.cos(math.radians(obj.angle-90)*2) * tem_x + math.sin(math.radians(obj.angle-90)*2) * tem_y ) *-1
+                            atk.tag_y = (math.sin(math.radians(obj.angle-90)*2) * tem_x - math.cos(math.radians(obj.angle-90)*2) * tem_y) * -1
+                            atk.L_mirror = obj                
+
+                                                       
+                        elif obj.type != "mirror_wall":
+                            atk.delete =1
+                            
+                        
+                        
+                if camera_rect.colliderect(atk.rect):
+                    screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))                
+
+                    
+                if atk.delete == 1:
+                    break
+                    
+            ATKs_EN.remove(atk)
+            del atk
+                    
+        elif atk.dif == "pre_light":
+            for enemy in Enemy:
+                if enemy.dif == "The_Sun":
+                    match atk.num:
+                        case 1:
+                            (atk.tag_x,atk.tag_y) = enemy.I 
+                        case 2:
+                            (atk.tag_x,atk.tag_y) = enemy.II 
+                        case 3:
+                            (atk.tag_x,atk.tag_y) = enemy.III 
+                        case 4:
+                            (atk.tag_x,atk.tag_y) = enemy.IV
+                        case 5:
+                            (atk.tag_x,atk.tag_y) = enemy.V
+            for i in range(atk.dur):
+                        #print(atk.tag_x,atk.tag_y)
+                        
+                atk.x += atk.tag_x
+                atk.rect.x += atk.tag_x
+                atk.y += atk.tag_y
+                atk.rect.y += atk.tag_y
+                                  
+                
+                    
+                for obj in NT_object:
+                    
+                    if atk.rect.colliderect(obj.rect):
+
+                        if obj.type == "mirror_wall" and  not atk.L_mirror == obj:
+                            
+                            tem_x = atk.tag_x
+                            tem_y = atk.tag_y
+                            
+                            atk.tag_x = (math.cos(math.radians(obj.angle-90)*2) * tem_x + math.sin(math.radians(obj.angle-90)*2) * tem_y ) *-1
+                            atk.tag_y = (math.sin(math.radians(obj.angle-90)*2) * tem_x - math.cos(math.radians(obj.angle-90)*2) * tem_y) * -1
+                            atk.L_mirror = obj                
+
+                                                       
+                        elif obj.type != "mirror_wall":
+                            atk.delete =1
+                            
+                            
+                            
+
+                        
+                if camera_rect.colliderect(atk.rect):
+                    screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))                
+
+                    
+                if atk.delete == 1:
+                    break
+                    
+            ATKs_EN.remove(atk)
+            del atk
+            
+            
     
     if not player.hurt_flashing % 8 > 4:
         screen.blit(player.surface, ( player.x - camera_x,player.y - camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
     
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
 
-    screen.blit(strength_bar, (screen_width//25, screen_height//6))
-
     screen.blit(hint_backpack, (screen_width//100, screen_height//40*39))
 
-    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//8-5, (screen_width//20+(player.Max_HP-5)*10)+10, screen_height//50+10))
-    pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, (screen_width//20+((player.Max_HP-5)*10))-(screen_width//20+((player.Max_HP-5)*10))*((player.Max_HP-player.HP)/player.Max_HP), screen_height//50))
+    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//8-5, player.Max_HP*50+10, screen_height//40+10))
+    pygame.draw.rect(screen, (255,255,255), (screen_width//20, screen_height//8, player.Max_HP*50, screen_height//40))
+    pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, player.HP*50, screen_height//40))
+    
+    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//20+145, player.Max_endurance*50+10, screen_height//50+10))
+    pygame.draw.rect(screen, (255,255,255), (screen_width//20, screen_height//20+150, player.Max_endurance*50, screen_height//50))
+    pygame.draw.rect(screen, (135,206,235), (screen_width//20, screen_height//20+150, player.endurance*50, screen_height//50))
+    
+    
     
     if scene_ctrl.trans > 0:
         trans.x+=screen_width//30
@@ -179,7 +354,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,strength_
 
 def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞偵測
     
-    T_rect = object2.surface.get_rect(topleft = (object2.x, object2.y))
+    T_rect = pygame.Rect(object2.rect.x,object2.rect.y,object2.rect.width,object2.rect.height)
   #物件2的碰撞盒複製(調整用)
     if not ("1_D" in object1.now_NT_Touch) and not ("1_DP" in object1.now_NT_Touch):
         object1.on_ground = 0
@@ -206,10 +381,8 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
 
                 object1.on_ground = 1
                 object1.vy = 0
-
-            
                 return True
-            
+                        
             
             elif object2.can_be_through == 2 :
                 if object1.vy >= 0 and object1.through == 0:
@@ -232,7 +405,9 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                     object1.vy = 0
                     object1.on_ground = 2
                 return True
-
+            else :
+                object1.now_CT_Touch.append("1_D")      
+                return True
 
         T_rect.y-=2*(max(abs(object1.vy),32))
 
@@ -255,22 +430,31 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                         object1.y -= 1
                         object1.rect.y -= 1
                         break
-
+                return True
+            
+            elif object2.can_be_through == 2 :
+                if object1.through == 0:
+                    object1.now_NT_Touch.append("1_UP")      #若往下調沒碰撞，表示物件1的底部碰撞到了物件2(D=Down)，新增標籤到碰撞清單
+                    
+                return True
+            else :
+                object1.now_CT_Touch.append("1_U")      
                 return True
 
         T_rect.y += (max(abs(object1.vy),32))
-        T_rect.x += (max(abs(object1.vx),11))
+        T_rect.x += (max(abs(object1.vx),32))
         
         if not object1.rect.colliderect(T_rect) :    #若當前有碰撞，則偵測物件2往右調整後是否還有碰撞  
 
             if object2.can_be_through == 0 :               #角色跟不可穿越物件 的右碰撞(右阻擋)偵測
+                
                 object1.now_NT_Touch.append("1_R")      #若往右調沒碰撞，表示物件1的右部碰撞到了物件2，新增標籤到碰撞清單
                 object1.inertia = 0
-                T_rect.x -= (max(abs(object1.vx),11))
+                T_rect.x -= (max(abs(object1.vx),32))
 
                     
                 
-                for i in range(max(abs(object1.vx),11)):       #把物件1往左調整，直到不碰撞為止
+                for i in range(max(abs(object1.vx),32)):       #把物件1往左調整，直到不碰撞為止
                     object1.x -= 1
                     object1.rect.x -= 1    
                     
@@ -281,24 +465,30 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                 
                 if object1.vx > 0:
                     object1.vx *= 0
+                
+                return True
 
+            elif object2.can_be_through == 2 :               #角色跟不可穿越物件 的右碰撞(右阻擋)偵測
+                if object1.through == 0:
+                    object1.now_NT_Touch.append("1_RP")      #若往右調沒碰撞，表示物件1的右部碰撞到了物件2，新增標籤到碰撞清單
+                return True
 
             else:
                 object1.now_CT_Touch.append("1_R")      
-            return True
+                return True
 
-        T_rect.x -= 2*(max(abs(object1.vx),11))
+        T_rect.x -= 2*(max(abs(object1.vx),32))
         if not object1.rect.colliderect(T_rect):    #若當前有碰撞，則偵測物件2往左調整後是否還有碰撞  
 
 
             if object2.can_be_through == 0:               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
                 object1.now_NT_Touch.append("1_L")      #若往左調沒碰撞，表示物件1的左部碰撞到了物件2，新增標籤到碰撞清單
                 object1.inertia = 0
-                T_rect.x += (max(abs(object1.vx),11))
+                T_rect.x += (max(abs(object1.vx),32))
                 
 
                 
-                for i in range(max(abs(object1.vx),11)):       #把物件1往右調整，直到不碰撞為止
+                for i in range(max(abs(object1.vx),32)):       #把物件1往右調整，直到不碰撞為止
                     object1.x += 1
                     object1.rect.x += 1    
                                                                                                     
@@ -308,14 +498,19 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
                         object1.rect.x -= 1
 
                         break
-                    
+
                 if object1.vx < 0:
                     object1.vx *= 0 
+                return True
                     
-                    
+            elif object2.can_be_through == 2:               #角色跟不可穿越物件 的左碰撞(左阻擋)偵測
+                if object1.through == 0:
+                    object1.now_NT_Touch.append("1_LP")      #若往左調沒碰撞，表示物件1的左部碰撞到了物件2，新增標籤到碰撞清單
+                return True
+                
             else:
                 object1.now_CT_Touch.append("1_L")                
-            return True
+                return True
         
         if object2.can_be_through == 0:
             object1.vx = object1.pre_vx*-1
@@ -423,8 +618,14 @@ def update_animation(obj, state):
 
 
 
-def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys,strength_bar,hint_backpack,trans,scene_ctrl):
-
+def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys,hint_backpack,trans,scene_ctrl):
+    
+    if Main.current_HP != Main.HP:
+        
+        Main.lost_HP = Main.HP-Main.current_HP
+    
+    Main.current_HP = Main.HP
+    
     if Main.endurance < 4:
         Main.endurance_cd -= 1
         if Main.endurance_cd == 0:
@@ -435,6 +636,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         Main.hurt_flashing -= 1
     
     Main.unhurtable_cd -= 1
+    
     if Main.inertia > 0:
         Main.inertia -= 1
 
@@ -466,12 +668,18 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if Main.skill_key[4] == 2:
         if Main.on_ground :
             Main.skill_key[4] = 1
+
+#=====================================================================格擋
+
+    update_animation(Main, Main.block_state)
+    if keys[pygame.K_l] and Main.on_ground and not Main.attack_state["playing"] and not Main.block_state["playing"]:
+        Main.block()
         
 #===========================================================移動按鍵判定(動vx)(動角色圖片)
 
     if Main.is_hurt == 0:
 
-        if not Main.attack_state["playing"] or Main.atk_procedure != 0 :     #如果不是第三段攻擊
+        if (not Main.attack_state["playing"] and not Main.block_state["playing"]) or Main.atk_procedure != 0:     #如果不是第三段攻擊
             if keys[pygame.K_d] and keys[pygame.K_a] and Main.move_lock == 0:                       #避免同時按兩個方向鍵
                 if  Main.inertia == 0:
                     Main.idle() 
@@ -505,7 +713,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=================================================偵測角色攻擊按鍵(是否按下j鍵, 是否在撥放攻擊動畫, 前一偵是否按著j鍵)
 
-        if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j] and Main.HP > 0 :
+        if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j] and Main.HP > 0 and not Main.block_state["playing"]:
 
             #如果未銜接攻擊，攻擊步驟歸零
             if Main.atk_next <= 0:
@@ -517,20 +725,20 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if not Main.flip:
                 match Main.atk_procedure:
                     case 0:
-                        ATKs_AL.append(object_class.object(Main.x + 100,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0,0,0))
+                        ATKs_AL.append(object_class.object(Main.x + 100,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",Main.ATK,20,"blade1",0,0,0))
                     case 1:
-                        ATKs_AL.append(object_class.object(Main.x + 100,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade2",0,0,0))
+                        ATKs_AL.append(object_class.object(Main.x + 100,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",Main.ATK,20,"blade2",0,0,0))
                     case 2:
-                        ATKs_AL.append(object_class.object(Main.x,Main.y,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade3",0,0,0))
+                        ATKs_AL.append(object_class.object(Main.x,Main.y,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",Main.ATK,20,"blade3",0,0,0))
                             
             else:
                 match Main.atk_procedure:
                     case 0:
-                        ATKs_AL.append(object_class.object(Main.x - 70,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade1",0,1,0))
+                        ATKs_AL.append(object_class.object(Main.x - 70,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",Main.ATK,20,"blade1",0,1,0))
                     case 1:
-                        ATKs_AL.append(object_class.object(Main.x - 70,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade2",0,1,0))
+                        ATKs_AL.append(object_class.object(Main.x - 70,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",Main.ATK,20,"blade2",0,1,0))
                     case 2:
-                        ATKs_AL.append(object_class.object(Main.x,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",10,20,"blade3",0,1,0))
+                        ATKs_AL.append(object_class.object(Main.x,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",Main.ATK,20,"blade3",0,1,0))
             
             Main.attack()
 
@@ -550,6 +758,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     else:
         Main.is_hurt-=1
+
+
 
 #==================================================================斬擊朝向(動vx)
 
@@ -634,6 +844,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if Touch(Main,obj):
                 
                 if obj.type == "save_point":
+                        
+
                         Main.HP=Main.Max_HP
                         save(Main,scene_ctrl)
                         Main.read_surface()
@@ -657,7 +869,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 #===============================================================敵人邏輯區
 
     for enemy in Enemy:
-        #print("enemy=",enemy.type,"、",enemy.dif,",cd=",enemy.phase_cd,",wait=",enemy.wait,",found=",enemy.found,",phase=",enemy.phase,",skill_time=",enemy.skill_time,",back=",enemy.back,",vx=",enemy.vx)
 
         if enemy.unhurtable_cd > 0:                             #無敵幀倒數
             enemy.unhurtable_cd -= 1
@@ -672,6 +883,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         match enemy.type:                                       #分流 (波鼠 菁英 路邊) 
 
             case "boss":
+                #print("enemy=",enemy.type,"、",enemy.dif,",cd=",enemy.phase_cd,",wait=",enemy.wait,",found=",enemy.found,",phase=",enemy.phase,",skill_time=",enemy.skill_time,",back=",enemy.back,",vx=",enemy.vx)
 
 
                 match enemy.dif:                                #分流不同波鼠
@@ -846,8 +1058,20 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
                                     case 0: #輻(射)光(線)
-                                        pass    
-                            
+                                        start_animation(enemy.attack_state,enemy.boss_idle, 45, enemy.back, False) 
+                                        theta =random.uniform(math.pi*5/6,math.pi*6/7)
+                                        enemy.I = (16*math.cos(theta),16*math.sin(theta))
+                                        theta =random.uniform(math.pi*3/6,math.pi*4/6)
+                                        enemy.II =(16*math.cos(theta),16*math.sin(theta))
+                                        theta =random.uniform(math.pi*2/6,math.pi*3/6)
+                                        enemy.III =(16*math.cos(theta),16*math.sin(theta))
+                                        theta =random.uniform(math.pi*1/6,math.pi*2/6)
+                                        enemy.IV =(16*math.cos(theta),16*math.sin(theta))
+
+                                        enemy.V =(16,0)
+                                        
+                                        scene_ctrl.done = 2
+                                        
                                     case 1: #鏡反
                                         pass
 
@@ -856,18 +1080,62 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                 
 
                             elif enemy.attack_state["playing"]:         #動畫執行中，出招cd = -1
+
+                                for obj in NT_object:
+                                    if obj.type == "mirror_wall" and obj.dif == 1:# and abs(obj.angle) % 360 < 135:
+                                        obj.angle -= 1
+                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle)
+                                        obj.rect = obj.surface.get_rect(topleft=(obj.x, obj.y))
+                                        if obj.angle > 360:
+                                            obj.angle -= 360
+                                        elif obj.angle < 0 :
+                                            obj.angle += 360
+                                    elif obj.type == "mirror_wall" and obj.dif == 2:# and abs(obj.angle) % 360 < 135:
+                                        obj.angle += 1
+                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle)
+                                        obj.rect = obj.surface.get_rect(topleft=(obj.x, obj.y))
+                                        if obj.angle > 360:
+                                            obj.angle -= 360
+                                        elif obj.angle < 0 :
+                                            obj.angle += 360
+                                
                                 enemy.phase_cd = -1
+                                match enemy.phase:
+                                    case 0:
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",1,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",2,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",3,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",4,None,None))
+                                        ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",5,None,None))
+
+                                        
+                                    case 1:
+                                        pass
+                                    case 2:
+                                        pass
+
+
 
                             elif enemy.anime:                           #動畫播放完畢，出招cd = -2
                                 enemy.phase_cd = -2
+                                for obj in NT_object:
+                                    if obj.type == "mirror_wall" and obj.dif == 2 :#and abs(obj.angle) % 360 < 135:
+                                        obj.angle += 1
+                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle)
+                                        obj.rect = obj.surface.get_rect(topleft=(obj.x, obj.y))
 
+                                    elif obj.type == "mirror_wall" and obj.dif == 1: # and abs(obj.angle) % 360 < 135:
+                                        obj.angle -= 1
+                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle)
+                                        obj.rect = obj.surface.get_rect(topleft=(obj.x, obj.y))
 
                             elif enemy.phase_cd == -2:                  #前搖完二次初始化
 
                                 match enemy.phase:
 
                                     case 0:     #輻(射)光(線)
-                                        pass
+                                        enemy.skill_time = 60
+
                                                 
 
                                     case 1:     #鏡反
@@ -894,12 +1162,17 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     
                                     case 0:                                                 #輻(射)光(線)
                                             
-                                        pass
-                                            
+                                        
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",1,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",2,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",3,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",4,None,None))
+                                        ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",5,None,None))
+
 
 
                             elif enemy.phase_cd == -3 and enemy.skill_time == 0:                        #放完技能
-                                enemy.phase=random.randint(0,2)                                         #重骰招 & cd
+                                enemy.phase=random.randint(0,0)                                         #重骰招 & cd
                                 enemy.phase_cd = random.randint(60,90)
 
                                 if enemy.broke == 18 :                                                  #吃18刀癱瘓
@@ -1010,6 +1283,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     Main.now_NT_Touch = []                                      #清除角色目前碰撞清單
     Main.now_CT_Touch = []
+    Main.now_Touch = []
 
 
 
@@ -1068,8 +1342,13 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
     for obj in NT_object:
-        if not Touch(Main,obj):
-            Main.through = 0
+        Main.now_Touch.append(Touch(Main,obj))
+    if not any(Main.now_Touch):
+        #print("?")
+        Main.through = 0
+            
+            
+    #print(Main.now_Touch)
 
 
 #==================================================================蹬牆跳後的位移(動vx)
@@ -1089,17 +1368,16 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             Main.Walljump_direct = 0
 
 #===================================================================跳躍和受傷動畫轉向
-    print(Main.through, Main.on_ground)
+    #print(Main.through, Main.on_ground)
 
 
 
     #如果(按下空格, 在地上, 剛才沒按空格)
     if keys[pygame.K_SPACE] and keys[pygame.K_s] and "1_DP" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0 and Main.move_lock == 0:                      #按下空白鍵跳躍
         Main.through = 1
-        Main.y += 1
-        Main.rect.y += 1
+        Main.vy = 1
 
-    elif keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0 and Main.move_lock == 0:                      #按下空白鍵跳躍
+    elif keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0 and Main.move_lock == 0 and not Main.block_state["playing"]:                      #按下空白鍵跳躍
         Main.jump()
     
     if Main.is_hurt > 0:
@@ -1143,4 +1421,4 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 #=========================================================================刷新畫面
 
    
-    show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,strength_bar[Main.endurance],hint_backpack,trans,scene_ctrl)    #最終印刷
+    show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,hint_backpack,trans,scene_ctrl)    #最終印刷
