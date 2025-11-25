@@ -52,6 +52,10 @@ class object():
                 self.left = self.rect.width - self.Flip_rect.width
                 self.org_rect_w =self.rect.width        
                 self.org_rect_h =self.rect.height
+                
+                self.mFS = 0
+                self.mST = 0
+                self.mTF = 0
         
         
         

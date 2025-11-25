@@ -1122,6 +1122,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         obj.T_Px = obj.F_Px + math.cos(math.radians(-1*(obj.angle-30))) * obj.org_rect_h *2
                                         obj.T_Py = obj.F_Py + math.sin(math.radians(-1*(obj.angle-30))) * obj.org_rect_h *2 
                                         
+                                        if obj.F_Px - obj.S_Px == 0:
+                                            pass
+                                            #obj.mFS =
+                                        
                                         print("rect_1.F_P & rect_1.topleft = " , (obj.F_Px,obj.F_Py),(obj.rect.x,obj.rect.y))
                                         obj.can_be_through = 1
 

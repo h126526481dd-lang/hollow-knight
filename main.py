@@ -253,7 +253,7 @@ while True:
                     button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
                     button_reset = button.Button(screen_width//4*3, screen_height//8*6, "reset saving", lambda:button.reset(scene_ctrl, 1))
                     
-                    text_record1 = button.Button(screen_width//4+50, screen_height//8*3, "skill")
+                    #text_record1 = button.Button(screen_width//4+50, screen_height//8*3, "skill")
                     BUTTON.add(button_back)
                     BUTTON.add(button_saving1, button_saving2, button_saving3, button_saving4, button_reset)
 
