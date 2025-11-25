@@ -23,7 +23,7 @@ class Button(pygame.sprite.Sprite):
         if self.rect.collidepoint(mouse_pos):
             self.image = self.font.render(self.text, True, (0, 0, 0), self.hover_color)
             if self.mouse_pressed and scene_ctrl.button_cd == 0 and not self.mouse_pre_pressed:
-                scene_ctrl.button_cd = 60
+                scene_ctrl.button_cd = 10
                 self.callback()
         else:
             self.image = self.font.render(self.text, True, (0, 0, 0), self.default_color)
@@ -48,3 +48,6 @@ def go_home(scene_ctrl):
 def quit_button():
     pygame.quit()
     exit()
+
+def record(screen):
+    pygame.image.save(screen, "Image\screen_image\screen_1.png")

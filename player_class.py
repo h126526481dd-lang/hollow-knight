@@ -61,6 +61,9 @@ class player():
         self.atk_procedure = 0
         self.atk_next = 0
 
+
+        
+
         #匯入Walk.png圖片並切分成動畫       
 
 
@@ -83,6 +86,7 @@ class player():
         self.walk = "Image\Character\mainchacter\Walk.png"
         
         self.dead = "Image\Character\mainchacter\Dead.png"
+        self.shield = "Image\Character\mainchacter\Shield.png"
         
         self.is_hurt = 0
         self.unhurtable_cd = 0
@@ -91,7 +95,7 @@ class player():
         self.inertia = 0
         
         #18招，0是未獲取，1是可發動，2是發動中
-        self.skill_key = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        self.skill_key = [0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0]
         # [0]不須佩劍
         # [1]水上漂
         # [2]劍氣：長k
@@ -128,6 +132,12 @@ class player():
 
         #匯入Hurt.png圖片並切分成動畫
         self.Hurt = None
+
+        #匯入格擋
+        self.Shield = None
+        self.block_state = {}
+        self.block_state["playing"] = False
+
         
         self.Walk = None
         self.surface = None
@@ -232,6 +242,10 @@ class player():
             # 沒有緩衝 → 從頭開始
             tool.start_animation(self.attack_state, self.Attack1, 3, self.flip, False)
             self.atk_procedure = 1
+
+    def block(self):
+        print(len(self.Shield))
+        tool.start_animation(self.block_state, self.Shield, 60, self.flip, False)
             
     def to_dict(self):
         self.Attack1 = None
@@ -249,8 +263,11 @@ class player():
         self.Walk = None
         self.surface = None
         self.rect = None
+        self.Shield = None
         self.attack_state = {}
         self.attack_state["playing"] = False
+        self.block_state = {}
+        self.block_state["playing"] = False
         
 
         return self.__dict__
@@ -278,8 +295,10 @@ class player():
         self.Jump = tool.split(self.jumping, 12)
 
         #匯入Hurt.png圖片並切分成動畫
-        self.Hurt = tool.split(self.hurt,2)
-        self.Dead = tool.split(self.dead,3)
+        self.Hurt = tool.split(self.hurt ,2)
+        self.Dead = tool.split(self.dead, 3)
+
+        self.Shield = tool.split(self.shield, 2)
         
         self.Walk = tool.split(self.walk, 8)
         self.surface = self.Walk[self.image]
@@ -290,6 +309,8 @@ class player():
         self.rect.height -= 50
         self.attack_state = {}
         self.attack_state["playing"] = False
+        self.block_state = {}
+        self.block_state["playing"] = False
 
 
 class enemy():

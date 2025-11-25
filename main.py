@@ -47,6 +47,7 @@ class scene_c():
         self.done = 0
         self.reset = 0
         self.Save = None
+        self.time = 0
         
 
 def Load(save):
@@ -81,6 +82,8 @@ Main.read_surface()
 
 font = pygame.font.Font(None, 60)
 font_2 = pygame.font.Font(None, 80)
+font_record = pygame.font.Font(None, 20)
+
 BUTTON = pygame.sprite.Group()
 
 print(pygame.display.get_active())                              #確認是否正確開啟
@@ -231,6 +234,8 @@ while True:
 
         case 5:                                                                 #讀檔
 
+
+
             match scene_ctrl.reset:
 
                 case 0:
@@ -240,13 +245,15 @@ while True:
                     text = font.render("Savings", True, (0,0,0))      #存檔標題
                     text_rect = text.get_rect(center=(screen_width//4, screen_height//6))
 
+
                     button_saving1 = button.Button(screen_width//4, screen_height//8*3, "Saving 1", lambda:Load(1))
                     button_saving2 = button.Button(screen_width//4, screen_height//8*4, "Saving 2", lambda:Load(2))
                     button_saving3 = button.Button(screen_width//4, screen_height//8*5, "Saving 3", lambda:Load(3))
                     button_saving4 = button.Button(screen_width//4, screen_height//8*6, "Saving 4", lambda:Load(4))
                     button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
                     button_reset = button.Button(screen_width//4*3, screen_height//8*6, "reset saving", lambda:button.reset(scene_ctrl, 1))
-
+                    
+                    text_record1 = button.Button(screen_width//4+50, screen_height//8*3, "skill")
                     BUTTON.add(button_back)
                     BUTTON.add(button_saving1, button_saving2, button_saving3, button_saving4, button_reset)
 
