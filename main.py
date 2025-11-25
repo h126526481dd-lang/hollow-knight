@@ -343,16 +343,13 @@ while True:
                     NT_object.append(object_class.object(2500,-1400,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
                     NT_object.append(object_class.object(-1720,-1400,tool.HRZ_combine("Image/Background/floor.png",33),"fake_wall",0,0,0,0,0,0))
                     
-                    NT_object.append(object_class.object(-700,700,tool.HRZ_combine("Image/Background/floor.png",10),"mirror_wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-700,700,pygame.transform.rotozoom(pygame.image.load("Image\Object\\triangle_gray.png"),180,4),"mirror_wall",0,0,0,0,0,0))
                     
-                    NT_object.append(object_class.object(-1000,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,1,0,0,0))
-                    NT_object.append(object_class.object(800,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,2,0,0,0))
+                    NT_object.append(object_class.object(-1000,260,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,1,0,0,0))
+                    NT_object.append(object_class.object(800,260,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,2,0,0,0))
 
                     #NT_object.append(object_class.object(-200,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,3,0,0,0))
-
-
                     
-
                     #Enemy.append(player_class.enemy("The_Second",-400,-300,450,"boss","The_Tank"))
                     Enemy.append(player_class.enemy("The_Third",-200,-300,200,"boss","The_Sun"))
 
@@ -361,7 +358,7 @@ while True:
                     door = pygame.transform.scale(door, (200, 700))  # 調整大小
 
                     save_point = pygame.image.load("Image/Object/save_point.png")
-                    save_point = pygame.transform.scale(save_point, (350, 200))  # 調整大小
+                    save_point = pygame.transform.scale(save_point, (350, 200))  # 調整大小 
 
                     CT_object.append(object_class.object(3300,-1900,door,"path",0,0,0,0,0,[-2,1]))
 

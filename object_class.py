@@ -36,8 +36,30 @@ class object():
                 self.can_be_through = 2                                         #物件是否可通過 
                 self.dif = dif     
                 self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)       
-                self.angle = 0         
+                self.angle = 0    
+                     
+                self.F_Px = self.rect.x
+                self.F_Py = self.rect.y
                 
+                self.S_Px = self.rect.x + self.rect.width
+                self.S_Py = self.rect.y
+                
+                self.T_Px = self.rect.x + self.rect.width //2
+                self.T_Py = self.rect.y + self.rect.height
+        
+        
+                self.Flip_rect = pygame.Rect(self.rect.x,self.rect.y,self.rect.height,self.rect.width)
+                self.left = self.rect.width - self.Flip_rect.width
+                self.org_rect_w =self.rect.width        
+                self.org_rect_h =self.rect.height
+        
+        
+        
+        
+        
+        
+        
+        
         
             case "door":
                 self.can_be_through = 1                                         #物件是否可通過      

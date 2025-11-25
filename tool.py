@@ -173,6 +173,13 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
         if camera_rect.colliderect(obj.rect):
             screen.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1) 
+        
+        if obj.type == "mirror_wall":
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.F_Px - camera_x, obj.F_Py - camera_y, 50, 50),1) 
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.S_Px - camera_x, obj.S_Py - camera_y, 50, 50),1)
+            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.T_Px - camera_x, obj.T_Py - camera_y, 50, 50),1)
+
+            
             
             
     for obj in CT_object:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
@@ -248,8 +255,8 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                             tem_x = atk.tag_x
                             tem_y = atk.tag_y
                             
-                            atk.tag_x = (math.cos(math.radians(obj.angle-90)*2) * tem_x + math.sin(math.radians(obj.angle-90)*2) * tem_y ) *-1
-                            atk.tag_y = (math.sin(math.radians(obj.angle-90)*2) * tem_x - math.cos(math.radians(obj.angle-90)*2) * tem_y) * -1
+                            atk.tag_x = (math.cos(math.radians(obj.angle+90)*-2) * tem_x + math.sin(math.radians(obj.angle+90)*-2) * tem_y ) *-1
+                            atk.tag_y = (math.sin(math.radians(obj.angle+90)*-2) * tem_x - math.cos(math.radians(obj.angle+90)*-2) * tem_y) * -1
                             atk.L_mirror = obj                
 
                                                        
@@ -301,8 +308,8 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                             tem_x = atk.tag_x
                             tem_y = atk.tag_y
                             
-                            atk.tag_x = (math.cos(math.radians(obj.angle-90)*2) * tem_x + math.sin(math.radians(obj.angle-90)*2) * tem_y ) *-1
-                            atk.tag_y = (math.sin(math.radians(obj.angle-90)*2) * tem_x - math.cos(math.radians(obj.angle-90)*2) * tem_y) * -1
+                            atk.tag_x = (math.cos(math.radians(obj.angle+90)*-2) * tem_x + math.sin(math.radians(obj.angle+90)*-2) * tem_y ) *-1
+                            atk.tag_y = (math.sin(math.radians(obj.angle+90)*-2) * tem_x - math.cos(math.radians(obj.angle+90)*-2) * tem_y) * -1
                             atk.L_mirror = obj                
 
                                                        
@@ -1073,19 +1080,88 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                             elif enemy.attack_state["playing"]:         #動畫執行中，出招cd = -1
 
+
                                 for obj in NT_object:
                                     if obj.type == "mirror_wall" and obj.dif == 1:# and abs(obj.angle) % 360 < 135:
                                         obj.angle -= 1
-                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle)
+                                        obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
                                         obj.rect = obj.surface.get_rect(topleft=(obj.x, obj.y))
+                                        
+                                        if obj.angle < 360 and obj.angle >=270 :
+                                            obj.F_Px = obj.rect.x + obj.org_rect_h * (360-obj.angle)//90
+                                            obj.F_Py = obj.rect.y
+                                            
+                                            
+                                        elif obj.angle <270 and obj.angle >=180:
+                                            obj.F_Px = obj.rect.x + obj.org_rect_h + obj.left * (270-obj.angle) // 90 
+                                            obj.F_Py = obj.rect.y + obj.org_rect_h * (270-obj.angle) //90
+                                            
+                                            
+                                        elif obj.angle <180 and obj.angle >= 90:
+                                            obj.F_Px = obj.rect.x + obj.org_rect_w - obj.org_rect_w * (180-obj.angle)//90
+                                            obj.F_Py = obj.rect.y + obj.org_rect_h + obj.left * (180-obj.angle) // 90 
+                                            
+                                            
+                                        elif obj.angle <90 and obj.angle >= 0:
+                                            obj.F_Px = obj.rect.x
+                                            obj.F_Py = obj.rect.y + obj.org_rect_w - obj.org_rect_w * (90-obj.angle)//90
+
+                                        
+                                        
+                                        obj.S_Px = obj.F_Px + math.cos(math.radians(-1*obj.angle)) * obj.org_rect_w
+                                        obj.S_Py = obj.F_Py + math.sin(math.radians(-1*obj.angle)) * obj.org_rect_w
+                                        
+                                        obj.T_Px = obj.F_Px + math.cos(math.radians(-1*(obj.angle-30))) * obj.org_rect_h *2
+                                        obj.T_Py = obj.F_Py + math.sin(math.radians(-1*(obj.angle-30))) * obj.org_rect_h *2 
+                                        
+                                        print("rect_1.F_P & rect_1.topleft = " , (obj.F_Px,obj.F_Py),(obj.rect.x,obj.rect.y))
+                                        obj.can_be_through = 1
+
+                                        
+                                        
+                                        
                                         if obj.angle > 360:
                                             obj.angle -= 360
                                         elif obj.angle < 0 :
                                             obj.angle += 360
+                                            
+                                            
+                                            
+                                            
                                     elif obj.type == "mirror_wall" and obj.dif == 2:# and abs(obj.angle) % 360 < 135:
                                         obj.angle += 1
-                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle)
+                                        obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
                                         obj.rect = obj.surface.get_rect(topleft=(obj.x, obj.y))
+                                        
+                                        if obj.angle > 0 and obj.angle <=90 :
+                                            obj.F_Px = obj.rect.x
+                                            obj.F_Py = obj.rect.y + obj.org_rect_w * obj.angle //90
+                                            
+                                            
+                                        elif obj.angle >90 and obj.angle <=180:
+                                            obj.F_Px = obj.rect.x + obj.org_rect_w * (obj.angle - 90) // 90 
+                                            obj.F_Py = obj.rect.y + obj.org_rect_w - obj.left * (obj.angle - 90) //90
+                                            
+                                            
+                                        elif obj.angle >180 and obj.angle <= 270:
+                                            obj.F_Px = obj.rect.x + obj.org_rect_w - obj.left * (obj.angle-180)//90
+                                            obj.F_Py = obj.rect.y + obj.org_rect_h - obj.org_rect_h * (obj.angle - 180) // 90 
+                                            
+                                            
+                                        elif obj.angle >270 and obj.angle <= 360:
+                                            obj.F_Px = obj.rect.x + obj.org_rect_h - obj.org_rect_h * (obj.angle - 270) // 90 
+                                            obj.F_Py = obj.rect.y
+
+                                        
+                                        obj.S_Px = obj.F_Px + math.cos(math.radians(-1*obj.angle)) * obj.org_rect_w
+                                        obj.S_Py = obj.F_Py + math.sin(math.radians(-1*obj.angle)) * obj.org_rect_w
+                                        
+                                        obj.T_Px = obj.F_Px + math.cos(math.radians(-1*(obj.angle-30))) * obj.org_rect_h *2
+                                        obj.T_Py = obj.F_Py + math.sin(math.radians(-1*(obj.angle-30))) * obj.org_rect_h *2
+                                        
+                                        obj.can_be_through = 1
+
+                                        
                                         if obj.angle > 360:
                                             obj.angle -= 360
                                         elif obj.angle < 0 :
@@ -1113,13 +1189,76 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                 for obj in NT_object:
                                     if obj.type == "mirror_wall" and obj.dif == 2 :#and abs(obj.angle) % 360 < 135:
                                         obj.angle += 1
-                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle)
+                                        obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
                                         obj.rect = obj.surface.get_rect(topleft=(obj.x, obj.y))
+                                        
+                                        if obj.angle > 0 and obj.angle <=90 :
+                                            obj.F_Px = obj.rect.x
+                                            obj.F_Py = obj.rect.y + obj.org_rect_w * obj.angle //90
+                                            
+                                            
+                                        elif obj.angle >90 and obj.angle <=180:
+                                            obj.F_Px = obj.rect.x + obj.org_rect_w * (obj.angle - 90) // 90 
+                                            obj.F_Py = obj.rect.y + obj.org_rect_w - obj.left * (obj.angle - 90) //90
+                                            
+                                            
+                                        elif obj.angle >180 and obj.angle <= 270:
+                                            obj.F_Px = obj.rect.x + obj.org_rect_w - obj.left * (obj.angle-180)//90
+                                            obj.F_Py = obj.rect.y + obj.org_rect_h - obj.org_rect_h * (obj.angle - 180) // 90 
+                                            
+                                            
+                                        elif obj.angle >270 and obj.angle <= 360:
+                                            obj.F_Px = obj.rect.x + obj.org_rect_h - obj.org_rect_h * (obj.angle - 270) // 90 
+                                            obj.F_Py = obj.rect.y
+                                        
+                                        
+                                        obj.S_Px = obj.F_Px + math.cos(math.radians(-1*obj.angle)) * obj.org_rect_w
+                                        obj.S_Py = obj.F_Py + math.sin(math.radians(-1*obj.angle)) * obj.org_rect_w
+                                        
+                                        obj.T_Px = obj.F_Px + math.cos(math.radians(-1*(obj.angle-30))) * obj.org_rect_h *2
+                                        obj.T_Py = obj.F_Py + math.sin(math.radians(-1*(obj.angle-30))) * obj.org_rect_h *2
+                                        
+                                            
+                                        if obj.angle == 0:
+                                            
+                                            obj.can_be_through = 2
 
                                     elif obj.type == "mirror_wall" and obj.dif == 1: # and abs(obj.angle) % 360 < 135:
                                         obj.angle -= 1
-                                        obj.surface = pygame.transform.rotate(HRZ_combine("Image/Background/floor.png",2),obj.angle)
+                                        obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
                                         obj.rect = obj.surface.get_rect(topleft=(obj.x, obj.y))
+                                        
+                                        
+                                        if obj.angle < 360 and obj.angle >=270 :
+                                            obj.F_Px = obj.rect.x + obj.org_rect_h * (360-obj.angle)//90
+                                            obj.F_Py = obj.rect.y
+                                            
+                                            
+                                        elif obj.angle <270 and obj.angle >=180:
+                                            obj.F_Px = obj.rect.x + obj.org_rect_h + obj.left * (270-obj.angle) // 90 
+                                            obj.F_Py = obj.rect.y + obj.org_rect_h * (270-obj.angle) //90
+                                            
+                                            
+                                        elif obj.angle <180 and obj.angle >= 90:
+                                            obj.F_Px = obj.rect.x + obj.org_rect_w - obj.org_rect_w * (180-obj.angle)//90
+                                            obj.F_Py = obj.rect.y + obj.org_rect_h + obj.left * (180-obj.angle) // 90 
+                                            
+                                            
+                                        elif obj.angle <90 and obj.angle >= 0:
+                                            obj.F_Px = obj.rect.x
+                                            obj.F_Py = obj.rect.y + obj.org_rect_w - obj.org_rect_w * (90-obj.angle)//90
+
+                                        
+                                        obj.S_Px = obj.F_Px + math.cos(math.radians(-1*obj.angle)) * obj.org_rect_w
+                                        obj.S_Py = obj.F_Py + math.sin(math.radians(-1*obj.angle)) * obj.org_rect_w
+                                        
+                                        obj.T_Px = obj.F_Px + math.cos(math.radians(-1*(obj.angle-30))) * obj.org_rect_h *2
+                                        obj.T_Py = obj.F_Py + math.sin(math.radians(-1*(obj.angle-30))) * obj.org_rect_h *2
+                                        
+                                        if obj.angle == 0:
+                                            
+                                            obj.can_be_through = 2
+
 
                             elif enemy.phase_cd == -2:                  #前搖完二次初始化
 
