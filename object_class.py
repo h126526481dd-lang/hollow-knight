@@ -38,6 +38,9 @@ class object():
                 self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)       
                 self.angle = 0    
                      
+                self.center_x = self.x + self.rect.width /2
+                self.center_y = self.y + self.rect.height /2
+                
                 self.F_Px = self.rect.x
                 self.F_Py = self.rect.y
                 
@@ -48,19 +51,26 @@ class object():
                 self.T_Py = self.rect.y + self.rect.height
         
         
-                self.Flip_rect = pygame.Rect(self.rect.x,self.rect.y,self.rect.height,self.rect.width)
-                self.left = self.rect.width - self.Flip_rect.width
+                
+                self.left = self.rect.width - self.rect.height
                 self.org_rect_w =self.rect.width        
                 self.org_rect_h =self.rect.height
+                self.org_x = self.x
+                self.org_y = self.y
                 
-                self.mFS = 0
-                self.mST = 0
-                self.mTF = 0
+                self.FS = [self.S_Px - self.F_Px , (self.S_Py - self.F_Py)*-1]
+                self.ST = [self.T_Px - self.S_Px , (self.T_Py - self.S_Py)*-1]
+                self.TF = [self.F_Px - self.T_Px , (self.F_Py - self.T_Py)*-1]
+                
+                self.L_FS = [self.FS[1] , self.FS[0]*-1]
+                self.L_ST = [self.ST[1] , self.ST[0]*-1]
+                self.L_TF = [self.TF[1] , self.TF[0]*-1]
         
+                self.L_FS.append(-1*(self.L_FS[0]*self.F_Px + self.L_FS[1]*self.F_Py))
+                self.L_ST.append(-1*(self.L_ST[0]*self.S_Px + self.L_ST[1]*self.S_Py))
+                self.L_TF.append(-1*(self.L_TF[0]*self.T_Px + self.L_TF[1]*self.T_Py))        
         
-        
-        
-        
+                self.outerect = pygame.Rect(self.rect.x - 20, self.rect.y - 20, self.rect.width + 40, self.rect.height + 40)
         
         
         
@@ -169,9 +179,12 @@ class object():
                         
                         self.tag_x = None
                         self.tag_y = None
+                        
                         self.delete = 0
                         self.dur = 200
-                        self.reflect = 0
+                        
+                        self.pre_test = 0
+                        
                         self.now_Touch =[]
                         self.L_mirror = None
                         
@@ -198,7 +211,7 @@ class object():
                         self.delete = 0
                         self.dur = 200
 
-                        self.reflect = 0
+                        self.pre_test = 0
                         self.now_Touch =[]
                         self.L_mirror = None
 

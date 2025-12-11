@@ -794,7 +794,7 @@ while True:
                                     if tool.Touch(Main,obj):
                                         NT_object.remove(obj)
                                         del obj
-                            scene_ctrl.done = 1                     
+                                        scene_ctrl.done = 1                     
                             
 
      
