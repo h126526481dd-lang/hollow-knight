@@ -137,8 +137,6 @@ screen = pygame.display.set_mode((screen_width, screen_height), pygame.NOFRAME)
 
 clock = pygame.time.Clock()                                     #建立時鐘物件(用來處理tick)
 FPS = 60                                                     #設定每秒幀數
-
-count_time = 0
  
 Main = player_class.player("BOBO",0,0)                #建立角色物件
 Main.read_surface()
@@ -165,6 +163,8 @@ while True:
     match scene_ctrl.num:
         
         case 0:                                                              #初始畫面
+
+            count_time = 0                                                      #計算時間的邏輯閘
             
             scene = []
             BUTTON.empty()
@@ -895,7 +895,8 @@ while True:
                                     pre_keys = keys
                                     keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
-
+                                    elapsed_ms = pygame.time.get_ticks() - start_time
+                                    
                                     screen.blit(scene[1], (0,0))                  #繪製背景圖片
 
                                     if scene_ctrl.button_cd > 0:
