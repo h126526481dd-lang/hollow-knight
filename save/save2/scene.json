@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"num": 10, "menu": 0, "fps": 60, "button_cd": 10, "game": -2, "pre_game": -2, "trans": 0, "R_edge": 1032, "L_edge": -732, "B_edge": -250, "T_edge": -1468, "init": 0, "back_cd": 0, "From": 0, "backpack": 0, "done": 0, "reset": 0, "Save": 2, "time": 0}
+=======
+{"menu": 0, "fps": 60, "button_cd": 0, "game": 0, "pre_game": 0, "trans": 0, "R_edge": 1732, "L_edge": -2432, "B_edge": 350, "T_edge": -1868, "init": 0, "back_cd": 0, "From": 0, "backpack": 0, "done": 0, "reset": 0, "Save":2, "minute":0, "second":0}
+>>>>>>> c0cf8d9d52b81ac9817edc3656b49f359a1a1285

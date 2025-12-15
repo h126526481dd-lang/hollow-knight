@@ -106,6 +106,9 @@ def reset(save,scene_ctrl):
         scene_ctrl.L_edge = 0
         scene_ctrl.From = 0
         scene_ctrl.done = 0
+        scene_ctrl.minute = 0
+        scene_ctrl.second = 0
+
 
         json.dump(scene_ctrl.__dict__,f)
 
