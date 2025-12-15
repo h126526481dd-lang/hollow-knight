@@ -70,7 +70,7 @@ class object():
                 self.L_ST.append(-1*(self.L_ST[0]*self.S_Px + self.L_ST[1]*self.S_Py))
                 self.L_TF.append(-1*(self.L_TF[0]*self.T_Px + self.L_TF[1]*self.T_Py))        
         
-                self.outerect = pygame.Rect(self.rect.x - 20, self.rect.y - 20, self.rect.width + 40, self.rect.height + 40)
+                self.outerect = pygame.Rect(self.rect.x - 80, self.rect.y - 80, self.rect.width + 160, self.rect.height + 160)
         
         
         
@@ -173,7 +173,7 @@ class object():
                         self.can_be_through = 1                                         #物件是否可通過(布林值)
                         self.surface= pygame.transform.scale(self.surface,(50,50))
 
-                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
+                        self.rect = self.surface.get_rect(center=(self.x, self.y))     #物件碰撞盒(規則)
                         self.ATK=ATK
                         self.KB=KB
                         
@@ -199,7 +199,7 @@ class object():
                         self.can_be_through = 1                                         #物件是否可通過(布林值)
                         self.surface= pygame.transform.scale(self.surface,(50,50))
 
-                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
+                        self.rect = self.surface.get_rect(center=(self.x, self.y))     #物件碰撞盒(規則)
 
                         self.surface= pygame.transform.scale(self.surface,(10,10))
 

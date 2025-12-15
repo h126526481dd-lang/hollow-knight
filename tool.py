@@ -17,10 +17,10 @@ def draw_line(screen, L,adj_x,adj_y, color=(255,0,0)):
         return
 
     # otherwise compute y for x=0, x=W
-    y1 = -(A*0 + C) / B
+    y1 = -(A*-1000 + C) / B
     y2 = -(A*W + C) / B
 
-    pygame.draw.line(screen, color, (0-adj_x, y1-adj_y), (W-adj_x, y2-adj_y))
+    pygame.draw.line(screen, color, (-1000-adj_x, y1-adj_y), (W-adj_x, y2-adj_y))
 
 
 
@@ -285,24 +285,42 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                             tem_y = atk.tag_y
                             
                             
-                            L_1 = (atk.rect.x+atk.rect.width/2) * obj.L_FS[0] + (atk.rect.y+atk.rect.height/2) * obj.L_FS[1] + obj.L_FS[2] > 0  #FS左
-                            L_2 = (atk.rect.x+atk.rect.width/2) * obj.L_ST[0] + (atk.rect.y+atk.rect.height/2) * obj.L_ST[1] + obj.L_ST[2] < 0  #ST左
-                            L_3 = (atk.rect.x+atk.rect.width/2) * obj.L_TF[0] + (atk.rect.y+atk.rect.height/2) * obj.L_TF[1] + obj.L_TF[2] > 0  #TF右
+                            L_1 = (atk.rect.x+atk.rect.width/2) * obj.L_FS[0] + (atk.rect.y+atk.rect.height/2) * obj.L_FS[1] + obj.L_FS[2] > 0  
+                            L_2 = (atk.rect.x+atk.rect.width/2) * obj.L_ST[0] + (atk.rect.y+atk.rect.height/2) * obj.L_ST[1] + obj.L_ST[2] > 0  
+                            L_3 = (atk.rect.x+atk.rect.width/2) * obj.L_TF[0] + (atk.rect.y+atk.rect.height/2) * obj.L_TF[1] + obj.L_TF[2] > 0  
                             
-                            if obj.angle >= 30 and obj.angle < 150:
-                                L_3 = not L_3
-                            elif obj.angle >= 150 and obj.angle < 180:
-                                L_2 = not L_2
-                                L_3 = not L_3
-                            elif obj.angle >= 180 and obj.angle < 210:
-                                L_1 = not L_1
-                                L_2 = not L_2
-                                L_3 = not L_3
-                            elif obj.angle >= 210 and obj.angle < 330:
-                                L_1 = not L_1
-                                L_2 = not L_2
-                            elif obj.angle >= 330 and (obj.angle <= 359 or obj.angle == 0):
-                                L_1 = not L_1
+                            if abs(obj.FS[0]) > 0:
+                                if obj.FS[0] < 0:
+                                    L_1 = not L_1
+                                else:
+                                    pass
+                            else:
+                                if obj.FS[1] < 0:
+                                    L_1 = not L_1
+                                else:
+                                    pass    
+                                
+                            if abs(obj.ST[0]) > 0:
+                                if obj.ST[0] < 0:
+                                    L_2 = not L_2
+                                else:
+                                    pass
+                            else:
+                                if obj.ST[1] < 0:
+                                    L_2 = not L_2
+                                else:
+                                    pass    
+                                
+                            if abs(obj.TF[0]) > 0:
+                                if obj.TF[0] < 0:
+                                    L_3 = not L_3
+                                else:
+                                    pass
+                            else:
+                                if obj.TF[1] < 0:
+                                    L_3 = not L_3
+                                else:
+                                    pass    
                             
                             #print (L_1,L_2,L_3)
                             
@@ -394,28 +412,47 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                             
                             
                             L_1 = (atk.rect.x+atk.rect.width/2) * obj.L_FS[0] + (atk.rect.y+atk.rect.height/2) * obj.L_FS[1] + obj.L_FS[2] > 0
-                            L_2 = (atk.rect.x+atk.rect.width/2) * obj.L_ST[0] + (atk.rect.y+atk.rect.height/2) * obj.L_ST[1] + obj.L_ST[2] < 0
+                            L_2 = (atk.rect.x+atk.rect.width/2) * obj.L_ST[0] + (atk.rect.y+atk.rect.height/2) * obj.L_ST[1] + obj.L_ST[2] > 0
                             L_3 = (atk.rect.x+atk.rect.width/2) * obj.L_TF[0] + (atk.rect.y+atk.rect.height/2) * obj.L_TF[1] + obj.L_TF[2] > 0
                             
-                            if obj.angle >= 30 and obj.angle < 150:
-                                L_3 = not L_3
-                            elif obj.angle >= 150 and obj.angle < 180:
-                                L_2 = not L_2
-                                L_3 = not L_3
-                            elif obj.angle >= 180 and obj.angle < 210:
-                                L_1 = not L_1
-                                L_2 = not L_2
-                                L_3 = not L_3
-                            elif obj.angle >= 210 and obj.angle < 330:
-                                L_1 = not L_1
-                                L_2 = not L_2
-                            elif obj.angle >= 330 and (obj.angle <= 359 or obj.angle == 0):
-                                L_1 = not L_1
+                            if abs(obj.FS[0]) > 0:
+                                if obj.FS[0] < 0:
+                                    L_1 = not L_1
+                                else:
+                                    pass
+                            else:
+                                if obj.FS[1] > 0:
+                                    L_1 = not L_1
+                                else:
+                                    pass    
+                                
+                            if abs(obj.ST[0]) > 0:
+                                if obj.ST[0] < 0:
+                                    L_2 = not L_2
+                                else:
+                                    pass
+                            else:
+                                if obj.ST[1] > 0:
+                                    L_2 = not L_2
+                                else:
+                                    pass    
+                                
+                            if abs(obj.TF[0]) > 0:
+                                if obj.TF[0] < 0:
+                                    L_3 = not L_3
+                                else:
+                                    pass
+                            else:
+                                if obj.TF[1] > 0:
+                                    L_3 = not L_3
+                                else:
+                                    pass    
                             
-                            print (L_1,L_2,L_3)
-                            #print (obj.L_FS)
+                            if L_1 and L_2 and L_3:
+                                print("in")
+                                print (atk.pre_test)
                             
-                            if (L_1 and L_2 and L_3):
+                            if (L_1 and L_2 and L_3 and not atk.pre_test == 0):
                                 
                                 print("reflected,P=",atk.pre_test)
                                 if atk.pre_test == 1:
@@ -424,12 +461,12 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                                     atk.tag_y = (math.sin(math.radians(obj.angle+90)*-2) * tem_x - math.cos(math.radians(obj.angle+90)*-2) * tem_y) * -1
                                     
                                 elif atk.pre_test == 2:
-                                    atk.tag_x = (math.cos(math.radians(obj.angle+210)*-2) * tem_x + math.sin(math.radians(obj.angle+210)*-2) * tem_y) *-1
-                                    atk.tag_y = (math.sin(math.radians(obj.angle+210)*-2) * tem_x - math.cos(math.radians(obj.angle+210)*-2) * tem_y) * -1
+                                    atk.tag_x = (math.cos(math.radians(obj.angle+90)*-2) * tem_x + math.sin(math.radians(obj.angle+90)*-2) * tem_y) *-1
+                                    atk.tag_y = (math.sin(math.radians(obj.angle+90)*-2) * tem_x - math.cos(math.radians(obj.angle+90)*-2) * tem_y) * -1
                                     
                                 elif atk.pre_test == 3:
-                                    atk.tag_x = (math.cos(math.radians(obj.angle+330)*-2) * tem_x + math.sin(math.radians(obj.angle+330)*-2) * tem_y) *-1
-                                    atk.tag_y = (math.sin(math.radians(obj.angle+330)*-2) * tem_x - math.cos(math.radians(obj.angle+330)*-2) * tem_y) * -1
+                                    atk.tag_x = (math.cos(math.radians(obj.angle+90)*-2) * tem_x + math.sin(math.radians(obj.angle+90)*-2) * tem_y) *-1
+                                    atk.tag_y = (math.sin(math.radians(obj.angle+90)*-2) * tem_x - math.cos(math.radians(obj.angle+90)*-2) * tem_y) * -1
                                 
                                 atk.L_mirror = obj  
                                 atk.pre_test = 0              
@@ -442,10 +479,19 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                             elif (L_1 and not L_2 and  L_3):
                                 
                                 atk.pre_test = 2
-                                
                             elif (L_1 and L_2 and not L_3):
                                 atk.pre_test = 3
-                            
+                                
+                            else:
+                                C=((atk.rect.x+atk.rect.width/2) * obj.L_TF[0] + (atk.rect.y+atk.rect.height/2) * obj.L_TF[1] + obj.L_TF[2]) / math.sqrt(pow(obj.TF[0],2)+pow(obj.TF[1],2))
+                                B=((atk.rect.x+atk.rect.width/2) * obj.L_ST[0] + (atk.rect.y+atk.rect.height/2) * obj.L_ST[1] + obj.L_ST[2]) / math.sqrt(pow(obj.ST[0],2)+pow(obj.ST[1],2))
+                                A=((atk.rect.x+atk.rect.width/2) * obj.L_FS[0] + (atk.rect.y+atk.rect.height/2) * obj.L_FS[1] + obj.L_FS[2]) / math.sqrt(pow(obj.FS[0],2)+pow(obj.FS[1],2))
+                                if abs(C) <= abs(A) and abs(C) <= abs(B):
+                                    atk.pre_test = 3
+                                elif abs(B) <= abs(A) and abs(B) <= abs(C):
+                                    atk.pre_test = 2
+                                else:
+                                    atk.pre_test = 1
                             
                             
                             
@@ -1232,7 +1278,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
                                         obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
                                         
-                                        obj.outerect = obj.rect.inflate(40,40)
+                                        obj.outerect = obj.rect.inflate(160,160)
                                         
                                         obj.x = obj.rect.x
                                         obj.y = obj.rect.y
@@ -1288,7 +1334,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         obj.angle += 1
                                         obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
                                         obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
-                                        obj.outerect = obj.rect.inflate(40,40)
+                                        obj.outerect = obj.rect.inflate(160,160)
                                         
                                         obj.x = obj.rect.x
                                         obj.y = obj.rect.y
@@ -1334,10 +1380,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                 enemy.phase_cd = -1
                                 match enemy.phase:
                                     case 0:
-                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",1,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",1,None,None)) 
                                         #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",2,None,None)) 
                                         #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",3,None,None)) 
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",4,None,None))
+                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",4,None,None))
                                         #ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",5,None,None))
 
                                         
@@ -1355,7 +1401,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         obj.angle += 1
                                         obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
                                         obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
-                                        obj.outerect = obj.rect.inflate(40,40)
+                                        obj.outerect = obj.rect.inflate(160,160)
                                         
                                         obj.x = obj.rect.x
                                         obj.y = obj.rect.y
@@ -1398,7 +1444,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         obj.angle -= 1
                                         obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
                                         obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
-                                        obj.outerect = obj.rect.inflate(40,40)
+                                        obj.outerect = obj.rect.inflate(160,160)
                                         
                                         obj.x = obj.rect.x
                                         obj.y = obj.rect.y
@@ -1474,10 +1520,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     case 0:                                                 #輻(射)光(線)
                                             
                                         
-                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",1,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",1,None,None)) 
                                         #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",2,None,None)) 
                                         #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",3,None,None)) 
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",4,None,None))
+                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",4,None,None))
                                         #ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",5,None,None))
 
 
