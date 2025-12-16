@@ -6,6 +6,11 @@ import player_class
 import object_class
 import json
 
+
+def cross(A, B):
+    return A[0]*B[1] - A[1]*B[0]
+
+
 def draw_line(screen, L,adj_x,adj_y, color=(255,0,0)):
     A, B, C = L
     W, H = screen.get_size()
@@ -195,20 +200,20 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
             screen.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.rect.x - camera_x, obj.rect.y - camera_y, obj.rect.width, obj.rect.height),1) 
         
-        if obj.type == "mirror_wall":
-            pygame.draw.rect(screen, (255, 255, 0),pygame.Rect(obj.outerect.x - camera_x, obj.outerect.y - camera_y, obj.outerect.width, obj.outerect.height),1) 
+        #if obj.type == "mirror_wall":
+            #pygame.draw.rect(screen, (255, 255, 0),pygame.Rect(obj.outerect.x - camera_x, obj.outerect.y - camera_y, obj.outerect.width, obj.outerect.height),1) 
             
-            pygame.draw.rect(screen, (0, 255, 0),pygame.Rect(obj.F_Px - camera_x, obj.F_Py - camera_y, 10, 10),0)
-            pygame.draw.rect(screen, (0, 0, 255),pygame.Rect(obj.S_Px - camera_x, obj.S_Py - camera_y, 10, 10),0)
-            pygame.draw.rect(screen, (30, 30, 30),pygame.Rect(obj.T_Px - camera_x, obj.T_Py - camera_y, 10, 10),0)
+            #pygame.draw.rect(screen, (0, 255, 0),pygame.Rect(obj.F_Px - camera_x, obj.F_Py - camera_y, 10, 10),0)
+            #pygame.draw.rect(screen, (0, 0, 255),pygame.Rect(obj.S_Px - camera_x, obj.S_Py - camera_y, 10, 10),0)
+            #pygame.draw.rect(screen, (30, 30, 30),pygame.Rect(obj.T_Px - camera_x, obj.T_Py - camera_y, 10, 10),0)
             
             #pygame.draw.line(screen, (0,255,0), (obj.S_Px - camera_x, obj.S_Py - camera_y), (obj.F_Px - camera_x, obj.F_Py - camera_y),2)
             #pygame.draw.line(screen, (0,0,255), (obj.F_Px - camera_x, obj.F_Py - camera_y), (obj.T_Px - camera_x, obj.T_Py - camera_y),2)
             #pygame.draw.line(screen, (255,255,255), (obj.T_Px - camera_x, obj.T_Py - camera_y), (obj.S_Px - camera_x, obj.S_Py - camera_y),2)
 
-            draw_line(screen, obj.L_FS,camera_x,camera_y, (255,0,0))
-            draw_line(screen, obj.L_ST,camera_x,camera_y, (0,255,0))
-            draw_line(screen, obj.L_TF,camera_x,camera_y, (0,0,255))
+            #draw_line(screen, obj.L_FS,camera_x,camera_y, (255,0,0))
+            #draw_line(screen, obj.L_ST,camera_x,camera_y, (0,255,0))
+            #draw_line(screen, obj.L_TF,camera_x,camera_y, (0,0,255))
             
             
             
@@ -239,6 +244,15 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
         if atk.dif == "light":
             for enemy in Enemy:
                 if enemy.dif == "The_Sun":
+                    
+                    if enemy.light_count == 3:
+                        enemy.theta =math.pi*4/5
+                        enemy.I = (16*math.cos(enemy.theta+0.01*enemy.skill_time),16*math.sin(enemy.theta+0.01*enemy.skill_time))
+                        enemy.II =(16*math.cos(enemy.theta/4*3+0.01*enemy.skill_time),16*math.sin(enemy.theta/4*3+0.01*enemy.skill_time))
+                        enemy.III =(16*math.cos(enemy.theta/4*2+0.01*enemy.skill_time),16*math.sin(enemy.theta/4*2+0.01*enemy.skill_time))
+                        enemy.IV =(16*math.cos(enemy.theta/4+0.01*enemy.skill_time),16*math.sin(enemy.theta/4+0.01*enemy.skill_time))
+                        enemy.V =(16,0)
+                    
                     match atk.num:
                         case 1:
                             (atk.tag_x,atk.tag_y) = enemy.I 
@@ -250,7 +264,10 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                             (atk.tag_x,atk.tag_y) = enemy.IV
                         case 5:
                             (atk.tag_x,atk.tag_y) = enemy.V
-                
+
+
+                        
+                        
             for i in range(atk.dur):
                         #print(atk.tag_x,atk.tag_y)
                         
@@ -279,90 +296,74 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                 for obj in NT_object:
                     
 
-                    if obj.type == "mirror_wall" and not atk.L_mirror == obj:
+                    if obj.type == "mirror_wall" and  not atk.L_mirror == obj:
                         
                         if atk.rect.colliderect(obj.outerect):
-   
-                            
+        
                             tem_x = atk.tag_x
                             tem_y = atk.tag_y
                             
+                            atkF=[obj.F_Px - (atk.rect.x+atk.rect.width/2), obj.F_Py - (atk.rect.y+atk.rect.height/2)]
+                            atkS=[obj.S_Px - (atk.rect.x+atk.rect.width/2), obj.S_Py - (atk.rect.y+atk.rect.height/2)]
+                            atkT=[obj.T_Px - (atk.rect.x+atk.rect.width/2), obj.T_Py - (atk.rect.y+atk.rect.height/2)]
                             
-                            L_1 = (atk.rect.x+atk.rect.width/2) * obj.L_FS[0] + (atk.rect.y+atk.rect.height/2) * obj.L_FS[1] + obj.L_FS[2] > 0  
-                            L_2 = (atk.rect.x+atk.rect.width/2) * obj.L_ST[0] + (atk.rect.y+atk.rect.height/2) * obj.L_ST[1] + obj.L_ST[2] > 0  
-                            L_3 = (atk.rect.x+atk.rect.width/2) * obj.L_TF[0] + (atk.rect.y+atk.rect.height/2) * obj.L_TF[1] + obj.L_TF[2] > 0  
+                            cFS = cross(atkF, atkS)
+                            cST = cross(atkS, atkT)
+                            cTF = cross(atkT, atkF)
                             
-                            if abs(obj.FS[0]) > 0:
-                                if obj.FS[0] < 0:
-                                    L_1 = not L_1
-                                else:
-                                    pass
+                            if cFS > 0:
+                                L_1 = True
                             else:
-                                if obj.FS[1] < 0:
-                                    L_1 = not L_1
-                                else:
-                                    pass    
-                                
-                            if abs(obj.ST[0]) > 0:
-                                if obj.ST[0] < 0:
-                                    L_2 = not L_2
-                                else:
-                                    pass
-                            else:
-                                if obj.ST[1] < 0:
-                                    L_2 = not L_2
-                                else:
-                                    pass    
-                                
-                            if abs(obj.TF[0]) > 0:
-                                if obj.TF[0] < 0:
-                                    L_3 = not L_3
-                                else:
-                                    pass
-                            else:
-                                if obj.TF[1] < 0:
-                                    L_3 = not L_3
-                                else:
-                                    pass    
+                                L_1 = False
                             
-                            #print (L_1,L_2,L_3)
-                            
-                            if (L_1 and L_2 and L_3):
+                            if cST > 0:
+                                L_2 = True
+                            else:
+                                L_2 = False
                                 
+                            if cTF > 0:
+                                L_3 = True
+                            else:
+                                L_3 = False
+        
+        
+                            if (L_1 == L_2 == L_3):
+                                atk.x -= atk.tag_x
+                                atk.rect.x -= atk.tag_x
+                                atk.y -= atk.tag_y
+                                atk.rect.y -= atk.tag_y
                                 
                                 if atk.pre_test == 1:
-                                    
                                     atk.tag_x = (math.cos(math.radians(obj.angle+90)*-2) * tem_x + math.sin(math.radians(obj.angle+90)*-2) * tem_y) *-1
                                     atk.tag_y = (math.sin(math.radians(obj.angle+90)*-2) * tem_x - math.cos(math.radians(obj.angle+90)*-2) * tem_y) * -1
                                     
                                 elif atk.pre_test == 2:
-                                    atk.tag_x = (math.cos(math.radians(obj.angle+210)*-2) * tem_x + math.sin(math.radians(obj.angle+210)*-2) * tem_y) *-1
-                                    atk.tag_y = (math.sin(math.radians(obj.angle+210)*-2) * tem_x - math.cos(math.radians(obj.angle+210)*-2) * tem_y) * -1
+                                    atk.tag_x = (math.cos(math.radians(obj.angle+120)*-2) * tem_x + math.sin(math.radians(obj.angle+120)*-2) * tem_y) *-1
+                                    atk.tag_y = (math.sin(math.radians(obj.angle+120)*-2) * tem_x - math.cos(math.radians(obj.angle+120)*-2) * tem_y) * -1
                                     
                                 elif atk.pre_test == 3:
-                                    atk.tag_x = (math.cos(math.radians(obj.angle+330)*-2) * tem_x + math.sin(math.radians(obj.angle+330)*-2) * tem_y) *-1
-                                    atk.tag_y = (math.sin(math.radians(obj.angle+330)*-2) * tem_x - math.cos(math.radians(obj.angle+330)*-2) * tem_y) * -1
+                                    atk.tag_x = (math.cos(math.radians(obj.angle+60)*-2) * tem_x + math.sin(math.radians(obj.angle+60)*-2) * tem_y) *-1
+                                    atk.tag_y = (math.sin(math.radians(obj.angle+60)*-2) * tem_x - math.cos(math.radians(obj.angle+60)*-2) * tem_y) * -1
                                 
                                 atk.L_mirror = obj  
-                                atk.pre_test = 0              
+                                atk.pre_test = 0        
+                                
 
                             
-                            if (not L_1 and L_2 and L_3):
+
                             
-                                atk.pre_test = 1
-                            
-                            elif (L_1 and not L_2 and  L_3):
-                                
-                                atk.pre_test = 2
-                                
-                            elif (L_1 and L_2 and not L_3):
+                            if L_1 == L_2:
                                 atk.pre_test = 3
-                            
+                            elif L_2 == L_3:
+                                atk.pre_test = 1
+                            elif L_3 == L_1:
+                                atk.pre_test = 2
                             
                             
                             
                             
                                                        
+                  
                     elif atk.rect.colliderect(obj.rect) and not atk.L_mirror == obj:
                         atk.delete =1
                             
@@ -381,13 +382,22 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
         elif atk.dif == "pre_light":
             for enemy in Enemy:
                 if enemy.dif == "The_Sun":
+                    
+                    if enemy.light_count == 3:
+                        enemy.theta =math.pi*4/5
+                        enemy.I = (16*math.cos(enemy.theta),16*math.sin(enemy.theta))
+                        enemy.II =(16*math.cos(enemy.theta/4*3),16*math.sin(enemy.theta/4*3))
+                        enemy.III =(16*math.cos(enemy.theta/4*2),16*math.sin(enemy.theta/4*2))
+                        enemy.IV =(16*math.cos(enemy.theta/4),16*math.sin(enemy.theta/4))
+                        enemy.V =(16,0)
+                    
                     match atk.num:
                         case 1:
                             (atk.tag_x,atk.tag_y) = enemy.I 
                         case 2:
-                            (atk.tag_x,atk.tag_y) = enemy.II 
+                            (atk.tag_x,atk.tag_y) = enemy.II
                         case 3:
-                            (atk.tag_x,atk.tag_y) = enemy.III 
+                            (atk.tag_x,atk.tag_y) = enemy.III
                         case 4:
                             (atk.tag_x,atk.tag_y) = enemy.IV
                         case 5:
@@ -409,95 +419,66 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                         
                         if atk.rect.colliderect(obj.outerect):
         
-                            
                             tem_x = atk.tag_x
                             tem_y = atk.tag_y
                             
+                            atkF=[obj.F_Px - (atk.rect.x+atk.rect.width/2), obj.F_Py - (atk.rect.y+atk.rect.height/2)]
+                            atkS=[obj.S_Px - (atk.rect.x+atk.rect.width/2), obj.S_Py - (atk.rect.y+atk.rect.height/2)]
+                            atkT=[obj.T_Px - (atk.rect.x+atk.rect.width/2), obj.T_Py - (atk.rect.y+atk.rect.height/2)]
                             
-                            L_1 = (atk.rect.x+atk.rect.width/2) * obj.L_FS[0] + (atk.rect.y+atk.rect.height/2) * obj.L_FS[1] + obj.L_FS[2] > 0
-                            L_2 = (atk.rect.x+atk.rect.width/2) * obj.L_ST[0] + (atk.rect.y+atk.rect.height/2) * obj.L_ST[1] + obj.L_ST[2] > 0
-                            L_3 = (atk.rect.x+atk.rect.width/2) * obj.L_TF[0] + (atk.rect.y+atk.rect.height/2) * obj.L_TF[1] + obj.L_TF[2] > 0
+                            cFS = cross(atkF, atkS)
+                            cST = cross(atkS, atkT)
+                            cTF = cross(atkT, atkF)
                             
-                            if abs(obj.FS[0]) > 0:
-                                if obj.FS[0] < 0:
-                                    L_1 = not L_1
-                                else:
-                                    pass
+                            if cFS > 0:
+                                L_1 = True
                             else:
-                                if obj.FS[1] > 0:
-                                    L_1 = not L_1
-                                else:
-                                    pass    
-                                
-                            if abs(obj.ST[0]) > 0:
-                                if obj.ST[0] < 0:
-                                    L_2 = not L_2
-                                else:
-                                    pass
-                            else:
-                                if obj.ST[1] > 0:
-                                    L_2 = not L_2
-                                else:
-                                    pass    
-                                
-                            if abs(obj.TF[0]) > 0:
-                                if obj.TF[0] < 0:
-                                    L_3 = not L_3
-                                else:
-                                    pass
-                            else:
-                                if obj.TF[1] > 0:
-                                    L_3 = not L_3
-                                else:
-                                    pass    
+                                L_1 = False
                             
-                            if L_1 and L_2 and L_3:
-                                print("in")
-                                print (atk.pre_test)
-                            
-                            if (L_1 and L_2 and L_3 and not atk.pre_test == 0):
+                            if cST > 0:
+                                L_2 = True
+                            else:
+                                L_2 = False
                                 
-                                print("reflected,P=",atk.pre_test)
+                            if cTF > 0:
+                                L_3 = True
+                            else:
+                                L_3 = False
+        
+        
+                            if (L_1 == L_2 == L_3):
+                                atk.x -= atk.tag_x
+                                atk.rect.x -= atk.tag_x
+                                atk.y -= atk.tag_y
+                                atk.rect.y -= atk.tag_y
+                                
                                 if atk.pre_test == 1:
-                                    
                                     atk.tag_x = (math.cos(math.radians(obj.angle+90)*-2) * tem_x + math.sin(math.radians(obj.angle+90)*-2) * tem_y) *-1
                                     atk.tag_y = (math.sin(math.radians(obj.angle+90)*-2) * tem_x - math.cos(math.radians(obj.angle+90)*-2) * tem_y) * -1
                                     
                                 elif atk.pre_test == 2:
-                                    atk.tag_x = (math.cos(math.radians(obj.angle+90)*-2) * tem_x + math.sin(math.radians(obj.angle+90)*-2) * tem_y) *-1
-                                    atk.tag_y = (math.sin(math.radians(obj.angle+90)*-2) * tem_x - math.cos(math.radians(obj.angle+90)*-2) * tem_y) * -1
+                                    atk.tag_x = (math.cos(math.radians(obj.angle+120)*-2) * tem_x + math.sin(math.radians(obj.angle+120)*-2) * tem_y) *-1
+                                    atk.tag_y = (math.sin(math.radians(obj.angle+120)*-2) * tem_x - math.cos(math.radians(obj.angle+120)*-2) * tem_y) * -1
                                     
                                 elif atk.pre_test == 3:
-                                    atk.tag_x = (math.cos(math.radians(obj.angle+90)*-2) * tem_x + math.sin(math.radians(obj.angle+90)*-2) * tem_y) *-1
-                                    atk.tag_y = (math.sin(math.radians(obj.angle+90)*-2) * tem_x - math.cos(math.radians(obj.angle+90)*-2) * tem_y) * -1
+                                    atk.tag_x = (math.cos(math.radians(obj.angle+60)*-2) * tem_x + math.sin(math.radians(obj.angle+60)*-2) * tem_y) *-1
+                                    atk.tag_y = (math.sin(math.radians(obj.angle+60)*-2) * tem_x - math.cos(math.radians(obj.angle+60)*-2) * tem_y) * -1
                                 
                                 atk.L_mirror = obj  
-                                atk.pre_test = 0              
+                                atk.pre_test = 0        
+                                
 
                             
-                            if (not L_1 and L_2 and L_3):
+
                             
-                                atk.pre_test = 1
-                            
-                            elif (L_1 and not L_2 and  L_3):
-                                
-                                atk.pre_test = 2
-                            elif (L_1 and L_2 and not L_3):
+                            if L_1 == L_2:
                                 atk.pre_test = 3
-                                
-                            else:
-                                C=((atk.rect.x+atk.rect.width/2) * obj.L_TF[0] + (atk.rect.y+atk.rect.height/2) * obj.L_TF[1] + obj.L_TF[2]) / math.sqrt(pow(obj.TF[0],2)+pow(obj.TF[1],2))
-                                B=((atk.rect.x+atk.rect.width/2) * obj.L_ST[0] + (atk.rect.y+atk.rect.height/2) * obj.L_ST[1] + obj.L_ST[2]) / math.sqrt(pow(obj.ST[0],2)+pow(obj.ST[1],2))
-                                A=((atk.rect.x+atk.rect.width/2) * obj.L_FS[0] + (atk.rect.y+atk.rect.height/2) * obj.L_FS[1] + obj.L_FS[2]) / math.sqrt(pow(obj.FS[0],2)+pow(obj.FS[1],2))
-                                if abs(C) <= abs(A) and abs(C) <= abs(B):
-                                    atk.pre_test = 3
-                                elif abs(B) <= abs(A) and abs(B) <= abs(C):
-                                    atk.pre_test = 2
-                                else:
-                                    atk.pre_test = 1
-                            
-                            
-                            
+                            elif L_2 == L_3:
+                                atk.pre_test = 1
+                            elif L_3 == L_1:
+                                atk.pre_test = 2
+
+        
                             
                                                        
                   
@@ -597,6 +578,7 @@ def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞�
 
                     object1.vy = 0
                     object1.on_ground = 2
+                    
                 return True
             else :
                 object1.now_CT_Touch.append("1_D")      
@@ -1243,8 +1225,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                             if enemy.phase_cd > 0:                                                  #出招冷卻倒數
                                 enemy.phase_cd -= 1
                                 
-                            if  pow((Main.rect.x + Main.rect.width//2 - (enemy.rect.x+enemy.rect.width//2)),2) + pow((Main.rect.y + Main.rect.height//2 - (enemy.rect.y+enemy.rect.height//2)),2) <= pow(100,2):
-                                pass    #太陽閃焰！
+                            if  pow((Main.rect.x + Main.rect.width//2 - (enemy.rect.x+enemy.rect.width//2)),2) + pow((Main.rect.y + Main.rect.height//2 - (enemy.rect.y+enemy.rect.height//2)),2) <= pow(400,2) and enemy.sun_blaze ==0:
+                                ATKs_EN.append(object_class.object(enemy.rect.x-175,enemy.rect.y-150,pygame.image.load("Image\Character\Enemy\Boss\sun_blaze.png"),"dangerous",1,1,"sun_blaze",0,0,0))    #太陽閃焰！
+                                enemy.unhurtable_cd = 30
+                                enemy.sun_blaze = 1
                             
                             if enemy.phase_cd == 0 and not enemy.attack_state["playing"]:           #出招冷卻歸零播招式動畫 & 針對不同招式需求初始化
                                 match enemy.phase:
@@ -1252,14 +1236,16 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                                     case 0: #輻(射)光(線)
                                         start_animation(enemy.attack_state,enemy.boss_idle, 45, enemy.back, False) 
-                                        theta =random.uniform(math.pi*5/6,math.pi*6/7)
-                                        enemy.I = (5*math.cos(theta),5*math.sin(theta))
-                                        theta =random.uniform(math.pi*3/6,math.pi*4/6)
-                                        enemy.II =(16*math.cos(theta),16*math.sin(theta))
-                                        theta =random.uniform(math.pi*2/6,math.pi*3/6)
-                                        enemy.III =(16*math.cos(theta),16*math.sin(theta))
-                                        theta =random.uniform(math.pi*1/7,math.pi*1/6)
-                                        enemy.IV =(16*math.cos(theta),16*math.sin(theta))
+
+                                        if enemy.light_count < 3:
+                                            enemy.theta =random.uniform(math.pi*5/6,math.pi*6/7)
+                                            enemy.I = (16*math.cos(enemy.theta),16*math.sin(enemy.theta))
+                                            enemy.theta =random.uniform(math.pi*3/6,math.pi*4/6)
+                                            enemy.II =(16*math.cos(enemy.theta),16*math.sin(enemy.theta))
+                                            enemy.theta =random.uniform(math.pi*2/6,math.pi*3/6)
+                                            enemy.III =(16*math.cos(enemy.theta),16*math.sin(enemy.theta))
+                                            enemy.theta =random.uniform(math.pi*1/7,math.pi*1/6)
+                                            enemy.IV =(16*math.cos(enemy.theta),16*math.sin(enemy.theta))
 
                                         enemy.V =(16,0)
                                         
@@ -1273,123 +1259,71 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                 
 
                             elif enemy.attack_state["playing"]:         #動畫執行中，出招cd = -1
+                                          
 
 
-                                for obj in NT_object:
-                                    if obj.type == "mirror_wall" and obj.dif == 1:# and abs(obj.angle) % 360 < 135:
-                                        obj.angle -= 1
-                                        obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
-                                        obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
-                                        
-                                        obj.outerect = obj.rect.inflate(160,160)
-                                        
-                                        obj.x = obj.rect.x
-                                        obj.y = obj.rect.y
-                                        
-                                        obj.S_Px = obj.center_x + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.cos(math.radians(344 - obj.angle))
-                                        obj.S_Py = obj.center_y + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.sin(math.radians(344 - obj.angle))
-
-                                        
-                                        
-                                        obj.F_Px = obj.S_Px - math.cos(math.radians(-obj.angle)) * obj.org_rect_w
-                                        obj.F_Py = obj.S_Py - math.sin(math.radians(-obj.angle)) * obj.org_rect_w
-                                        
-                                        obj.T_Px = obj.S_Px - math.cos(math.radians(-obj.angle-30)) * obj.org_rect_h *2
-                                        obj.T_Py = obj.S_Py - math.sin(math.radians(-obj.angle-30)) * obj.org_rect_h *2 
-                                        
-                                                                
-                                        obj.FS = [obj.S_Px - obj.F_Px , obj.S_Py - obj.F_Py]
-                                        obj.ST = [obj.T_Px - obj.S_Px , obj.T_Py - obj.S_Py]
-                                        obj.TF = [obj.F_Px - obj.T_Px , obj.F_Py - obj.T_Py]
-                                        
-                                        
-                                        obj.L_FS[0] = obj.FS[1]
-                                        obj.L_FS[1] = -1 * obj.FS[0]
-                                        obj.L_FS[2] = -1 * (obj.L_FS[0] * obj.F_Px + obj.L_FS[1] * obj.F_Py)
-                                        
-                                        obj.L_ST[0] = obj.ST[1]
-                                        obj.L_ST[1] = -1 * obj.ST[0]
-                                        obj.L_ST[2] = -1 * (obj.L_ST[0] * obj.S_Px + obj.L_ST[1] * obj.S_Py)
-                                        
-                                        obj.L_TF[0] = obj.TF[1]
-                                        obj.L_TF[1] = -1 * obj.TF[0]
-                                        obj.L_TF[2] = -1 * (obj.L_TF[0] * obj.T_Px + obj.L_TF[1] * obj.T_Py)
-                                        
-                                        
-                                        if obj.F_Px - obj.S_Px == 0:
-                                            pass
-                                            #obj.mFS =
-                                        
-                                        obj.can_be_through = 1
-
-                                        
-                                        
-                                        
-                                        if obj.angle > 360:
-                                            obj.angle -= 360
-                                        elif obj.angle < 0 :
-                                            obj.angle += 360
-                                            
-                                            
-                                            
-                                            
-                                    elif obj.type == "mirror_wall" and obj.dif == 2:# and abs(obj.angle) % 360 < 135:
-                                        obj.angle += 1
-                                        obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
-                                        obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
-                                        obj.outerect = obj.rect.inflate(160,160)
-                                        
-                                        obj.x = obj.rect.x
-                                        obj.y = obj.rect.y
-                                        
-                                        obj.S_Px = obj.center_x + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.cos(math.radians(344 - obj.angle))
-                                        obj.S_Py = obj.center_y + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.sin(math.radians(344 - obj.angle))
-
-                                        
-                                        
-                                        obj.F_Px = obj.S_Px - math.cos(math.radians(-obj.angle)) * obj.org_rect_w
-                                        obj.F_Py = obj.S_Py - math.sin(math.radians(-obj.angle)) * obj.org_rect_w
-                                        
-                                        obj.T_Px = obj.S_Px - math.cos(math.radians(-obj.angle-30)) * obj.org_rect_h *2
-                                        obj.T_Py = obj.S_Py - math.sin(math.radians(-obj.angle-30)) * obj.org_rect_h *2 
-                                        
-                                        
-                                        obj.FS = [obj.S_Px - obj.F_Px , obj.S_Py - obj.F_Py]
-                                        obj.ST = [obj.T_Px - obj.S_Px , obj.T_Py - obj.S_Py]
-                                        obj.TF = [obj.F_Px - obj.T_Px , obj.F_Py - obj.T_Py]
-                                        
-                                        
-                                        obj.L_FS[0] = obj.FS[1]
-                                        obj.L_FS[1] = -1 * obj.FS[0]
-                                        obj.L_FS[2] = -1 * (obj.L_FS[0] * obj.F_Px + obj.L_FS[1] * obj.F_Py)
-                                        
-                                        obj.L_ST[0] = obj.ST[1]
-                                        obj.L_ST[1] = -1 * obj.ST[0]
-                                        obj.L_ST[2] = -1 * (obj.L_ST[0] * obj.S_Px + obj.L_ST[1] * obj.S_Py)
-                                        
-                                        obj.L_TF[0] = obj.TF[1]
-                                        obj.L_TF[1] = -1 * obj.TF[0]
-                                        obj.L_TF[2] = -1 * (obj.L_TF[0] * obj.T_Px + obj.L_TF[1] * obj.T_Py)
-                                        
-                                        
-                                        obj.can_be_through = 1
-
-                                        
-                                        if obj.angle > 360:
-                                            obj.angle -= 360
-                                        elif obj.angle < 0 :
-                                            obj.angle += 360
                                 
-                                enemy.phase_cd = -1
+                                
+                                
                                 match enemy.phase:
                                     case 0:
-                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",1,None,None)) 
-                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",2,None,None)) 
-                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",3,None,None)) 
-                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",4,None,None))
-                                        #ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",5,None,None))
-
                                         
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",1,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",2,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",3,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",4,None,None))
+                                        ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",5,None,None))
+                                        
+                                        for obj in NT_object:
+                                            if obj.type == "mirror_wall":
+                                                
+                                                if obj.dif == 2 :
+                                                    
+                                                    obj.angle -= 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                    print("angle=",obj.angle)
+                                                
+                                                if obj.dif == 1:
+                                                    
+                                                    obj.angle += 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                    
+                                                if obj.dif == 3:
+                                                    
+                                                    obj.angle -= 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                
+                                            
+                                                obj.outerect = obj.rect.inflate(160,160)
+                                                    
+                                                obj.x = obj.rect.x
+                                                obj.y = obj.rect.y
+                                                    
+                                                obj.S_Px = obj.center_x + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.cos(math.radians(344 - obj.angle))
+                                                obj.S_Py = obj.center_y + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.sin(math.radians(344 - obj.angle))
+
+                                                    
+                                                    
+                                                obj.F_Px = obj.S_Px - math.cos(math.radians(-obj.angle)) * obj.org_rect_w
+                                                obj.F_Py = obj.S_Py - math.sin(math.radians(-obj.angle)) * obj.org_rect_w
+                                                    
+                                                obj.T_Px = obj.S_Px - math.cos(math.radians(-obj.angle-30)) * obj.org_rect_h *2
+                                                obj.T_Py = obj.S_Py - math.sin(math.radians(-obj.angle-30)) * obj.org_rect_h *2 
+
+                                                    
+                                                if obj.angle >= 360:
+                                                    obj.angle -= 360
+                                                elif obj.angle < 0 :
+                                                    obj.angle += 360
+                                                    
+                                                if obj.angle != 0:
+                                                    obj.can_be_through = 1
+                                            
+                                            enemy.phase_cd = -1
+                                                
                                     case 1:
                                         pass
                                     case 2:
@@ -1399,94 +1333,55 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                             elif enemy.anime:                           #動畫播放完畢，出招cd = -2
                                 enemy.phase_cd = -2
-                                for obj in NT_object:
-                                    if obj.type == "mirror_wall" and obj.dif == 2 :#and abs(obj.angle) % 360 < 135:
-                                        obj.angle += 1
-                                        obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
-                                        obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
-                                        obj.outerect = obj.rect.inflate(160,160)
-                                        
-                                        obj.x = obj.rect.x
-                                        obj.y = obj.rect.y
-                                        
-                                        obj.S_Px = obj.center_x + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.cos(math.radians(344 - obj.angle))
-                                        obj.S_Py = obj.center_y + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.sin(math.radians(344 - obj.angle))
+                                
+                                match enemy.phase:
+                                    case 0:
+                                        for obj in NT_object:
+                                            if obj.type == "mirror_wall":
+                                                if obj.dif == 2 :
+                                                    
+                                                    obj.angle -= 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                    print("angle=",obj.angle)
 
-                                        
-                                        
-                                        obj.F_Px = obj.S_Px - math.cos(math.radians(-obj.angle)) * obj.org_rect_w
-                                        obj.F_Py = obj.S_Py - math.sin(math.radians(-obj.angle)) * obj.org_rect_w
-                                        
-                                        obj.T_Px = obj.S_Px - math.cos(math.radians(-obj.angle-30)) * obj.org_rect_h *2
-                                        obj.T_Py = obj.S_Py - math.sin(math.radians(-obj.angle-30)) * obj.org_rect_h *2 
-                                        
-                                        obj.FS = [obj.S_Px - obj.F_Px , obj.S_Py - obj.F_Py]
-                                        obj.ST = [obj.T_Px - obj.S_Px , obj.T_Py - obj.S_Py]
-                                        obj.TF = [obj.F_Px - obj.T_Px , obj.F_Py - obj.T_Py]
-                                        
-                                        
-                                        obj.L_FS[0] = obj.FS[1]
-                                        obj.L_FS[1] = -1 * obj.FS[0]
-                                        obj.L_FS[2] = -1 * (obj.L_FS[0] * obj.F_Px + obj.L_FS[1] * obj.F_Py)
-                                        
-                                        obj.L_ST[0] = obj.ST[1]
-                                        obj.L_ST[1] = -1 * obj.ST[0]
-                                        obj.L_ST[2] = -1 * (obj.L_ST[0] * obj.S_Px + obj.L_ST[1] * obj.S_Py)
-                                        
-                                        obj.L_TF[0] = obj.TF[1]
-                                        obj.L_TF[1] = -1 * obj.TF[0]
-                                        obj.L_TF[2] = -1 * (obj.L_TF[0] * obj.T_Px + obj.L_TF[1] * obj.T_Py)
-                                        
-                                        
-                                        
-                                        if obj.angle == 0:
-                                            
-                                            obj.can_be_through = 2
+                                                if obj.dif == 1:
+                                                    
+                                                    obj.angle += 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                    
+                                                if obj.dif == 3:
+                                                    
+                                                    obj.angle -= 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                
 
-                                    elif obj.type == "mirror_wall" and obj.dif == 1: # and abs(obj.angle) % 360 < 135:
-                                        obj.angle -= 1
-                                        obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
-                                        obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
-                                        obj.outerect = obj.rect.inflate(160,160)
-                                        
-                                        obj.x = obj.rect.x
-                                        obj.y = obj.rect.y
-                                        
-                                        
-                                        obj.S_Px = obj.center_x + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.cos(math.radians(344 - obj.angle))
-                                        obj.S_Py = obj.center_y + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.sin(math.radians(344 - obj.angle))
+                                                
+                                                obj.x = obj.rect.x
+                                                obj.y = obj.rect.y
+                                                    
+                                                obj.S_Px = obj.center_x + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.cos(math.radians(344 - obj.angle))
+                                                obj.S_Py = obj.center_y + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.sin(math.radians(344 - obj.angle))
 
-                                        
-                                        
-                                        obj.F_Px = obj.S_Px - math.cos(math.radians(-obj.angle)) * obj.org_rect_w
-                                        obj.F_Py = obj.S_Py - math.sin(math.radians(-obj.angle)) * obj.org_rect_w
-                                        
-                                        obj.T_Px = obj.S_Px - math.cos(math.radians(-obj.angle-30)) * obj.org_rect_h *2
-                                        obj.T_Py = obj.S_Py - math.sin(math.radians(-obj.angle-30)) * obj.org_rect_h *2 
-                                        
-                                        obj.FS = [obj.S_Px - obj.F_Px , obj.S_Py - obj.F_Py]
-                                        obj.ST = [obj.T_Px - obj.S_Px , obj.T_Py - obj.S_Py]
-                                        obj.TF = [obj.F_Px - obj.T_Px , obj.F_Py - obj.T_Py]
-                                        
-                                        
-                                        obj.L_FS[0] = obj.FS[1]
-                                        obj.L_FS[1] = -1 * obj.FS[0]
-                                        obj.L_FS[2] = -1 * (obj.L_FS[0] * obj.F_Px + obj.L_FS[1] * obj.F_Py)
-                                        
-                                        obj.L_ST[0] = obj.ST[1]
-                                        obj.L_ST[1] = -1 * obj.ST[0]
-                                        obj.L_ST[2] = -1 * (obj.L_ST[0] * obj.S_Px + obj.L_ST[1] * obj.S_Py)
-                                        
-                                        obj.L_TF[0] = obj.TF[1]
-                                        obj.L_TF[1] = -1 * obj.TF[0]
-                                        obj.L_TF[2] = -1 * (obj.L_TF[0] * obj.T_Px + obj.L_TF[1] * obj.T_Py)
-                                        
-                                        
-                                        
-                                        
-                                        if obj.angle == 0:
-                                            
-                                            obj.can_be_through = 2
+                                                    
+                                                    
+                                                obj.F_Px = obj.S_Px - math.cos(math.radians(-obj.angle)) * obj.org_rect_w
+                                                obj.F_Py = obj.S_Py - math.sin(math.radians(-obj.angle)) * obj.org_rect_w
+                                                    
+                                                obj.T_Px = obj.S_Px - math.cos(math.radians(-obj.angle-30)) * obj.org_rect_h *2
+                                                obj.T_Py = obj.S_Py - math.sin(math.radians(-obj.angle-30)) * obj.org_rect_h *2 
+                                                    
+
+                                                    
+                                                if obj.angle == 0 or obj.angle == 360:
+                                                    obj.can_be_through = 2
+                                                    print(obj.dif,obj.can_be_through)
+                                    case 1:
+                                        pass
+                                    case 2:
+                                        pass
 
 
                             elif enemy.phase_cd == -2:                  #前搖完二次初始化
@@ -1524,16 +1419,23 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                             
                                         
                                         ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",1,None,None)) 
-                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",2,None,None)) 
-                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",3,None,None)) 
-                                        #ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",4,None,None))
-                                        #ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",5,None,None))
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",2,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",3,None,None)) 
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",4,None,None))
+                                        ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",5,None,None))
 
 
 
                             elif enemy.phase_cd == -3 and enemy.skill_time == 0:                        #放完技能
-                                enemy.phase=random.randint(0,0)                                         #重骰招 & cd
-                                enemy.phase_cd = random.randint(60,90)
+                                
+                                if enemy.phase == 0 and enemy.light_count < 3:                                         
+                                    enemy.light_count += 1
+                                    enemy.phase_cd = random.randint(60,90)
+
+
+                                else:
+                                    enemy.phase=random.randint(1,1)                                         #重骰招 & cd
+                                    enemy.phase_cd = random.randint(60,90)
 
                                 if enemy.broke == 18 :                                                  #吃18刀癱瘓
                                     start_animation(enemy.attack_state, enemy.boss_break, 5, enemy.back-1, False, (320,300))
@@ -1690,8 +1592,38 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     elif Main.unhurtable_cd <= 0 and Main.HP == 1:
                         Main.get_hit()
                     atk_en.delete = 1
+        
+        elif atk_en.dif == "sun_blaze":                            
+            atk_en.dur -= 1                                     #扣時(存在時間)
+                
+            if atk_en.dur == 0:                                 #超時刪除
+                atk_en.delete = 1
+
+                        
+            if atk_en.rect.colliderect(Main.rect):              #打到玩家
+                        
+                if Main.unhurtable_cd <= 0:
+                                    
+                    if Main.HP > 1:
+                        if Main.rect.x-atk_en.rect.x > 0:
+                            Main.vx = 10
+                        else:
+                            Main.vx =- 10
+                        Main.y -= 10
+                        Main.rect.y -= 10
+                        Main.vy = -15
+                        Main.is_hurt = 30
+                        Main.get_hit()
+                                    
+                    elif Main.unhurtable_cd <= 0 and Main.HP == 1:
+                        Main.get_hit()
+                    
+        
+        
                     
         if atk_en.delete == 1:                                  #問斬
+            if atk_en.dif == "sun_blaze":
+                enemy.sun_blaze = 0
             ATKs_EN.remove(atk_en)
             del atk_en            
 
@@ -1752,12 +1684,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     Main.pre_vx = Main.vx
     Main.pre_vy = Main.vy
-
-    for event in pygame.event.get():                               #偵測事件
-                
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
 
     if Main.y > scene_ctrl.B_edge + 500:
         Main.HP = 0

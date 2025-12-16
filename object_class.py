@@ -173,7 +173,7 @@ class object():
                         self.can_be_through = 1                                         #物件是否可通過(布林值)
                         self.surface= pygame.transform.scale(self.surface,(50,50))
 
-                        self.rect = self.surface.get_rect(center=(self.x, self.y))     #物件碰撞盒(規則)
+                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
                         self.ATK=ATK
                         self.KB=KB
                         
@@ -199,7 +199,7 @@ class object():
                         self.can_be_through = 1                                         #物件是否可通過(布林值)
                         self.surface= pygame.transform.scale(self.surface,(50,50))
 
-                        self.rect = self.surface.get_rect(center=(self.x, self.y))     #物件碰撞盒(規則)
+                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
 
                         self.surface= pygame.transform.scale(self.surface,(10,10))
 
@@ -214,4 +214,19 @@ class object():
                         self.pre_test = 0
                         self.now_Touch =[]
                         self.L_mirror = None
+                        
+                    case "sun_blaze":
+                        self.vx = 0
+                        self.vy = 0
+                        self.can_be_through = 1                                         #物件是否可通過(布林值)  
+                        self.dur = 60
+                        self.surface= pygame.transform.scale(self.surface,(700,600))
+
+                        self.delete = 0
+
+                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
+                        self.ATK=ATK
+                        self.KB=KB
+                        self.state={}
+                        self.state["playing"]=False
 

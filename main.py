@@ -57,7 +57,7 @@ def Load(save):
     scene_ctrl = tool.load_s(save,scene_ctrl)
     scene_ctrl.Save = save
 
-def Exit():
+def Exit_game():
 
     elapsed_seconds = elapsed_ms // 1000
     minutes = elapsed_seconds // 60
@@ -301,34 +301,27 @@ while True:
 
                     text = font.render("Savings", True, (0,0,0))      #存檔標題
                     text_rect = text.get_rect(center=(screen_width//4, screen_height//6))
-
-                    for i in range(1,5):
-                        match i:
-                            case 1:
-                                s_path="save\save1\scene.json"
-                            case 2:
-                                s_path="save\save2\scene.json"
-                            case 3:
-                                s_path="save\save3\scene.json"
-                            case 4:
-                                s_path="save\save4\scene.json"
-
-                        with open(s_path, 'r', encoding='utf-8') as f:
-                            data = json.load(f)
-
-                        match i:
-                            case 1:
-                                text1 = font_3.render(str(data["minute"]) + " minutes " + str(data["second"]) + " seconds", True, (0,0,0))
-                                text1_rect = text1.get_rect(center=(screen_width//4+400, screen_height//8*3))
-                            case 2:
-                                text2 = font_3.render(str(data["minute"]) + " minutes " + str(data["second"]) + " seconds", True, (0,0,0))
-                                text2_rect = text2.get_rect(center=(screen_width//4+400, screen_height//8*4))
-                            case 3:
-                                text3 = font_3.render(str(data["minute"]) + " minutes " + str(data["second"]) + " seconds", True, (0,0,0))
-                                text3_rect = text3.get_rect(center=(screen_width//4+400, screen_height//8*5))
-                            case 4:
-                                text4 = font_3.render(str(data["minute"]) + " minutes " + str(data["second"]) + " seconds", True, (0,0,0))
-                                text4_rect = text4.get_rect(center=(screen_width//4+400, screen_height//8*6))
+                    
+                    with open("save\save1\scene.json", 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    text1 = font_3.render(str(data["minute"]) + " minutes " + str(data["second"]) + " seconds", True, (0,0,0))
+                    text1_rect = text1.get_rect(center=(screen_width//4+400, screen_height//8*3))
+                    
+                    with open("save\save2\scene.json", 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    text2 = font_3.render(str(data["minute"]) + " minutes " + str(data["second"]) + " seconds", True, (0,0,0))
+                    text2_rect = text2.get_rect(center=(screen_width//4+400, screen_height//8*4))
+                    
+                    with open("save\save3\scene.json", 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    text3 = font_3.render(str(data["minute"]) + " minutes " + str(data["second"]) + " seconds", True, (0,0,0))
+                    text3_rect = text3.get_rect(center=(screen_width//4+400, screen_height//8*5))
+                    
+                    with open("save\save4\scene.json", 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    text4 = font_3.render(str(data["minute"]) + " minutes " + str(data["second"]) + " seconds", True, (0,0,0))
+                    text4_rect = text4.get_rect(center=(screen_width//4+400, screen_height//8*6))
+                    
 
                     button_saving1 = button.Button(screen_width//4, screen_height//8*3, "Saving 1", lambda:Load(1))
                     button_saving2 = button.Button(screen_width//4, screen_height//8*4, "Saving 2", lambda:Load(2))
@@ -825,6 +818,10 @@ while True:
 
 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
+                
+                for event in pygame.event.get():                               #偵測事件
+                    if event.type == pygame.QUIT:
+                        Exit_game()
 
                                 
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, hint_backpack, trans, scene_ctrl)
@@ -853,7 +850,7 @@ while True:
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
-                                            Exit()
+                                            Exit_game()
                                             
 
                 if keys[pygame.K_b] and not pre_keys[pygame.K_b]:                                         
@@ -911,7 +908,7 @@ while True:
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
-                                            Exit()
+                                            Exit_game()
 
 
 
@@ -944,7 +941,7 @@ while True:
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
-                                            Exit()
+                                            Exit_game()
 
                             case 3:
 
@@ -964,7 +961,7 @@ while True:
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
-                                            Exit()
+                                            Exit_game()
 
                             case 4:                                           
                                             
@@ -994,7 +991,7 @@ while True:
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
-                                            Exit()
+                                            Exit_game()
                 pre_keys = keys
 
 #=======================================================================================================

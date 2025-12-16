@@ -411,6 +411,9 @@ class enemy():
                         self.IV = (0,0)
                         self.V =(0,0)
                         
+                        self.sun_blaze = 0
+                        self.light_count = 0
+                        self.theta = 0
                         
                         self.broke = 0
 
