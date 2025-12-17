@@ -423,14 +423,14 @@ while True:
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
                     scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
-                    
+                   
                     NT_object.append(object_class.object(2500,-1400,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
                     NT_object.append(object_class.object(-1720,-1400,tool.HRZ_combine("Image/Background/floor.png",33),"fake_wall",0,0,0,0,0,0))
                     
                     NT_object.append(object_class.object(-700,700,pygame.transform.rotozoom(pygame.image.load("Image\Object\\triangle_gray.png"),180,4),"mirror_wall",0,0,0,0,0,0))
                     
-                    NT_object.append(object_class.object(-1000,260,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,1,0,0,0))
-                    NT_object.append(object_class.object(800,260,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,2,0,0,0))
+                    NT_object.append(object_class.object(-1050,260,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,1,0,0,0))
+                    NT_object.append(object_class.object(700,260,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,2,0,0,0))
 
                     #NT_object.append(object_class.object(-200,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,3,0,0,0))
                     

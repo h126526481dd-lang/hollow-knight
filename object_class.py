@@ -72,7 +72,8 @@ class object():
         
                 self.outerect = pygame.Rect(self.rect.x - 80, self.rect.y - 80, self.rect.width + 160, self.rect.height + 160)
         
-        
+                self.tag_x = None
+                self.tag_y = None
         
         
             case "door":

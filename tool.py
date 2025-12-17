@@ -1249,10 +1249,11 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                                         enemy.V =(16,0)
                                         
-                                        scene_ctrl.done = 2
                                         
                                     case 1: #鏡反
-                                        pass
+                                        start_animation(enemy.attack_state,enemy.boss_idle, 45, enemy.back, False) 
+                                        enemy.I = (0,16)
+
 
                                     case 2: #光球
                                         pass
@@ -1325,7 +1326,11 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                             enemy.phase_cd = -1
                                                 
                                     case 1:
-                                        pass
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",1,None,None)) 
+
+                                        enemy.phase_cd = -1
+
+
                                     case 2:
                                         pass
 
@@ -1379,7 +1384,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                     obj.can_be_through = 2
                                                     print(obj.dif,obj.can_be_through)
                                     case 1:
-                                        pass
+                                        enemy.phase_cd = -2
                                     case 2:
                                         pass
 
@@ -1394,9 +1399,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                 
 
                                     case 1:     #鏡反
-                                        pass
-
-
+                                        enemy.skill_time = 720
+                                        
                                     case 2:     #光球
                                         pass
                                     
@@ -1423,6 +1427,69 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",3,None,None)) 
                                         ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",4,None,None))
                                         ATKs_EN.append(object_class.object(-1500,650,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",5,None,None))
+                                    
+                                    
+                                    
+                                    
+                                    case 1:                                                 #鏡反
+                                        
+                                        P = [700*math.cos(math.pi/90 * (420-enemy.skill_time)),560]
+                                        
+                                        V = [P[0] - (enemy.x + enemy.rect.width/2) , P[1] - (enemy.y + enemy.rect.height/2)]
+                                        
+                                        U = ( 16 * V[0] / (pow( V[0] , 2 ) + pow( V[1] , 2 )) , 16 * V[1] / (pow( V[0] , 2 ) + pow( V[1] , 2 )) )
+
+
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",1,None,None)) 
+
+                                        
+                                        for obj in NT_object:
+                                            if obj.type == "mirror_wall":
+                                                if obj.dif == 1:
+                                                    temx = 0 - (obj.x + obj.rect.width/2)
+                                                    temy = 560 - (obj.y + obj.rect.height/2)
+                                                    
+                                                    
+                                                    obj.tag_x = temy/115
+                                                    obj.tag_y = -temx/115
+                                                    
+                                                    
+                                                    if Main.rect.colliderect(obj.rect):
+                                                        Main.rect.x += obj.tag_x
+                                                        Main.rect.y += obj.tag_y
+                                                        
+                                                        Main.x = Main.rect.x-50
+                                                        Main.y = Main.rect.y-50
+                                                        
+                                                    obj.rect.x += obj.tag_x
+                                                    obj.rect.y += obj.tag_y
+
+                                                        
+                                                    obj.x = obj.rect.x
+                                                    obj.y = obj.rect.y
+
+                                                    
+                                                elif obj.dif == 2:
+                                                    temx = 0 - (obj.x + obj.rect.width/2)
+                                                    temy = 560 - (obj.y + obj.rect.height/2)
+                                                    
+                                                    
+                                                    obj.tag_x = temy/115
+                                                    obj.tag_y = -temx/115
+                                
+                                                    if Main.rect.colliderect(obj.rect):
+                                                        Main.rect.x += obj.tag_x
+                                                        Main.rect.y += obj.tag_y
+                                                        
+                                                        Main.x = Main.rect.x-50
+                                                        Main.y = Main.rect.y-50    
+                                                    
+                                                    obj.rect.x += obj.tag_x
+                                                    obj.rect.y += obj.tag_y
+                                            
+                                                    
+                                                    obj.x = obj.rect.x
+                                                    obj.y = obj.rect.y
 
 
 
@@ -1434,6 +1501,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
                                 else:
+                                    enemy.light_count = 0
                                     enemy.phase=random.randint(1,1)                                         #重骰招 & cd
                                     enemy.phase_cd = random.randint(60,90)
 
