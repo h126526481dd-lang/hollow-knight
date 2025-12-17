@@ -57,6 +57,67 @@ def Load(save):
     scene_ctrl = tool.load_s(save,scene_ctrl)
     scene_ctrl.Save = save
 
+def Exit_game():
+
+    elapsed_seconds = elapsed_ms // 1000
+    minutes = elapsed_seconds // 60
+    seconds = elapsed_seconds % 60
+    
+    match scene_ctrl.Save:
+        case 1:
+            s_path="save\save1\scene.json"
+        case 2:
+            s_path="save\save2\scene.json"
+        case 3:
+            s_path="save\save3\scene.json"
+        case 4:
+            s_path="save\save4\scene.json"
+
+    with open(s_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    data["minute"] += minutes
+    data["second"] += seconds
+
+    if data["second"] >= 60:
+        data["second"] -= 60
+        data["minute"] += 1
+
+    with open(s_path, "w", encoding="utf-8") as f:
+        json.dump(data, f)
+
+    pygame.quit()
+    exit()
+    
+def go_home(scene_ctrl):
+    elapsed_seconds = elapsed_ms // 1000
+    minutes = elapsed_seconds // 60
+    seconds = elapsed_seconds % 60
+    
+    match scene_ctrl.Save:
+        case 1:
+            s_path="save\save1\scene.json"
+        case 2:
+            s_path="save\save2\scene.json"
+        case 3:
+            s_path="save\save3\scene.json"
+        case 4:
+            s_path="save\save4\scene.json"
+
+    with open(s_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    data["minute"] += minutes
+    data["second"] += seconds
+
+    if data["second"] >= 60:
+        data["second"] -= 60
+        data["minute"] += 1
+
+    with open(s_path, "w", encoding="utf-8") as f:
+        json.dump(data, f)
+    scene_ctrl.num = 0
+    scene_ctrl.menu = 0
 #=======================================================================================================
 
 pygame.init()   #初始化
@@ -82,6 +143,7 @@ Main.read_surface()
 
 font = pygame.font.Font(None, 60)
 font_2 = pygame.font.Font(None, 80)
+font_3 = pygame.font.Font(None, 40)
 font_record = pygame.font.Font(None, 20)
 
 BUTTON = pygame.sprite.Group()
@@ -101,6 +163,8 @@ while True:
     match scene_ctrl.num:
         
         case 0:                                                              #初始畫面
+
+            count_time = 0                                                      #計算時間的邏輯閘
             
             scene = []
             BUTTON.empty()
@@ -153,8 +217,6 @@ while True:
                     scene_ctrl.button_cd-=1
                 
 
-                scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
-
                 BUTTON.update(scene_ctrl)
                 screen.fill((255,255,255))
 
@@ -197,9 +259,6 @@ while True:
             
             BUTTON.empty()
             
-            button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, scene_ctrl_temp))
-            BUTTON.add(button_back)
-            
             while scene_ctrl==5:
                 
                 pass
@@ -211,7 +270,7 @@ while True:
             
             BUTTON.empty()
              
-            button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, scene_ctrl_temp))
+            button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
             BUTTON.add(button_back)
 
 
@@ -234,8 +293,6 @@ while True:
 
         case 5:                                                                 #讀檔
 
-
-
             match scene_ctrl.reset:
 
                 case 0:
@@ -244,7 +301,27 @@ while True:
 
                     text = font.render("Savings", True, (0,0,0))      #存檔標題
                     text_rect = text.get_rect(center=(screen_width//4, screen_height//6))
-
+                    
+                    with open("save\save1\scene.json", 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    text1 = font_3.render(str(data["minute"]) + " minutes " + str(data["second"]) + " seconds", True, (0,0,0))
+                    text1_rect = text1.get_rect(center=(screen_width//4+400, screen_height//8*3))
+                    
+                    with open("save\save2\scene.json", 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    text2 = font_3.render(str(data["minute"]) + " minutes " + str(data["second"]) + " seconds", True, (0,0,0))
+                    text2_rect = text2.get_rect(center=(screen_width//4+400, screen_height//8*4))
+                    
+                    with open("save\save3\scene.json", 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    text3 = font_3.render(str(data["minute"]) + " minutes " + str(data["second"]) + " seconds", True, (0,0,0))
+                    text3_rect = text3.get_rect(center=(screen_width//4+400, screen_height//8*5))
+                    
+                    with open("save\save4\scene.json", 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    text4 = font_3.render(str(data["minute"]) + " minutes " + str(data["second"]) + " seconds", True, (0,0,0))
+                    text4_rect = text4.get_rect(center=(screen_width//4+400, screen_height//8*6))
+                    
 
                     button_saving1 = button.Button(screen_width//4, screen_height//8*3, "Saving 1", lambda:Load(1))
                     button_saving2 = button.Button(screen_width//4, screen_height//8*4, "Saving 2", lambda:Load(2))
@@ -253,7 +330,6 @@ while True:
                     button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
                     button_reset = button.Button(screen_width//4*3, screen_height//8*6, "reset saving", lambda:button.reset(scene_ctrl, 1))
                     
-                    #text_record1 = button.Button(screen_width//4+50, screen_height//8*3, "skill")
                     BUTTON.add(button_back)
                     BUTTON.add(button_saving1, button_saving2, button_saving3, button_saving4, button_reset)
 
@@ -264,6 +340,11 @@ while True:
 
                         screen.fill((255,255,255))
                         screen.blit(text, text_rect)
+                        screen.blit(text1, text1_rect)
+                        screen.blit(text2, text2_rect)
+                        screen.blit(text3, text3_rect)
+                        screen.blit(text4, text4_rect)
+                        
 
                         BUTTON.update(scene_ctrl)
                         BUTTON.draw(screen)
@@ -274,7 +355,7 @@ while True:
                                 pygame.quit()
                                 exit()
 
-                case 1:                                                                #等待修復reset功能
+                case 1:                                                                #存檔
 
                     BUTTON.empty()
 
@@ -329,13 +410,9 @@ while True:
                     Enemy = []
                     ATKs_AL = []
                     ATKs_EN = []
-                    strength_bar = []
 
                     BUTTON.empty()
-                    
-                    
-                    scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
-                
+                                         
                     scene_ctrl.R_edge = 2500 - screen_width//2
                     scene_ctrl.L_edge = -3200 + screen_width//2
                     scene_ctrl.T_edge = -2300 + screen_height //2
@@ -346,14 +423,14 @@ while True:
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
                     scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
-                    
+                   
                     NT_object.append(object_class.object(2500,-1400,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
                     NT_object.append(object_class.object(-1720,-1400,tool.HRZ_combine("Image/Background/floor.png",33),"fake_wall",0,0,0,0,0,0))
                     
                     NT_object.append(object_class.object(-700,700,pygame.transform.rotozoom(pygame.image.load("Image\Object\\triangle_gray.png"),180,4),"mirror_wall",0,0,0,0,0,0))
                     
-                    NT_object.append(object_class.object(-1000,260,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,1,0,0,0))
-                    NT_object.append(object_class.object(800,260,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,2,0,0,0))
+                    NT_object.append(object_class.object(-1050,260,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,1,0,0,0))
+                    NT_object.append(object_class.object(700,260,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,2,0,0,0))
 
                     #NT_object.append(object_class.object(-200,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,3,0,0,0))
                     
@@ -370,17 +447,6 @@ while True:
                     CT_object.append(object_class.object(3300,-1900,door,"path",0,0,0,0,0,[-2,1]))
 
                     CT_object.append(object_class.object(2500,-1600,save_point,"save_point",0,0,0,0,0,0))
-
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
-                    strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_1.png"))
-                    strength_bar[1] = pygame.transform.scale(strength_bar[1], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_2.png"))
-                    strength_bar[2] = pygame.transform.scale(strength_bar[2], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_3.png"))
-                    strength_bar[3] = pygame.transform.scale(strength_bar[3], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
-                    strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
 
                     hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
                     hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
@@ -406,12 +472,9 @@ while True:
                     Enemy = []
                     ATKs_AL = []
                     ATKs_EN = []
-                    strength_bar = []
 
                     BUTTON.empty()
                     
-                    
-                    scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
                     
                     scene_ctrl.R_edge = 1800 - screen_width//2
                     scene_ctrl.L_edge = -1500 + screen_width//2
@@ -453,17 +516,6 @@ while True:
                     CT_object.append(object_class.object(0,-100,save_point,"save_point",0,0,0,0,0,0))
                     CT_object.append(object_class.object(2000,500,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,5,0,0))
 
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
-                    strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_1.png"))
-                    strength_bar[1] = pygame.transform.scale(strength_bar[1], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_2.png"))
-                    strength_bar[2] = pygame.transform.scale(strength_bar[2], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_3.png"))
-                    strength_bar[3] = pygame.transform.scale(strength_bar[3], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
-                    strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
-
                     hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
                     hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
 
@@ -486,11 +538,8 @@ while True:
                     Enemy = []
                     ATKs_AL = []
                     ATKs_EN = []
-                    strength_bar = []
                     BUTTON.empty()
                     
-                    
-                    scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
                     
                     scene_ctrl.R_edge = 1800 - screen_width//2
                     scene_ctrl.L_edge = -1500 + screen_width//2
@@ -534,17 +583,6 @@ while True:
                     CT_object.append(object_class.object(2000,600,save_point,"save_point",0,0,0,0,0,0))
                     CT_object.append(object_class.object(2000,500,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,5,0,0))
 
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
-                    strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_1.png"))
-                    strength_bar[1] = pygame.transform.scale(strength_bar[1], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_2.png"))
-                    strength_bar[2] = pygame.transform.scale(strength_bar[2], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_3.png"))
-                    strength_bar[3] = pygame.transform.scale(strength_bar[3], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
-                    strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))                
-                
                     hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
                     hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
                 
@@ -566,10 +604,7 @@ while True:
                     Enemy = []
                     ATKs_AL = []
                     ATKs_EN = []
-                    strength_bar = []
                     BUTTON.empty()
-
-                    scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
                     
                     scene_ctrl.R_edge = 2150 - screen_width//2
                     scene_ctrl.L_edge = -1500 + screen_width//2
@@ -602,17 +637,6 @@ while True:
 
                     Enemy.append(player_class.enemy("The_First",1200,0,100,"roadside",None))
 
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
-                    strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_1.png"))
-                    strength_bar[1] = pygame.transform.scale(strength_bar[1], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_2.png"))
-                    strength_bar[2] = pygame.transform.scale(strength_bar[2], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_3.png"))
-                    strength_bar[3] = pygame.transform.scale(strength_bar[3], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
-                    strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
-
                     hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
                     hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
 
@@ -633,21 +657,17 @@ while True:
                     Enemy = []
                     ATKs_AL = []
                     ATKs_EN = []
-                    strength_bar = []
                     BUTTON.empty()
 
-                    scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
                     scene_ctrl.R_edge = 2000 - screen_width//2
                     scene_ctrl.L_edge = -1300 + screen_width//2
                     scene_ctrl.B_edge = 2000
                     scene_ctrl.T_edge = -1800 + screen_height//2
 
-
                     scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*7, screen_height*7))  # 調整大小
                     scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
-                    
                     
                     NT_object.append(object_class.object(-1000,-600,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
                     NT_object.append(object_class.object(500,400,tool.V_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
@@ -669,18 +689,6 @@ while True:
                     CT_object.append(object_class.object(2000,1000,save_point,"save_point",0,0,0,0,0,0))
                     CT_object.append(object_class.object(1800,1700,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,6,0,0))
 
-                    
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
-                    strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_1.png"))
-                    strength_bar[1] = pygame.transform.scale(strength_bar[1], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_2.png"))
-                    strength_bar[2] = pygame.transform.scale(strength_bar[2], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_3.png"))
-                    strength_bar[3] = pygame.transform.scale(strength_bar[3], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
-                    strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
-
                     hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
                     hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
 
@@ -691,8 +699,7 @@ while True:
                     if scene_ctrl.pre_game == 1:
                         (Main.x,Main.y) = Exit[scene_ctrl.From]
                         (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)
-                        
-                    scene_ctrl_temp = scene_ctrl.num                               #紀錄目前場景(用來使用back按鈕的)
+
                     scene_ctrl.R_edge = 2000 - screen_width//2
                     scene_ctrl.L_edge = -1300 + screen_width//2
                     scene_ctrl.B_edge = 2000
@@ -704,7 +711,6 @@ while True:
                     Enemy = []
                     ATKs_AL = []
                     ATKs_EN = []
-                    strength_bar = []
                     BUTTON.empty()
 
 
@@ -738,18 +744,6 @@ while True:
                     
                     CT_object.append(object_class.object(1800,1700,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,6,0,0))
 
-                    
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar.png"))
-                    strength_bar[0] = pygame.transform.scale(strength_bar[0], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_1.png"))
-                    strength_bar[1] = pygame.transform.scale(strength_bar[1], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_2.png"))
-                    strength_bar[2] = pygame.transform.scale(strength_bar[2], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_3.png"))
-                    strength_bar[3] = pygame.transform.scale(strength_bar[3], (screen_width/9, screen_height/12))
-                    strength_bar.append(pygame.image.load("Image/UI/strength_bar_4.png"))
-                    strength_bar[4] = pygame.transform.scale(strength_bar[4], (screen_width/9, screen_height/12))
-
                     hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
                     hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
 
@@ -779,8 +773,12 @@ while True:
 #==========================================================================================================
             while scene_ctrl.num == 10 and scene_ctrl.game == scene_ctrl.pre_game :                                                     #遊戲主迴圈
                 
-     
-                
+                if count_time == 0:                                                 #計算時間
+                    start_time = pygame.time.get_ticks()
+                    count_time +=1
+
+                elapsed_ms = pygame.time.get_ticks() - start_time
+
                 match scene_ctrl.game:
                     case -2:
                         if Main.rect.x >= 600 and scene_ctrl.done == 0:                     
@@ -794,7 +792,7 @@ while True:
                                     if tool.Touch(Main,obj):
                                         NT_object.remove(obj)
                                         del obj
-                            scene_ctrl.done = 1                     
+                                        scene_ctrl.done = 1                     
                             
 
      
@@ -820,6 +818,10 @@ while True:
 
 
                 keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
+                
+                for event in pygame.event.get():                               #偵測事件
+                    if event.type == pygame.QUIT:
+                        Exit_game()
 
                                 
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, hint_backpack, trans, scene_ctrl)
@@ -848,8 +850,8 @@ while True:
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
-                                            pygame.quit()
-                                            exit()
+                                            Exit_game()
+                                            
 
                 if keys[pygame.K_b] and not pre_keys[pygame.K_b]:                                         
 
@@ -881,7 +883,7 @@ while True:
 
                                 button_resume = button.Button(screen_width//2, screen_height//4, "Resume", lambda:button.resuming(scene_ctrl,0))
                                 button_menu = button.Button(screen_width//2, screen_height//4*2, "Menu", lambda:button.resuming(scene_ctrl,2))
-                                button_quit = button.Button(screen_width//2, screen_height//4*3, "Home", lambda:button.go_home(scene_ctrl))
+                                button_quit = button.Button(screen_width//2, screen_height//4*3, "Home", lambda:go_home(scene_ctrl))
 
                                 BUTTON.add(button_resume, button_menu, button_quit)
 
@@ -890,7 +892,8 @@ while True:
                                     pre_keys = keys
                                     keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
-
+                                    elapsed_ms = pygame.time.get_ticks() - start_time
+                                    
                                     screen.blit(scene[1], (0,0))                  #繪製背景圖片
 
                                     if scene_ctrl.button_cd > 0:
@@ -905,8 +908,7 @@ while True:
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
-                                            pygame.quit()
-                                            exit()
+                                            Exit_game()
 
 
 
@@ -939,8 +941,7 @@ while True:
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
-                                            pygame.quit()
-                                            exit()
+                                            Exit_game()
 
                             case 3:
 
@@ -960,8 +961,7 @@ while True:
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
-                                            pygame.quit()
-                                            exit()
+                                            Exit_game()
 
                             case 4:                                           
                                             
@@ -991,8 +991,7 @@ while True:
 
                                     for event in pygame.event.get():                               #偵測事件
                                         if event.type == pygame.QUIT:
-                                            pygame.quit()
-                                            exit()
+                                            Exit_game()
                 pre_keys = keys
 
 #=======================================================================================================
