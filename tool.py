@@ -200,12 +200,12 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
             screen.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
             pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.rect.x - camera_x, obj.rect.y - camera_y, obj.rect.width, obj.rect.height),1) 
         
-        if obj.type == "mirror_wall":
-            pygame.draw.rect(screen, (255, 255, 0),pygame.Rect(obj.outerect.x - camera_x, obj.outerect.y - camera_y, obj.outerect.width, obj.outerect.height),1) 
+        #if obj.type == "mirror_wall":
+         #   pygame.draw.rect(screen, (255, 255, 0),pygame.Rect(obj.outerect.x - camera_x, obj.outerect.y - camera_y, obj.outerect.width, obj.outerect.height),1) 
             
-            pygame.draw.rect(screen, (0, 255, 0),pygame.Rect(obj.F_Px - camera_x, obj.F_Py - camera_y, 10, 10),0)
-            pygame.draw.rect(screen, (0, 0, 255),pygame.Rect(obj.S_Px - camera_x, obj.S_Py - camera_y, 10, 10),0)
-            pygame.draw.rect(screen, (30, 30, 30),pygame.Rect(obj.T_Px - camera_x, obj.T_Py - camera_y, 10, 10),0)
+          #  pygame.draw.rect(screen, (0, 255, 0),pygame.Rect(obj.F_Px - camera_x, obj.F_Py - camera_y, 10, 10),0)
+           # pygame.draw.rect(screen, (0, 0, 255),pygame.Rect(obj.S_Px - camera_x, obj.S_Py - camera_y, 10, 10),0)
+            #pygame.draw.rect(screen, (30, 30, 30),pygame.Rect(obj.T_Px - camera_x, obj.T_Py - camera_y, 10, 10),0)
             
 
 
@@ -1251,14 +1251,12 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
                                     case 2: #光球
-                                        pass
+                                        start_animation(enemy.attack_state,enemy.boss_idle, 60, enemy.back, False) 
+                                        enemy.light_ball_summon = 90
+
                                                 
 
                             elif enemy.attack_state["playing"]:         #動畫執行中，出招cd = -1
-                                          
-
-
-                                
                                 
                                 
                                 match enemy.phase:
@@ -1272,6 +1270,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         
                                         for obj in NT_object:
                                             if obj.type == "mirror_wall":
+                                                
+                                                
+                                                obj.center_x = obj.x + obj.rect.width /2
+                                                obj.center_y = obj.y + obj.rect.height /2
                                                 
                                                 if obj.dif == 2 :
                                                     
@@ -1327,8 +1329,31 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
                                     case 2:
-                                        pass
-
+                                        if enemy.summon_cd > 0:
+                                            enemy.summon_cd -=1
+                                        
+                                        if enemy.summon % 2 != 0 and enemy.summon_cd == 0:
+                                            ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 - 570 ,enemy.rect.y+enemy.rect.height //2 + 200,pygame.image.load("Image\Character\Enemy\Boss\light_ball.png"),"dangerous",1,0,"light_ball",None,None,None))
+                                            enemy.summon_cd = 15
+                                            enemy.summon *= 2
+                                        elif enemy.summon %3 != 0 and enemy.summon_cd == 0:
+                                            ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 - 370 ,enemy.rect.y+enemy.rect.height //2 ,pygame.image.load("Image\Character\Enemy\Boss\light_ball.png"),"dangerous",1,0,"light_ball",None,None,None))
+                                            enemy.summon_cd = 15
+                                            enemy.summon *= 3
+                                        elif enemy.summon %5 != 0 and enemy.summon_cd == 0:
+                                            ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2  ,enemy.rect.y+enemy.rect.height //2 - 100 ,pygame.image.load("Image\Character\Enemy\Boss\light_ball.png"),"dangerous",1,0,"light_ball",None,None,None))
+                                            enemy.summon_cd = 15
+                                            enemy.summon *= 5
+                                        elif enemy.summon %7 != 0 and enemy.summon_cd == 0:
+                                            ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 + 330 ,enemy.rect.y+enemy.rect.height //2 ,pygame.image.load("Image\Character\Enemy\Boss\light_ball.png"),"dangerous",1,0,"light_ball",None,None,None))
+                                            enemy.summon_cd = 15
+                                            enemy.summon *= 7
+                                        elif enemy.summon %11 != 0 and enemy.summon_cd == 0:
+                                            ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 + 530 ,enemy.rect.y+enemy.rect.height //2 + 200,pygame.image.load("Image\Character\Enemy\Boss\light_ball.png"),"dangerous",1,0,"light_ball",None,None,None))
+                                            enemy.summon_cd = 15
+                                            enemy.summon *= 11
+                                            
+                                        enemy.phase_cd = -1
 
 
                             elif enemy.anime:                           #動畫播放完畢，出招cd = -2
@@ -1338,6 +1363,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     case 0:
                                         for obj in NT_object:
                                             if obj.type == "mirror_wall":
+                                                
+                                                obj.center_x = obj.x + obj.rect.width /2
+                                                obj.center_y = obj.y + obj.rect.height /2
+                                                
                                                 if obj.dif == 2 :
                                                     
                                                     obj.angle -= 1
@@ -1381,7 +1410,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     case 1:
                                         enemy.phase_cd = -2
                                     case 2:
-                                        pass
+                                        enemy.phase_cd = -2
 
 
                             elif enemy.phase_cd == -2:                  #前搖完二次初始化
@@ -1397,7 +1426,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         enemy.skill_time = 720
                                         
                                     case 2:     #光球
-                                        pass
+                                        enemy.skill_time = 450
                                     
 
 
@@ -1437,25 +1466,25 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         
                                         enemy.I = ( 16 * V[0] / math.sqrt(pow( V[0] , 2 ) + pow( V[1] , 2 )) , 16 * V[1] / math.sqrt(pow( V[0] , 2 ) + pow( V[1] , 2 )) )
 
-                                        if math.sin(math.pi/180 * (720-enemy.skill_time)) <= 0.5 and enemy.sword_summon % 2 != 0 and math.sin(math.pi/180 * (720-enemy.skill_time)) > 0.1 :
+                                        if math.sin(math.pi/180 * (720-enemy.skill_time)) <= 0.5 and enemy.summon % 2 != 0 and math.sin(math.pi/180 * (720-enemy.skill_time)) > 0.1 :
                                             print("summon L")
-                                            ATKs_EN.append(object_class.object(-1050 ,-300,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
-                                            ATKs_EN.append(object_class.object(-950 ,-400,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
-                                            ATKs_EN.append(object_class.object(-850 ,-500,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
-                                            enemy.sword_summon *= 2
+                                            ATKs_EN.append(object_class.object(-1050 ,300,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
+                                            ATKs_EN.append(object_class.object(-950 ,0,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
+                                            ATKs_EN.append(object_class.object(-850 ,-200,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
+                                            enemy.summon *= 2
 
-                                        if math.sin(math.pi/180 * (720-enemy.skill_time)) >= -0.5 and enemy.sword_summon % 3 !=0 and math.sin(math.pi/180 * (720-enemy.skill_time)) < -0.1:
+                                        if math.sin(math.pi/180 * (720-enemy.skill_time)) >= -0.5 and enemy.summon % 3 !=0 and math.sin(math.pi/180 * (720-enemy.skill_time)) < -0.1:
                                             print("summon R")
-                                            ATKs_EN.append(object_class.object(700 ,-300,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
-                                            ATKs_EN.append(object_class.object(600 ,-400,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
-                                            ATKs_EN.append(object_class.object(500 ,-500,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300)) 
-                                            enemy.sword_summon *= 3
+                                            ATKs_EN.append(object_class.object(700 ,300,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
+                                            ATKs_EN.append(object_class.object(600 ,0,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
+                                            ATKs_EN.append(object_class.object(500 ,-200,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300)) 
+                                            enemy.summon *= 3
 
                                         elif math.sin(math.pi/180 * (720-enemy.skill_time)) <= 0.1 and math.sin(math.pi/180 * (720-enemy.skill_time)) >= -0.1:
                                             for atk in ATKs_EN:
                                                 if atk.dif == "light_sword":
                                                     atk.chase =1
-                                                    enemy.sword_summon = 1
+                                                    enemy.summon = 1
 
                                         ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",1,None,None,300)) 
 
@@ -1529,6 +1558,34 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                     obj.x = obj.rect.x
                                                     obj.y = obj.rect.y
 
+                                    
+                                    case 2:
+                                        enemy.V = (16,0)
+                                        print(enemy.skill_time)
+                                        if (enemy.skill_time % 80)  ==0:
+                                            ATKs_EN.append(object_class.object(-1500,450,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",None,None,None))
+                                            ATKs_EN.append(object_class.object(1000,450,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",None,None,None))
+                                            
+                                            ATKs_EN.append(object_class.object(-1700,350,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",None,None,None))
+                                            ATKs_EN.append(object_class.object(1200,350,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",None,None,None))
+                                            
+                                            ATKs_EN.append(object_class.object(-1900,250,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",None,None,None))
+                                            ATKs_EN.append(object_class.object(1400,250,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",None,None,None))
+
+                                        else:
+                                            for atk in ATKs_EN:
+                                                if atk.dif == "light_sword":
+                                                    atk.chase =1
+                                                    enemy.summon = 1
+                                        if enemy.skill_time % 90 == 0:
+                                            print("?")
+                                            for atk in ATKs_EN:
+                                                if atk.dif == "light_ball":
+                                                    if atk.chase == 0:
+                                                        atk.chase = 1
+                                                        print("go")
+                                                        break
+
 
 
                             elif enemy.phase_cd == -3 and enemy.skill_time == 0:                        #放完技能
@@ -1540,7 +1597,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                                 else:
                                     enemy.light_count = 0
-                                    enemy.phase=random.randint(1,1)                                         #重骰招 & cd
+                                    enemy.phase=random.randint(0,2)                                         #重骰招 & cd
                                     enemy.phase_cd = random.randint(60,90)
 
                                 if enemy.broke == 18 :                                                  #吃18刀癱瘓
@@ -1667,7 +1724,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             if atk_en.tag_x == None:                            #飛行方向初始化 & 轉向(Not yet)
                 atk_en.tag_x = (Main.rect.x - atk_en.rect.x)//30 
                 atk_en.tag_y = (Main.rect.y - atk_en.rect.y)//30
-                atk_en.surface = pygame.transform.rotate(atk_en.surface,math.degrees(math.atan2(atk_en.tag_y,atk_en.tag_x)))
+                atk_en.surface = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"),(20,30)),math.degrees(math.atan2(-atk_en.tag_y,atk_en.tag_x))-30)
             
                 
             atk_en.rect.x += atk_en.tag_x                       #飛
@@ -1737,11 +1794,16 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
             if atk_en.chase ==1:
                 if atk_en.tag_x == None:                            #飛行方向初始化 & 轉向
-                    atk_en.tag_x = (Main.rect.x+Main.rect.width/2 - atk_en.rect.x- atk.rect.width/2)/15 
-                    atk_en.tag_y = (Main.rect.y+Main.rect.height/2 - atk_en.rect.y- atk.rect.height/2)/15
+                    tem_x = (Main.rect.x+Main.rect.width/2 - atk_en.rect.x- atk.rect.width/2)
+                    tem_y = (Main.rect.y+Main.rect.height/2 - atk_en.rect.y- atk.rect.height/2)           
 
-                    atk_en.surface = pygame.transform.rotate(atk_en.surface,math.degrees(math.atan2(atk_en.tag_y,atk_en.tag_x)))
+                    atk_en.tag_x = tem_x / math.sqrt(pow(tem_x,2)+ pow(tem_y,2)) * 50
+                    atk_en.tag_y = tem_y / math.sqrt(pow(tem_x,2)+ pow(tem_y,2)) * 50
+
+                    atk_en.surface = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),(50,150)),math.degrees(math.atan2(-atk_en.tag_y,atk_en.tag_x))+90)
                 
+                atk_en.surface = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),(50,150)),math.degrees(math.atan2(-atk_en.tag_y,atk_en.tag_x))+90)
+
                 atk_en.rect.x += atk_en.tag_x                       #飛
                 atk_en.rect.y += atk_en.tag_y
                 atk_en.x = atk_en.rect.x
@@ -1815,6 +1877,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                 elif atk_en.pre_test == 3:
                                     atk_en.tag_x = (math.cos(math.radians(obj.angle+60)*-2) * tem_x + math.sin(math.radians(obj.angle+60)*-2) * tem_y) *-1
                                     atk_en.tag_y = (math.sin(math.radians(obj.angle+60)*-2) * tem_x - math.cos(math.radians(obj.angle+60)*-2) * tem_y) * -1
+                                
 
                                 atk_en.L_mirror = obj  
                                 atk_en.pre_test = 0        
@@ -1828,7 +1891,66 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         else:
                             atk_en.delete = 1
                     
-        
+        elif atk_en.dif == "light_ball":
+
+            
+            if atk_en.chase == 1:
+                
+                atk_en.dur -= 1                                     #扣時(存在時間)
+                    
+                if atk_en.dur == 0:                                 #超時刪除
+                    atk_en.delete = 1
+                    
+                    
+                if atk_en.tag_x == None:                            #飛行方向初始化 & 轉向
+                    tem_x = (Main.rect.x+Main.rect.width/2 + 30*Main.vx - atk_en.rect.x- atk.rect.width/2)
+                    tem_y = (Main.rect.y+Main.rect.height/2 + 10*Main.vy - atk_en.rect.y- atk.rect.height/2)           
+
+                    atk_en.tag_x = tem_x / math.sqrt(pow(tem_x,2)+ pow(tem_y,2)) * 35
+                    atk_en.tag_y = tem_y / math.sqrt(pow(tem_x,2)+ pow(tem_y,2)) * 35
+                    
+                atk_en.rect.x += atk_en.tag_x                       #飛
+                atk_en.rect.y += atk_en.tag_y
+                atk_en.x = atk_en.rect.x
+                atk_en.y = atk_en.rect.y
+                    
+                    
+                for obj in NT_object:                               #撞牆掰掰
+                    if atk_en.rect.colliderect(obj.rect) or atk_en.rect.colliderect(Main.rect):
+                        ATKs_EN.append(object_class.object(atk_en.rect.x-75,atk_en.rect.y-50,pygame.image.load("Image/Character/Enemy/Boss/eps1.png"),"dangerous",1,0,"explosion",None,None,None,39))
+
+                        atk_en.delete = 1
+                
+        elif atk_en.dif == "explosion":
+            atk_en.dur -= 1                                     #扣時(存在時間)
+                
+            if atk_en.dur == 0:                                 #超時刪除
+                atk_en.delete = 1
+
+            atk_en.surface = atk_en.frames[atk_en.dur//5]
+            if atk_en.rect.colliderect(Main.rect):              #打到玩家
+                            
+                if Main.unhurtable_cd <= 0:
+                                        
+                    if Main.unhurtable_cd <= 0 and Main.HP > 1:
+                        if Main.rect.x-atk_en.rect.x > 0:
+                            Main.vx = 10
+                        else:
+                            Main.vx =- 10
+                        Main.y -= 10
+                        Main.rect.y -= 10
+                        Main.vy = -15
+                        Main.is_hurt = 30
+                        Main.get_hit()
+                                        
+                    elif Main.unhurtable_cd <= 0 and Main.HP == 1:
+                        Main.get_hit()
+                    atk_en.delete = 1
+            
+
+            
+            
+            
         
                     
         if atk_en.delete == 1:                                  #問斬

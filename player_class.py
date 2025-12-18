@@ -421,14 +421,15 @@ class enemy():
                         self.NoGravity = 1
                         self.skill_time = 0
 
-                        self.phase = 1
+                        self.phase = 0
                         self.phase_cd = 0
 
                         self.right_down_x = self.rect.x+self.rect.width +20
                         self.right_down_y = self.rect.y+self.rect.height
 
                         self.Test_rect = pygame.rect.Rect(self.right_down_x,self.right_down_y,20,20)     
-                        self.sword_summon = 1
+                        self.summon = 1
+                        self.summon_cd = 0
 
 
 

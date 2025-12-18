@@ -252,3 +252,43 @@ class object():
                         self.chase = 0
                         self.L_mirror = None
                         self.pre_test = 0
+
+                    case "light_ball":
+                        self.vx = 0
+                        self.vy = 0
+                        self.can_be_through = 1                                         #物件是否可通過(布林值)
+                        self.dur = 300
+
+                        self.delete = 0
+                        self.surface= pygame.transform.scale(self.surface,(150,150))
+
+                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
+                        self.ATK=ATK
+                        self.KB=KB
+                        self.state={}
+                        self.state["playing"]=False
+
+                        self.chase = 0
+                        self.tag_x = None
+                        self.tag_y = None
+                        
+                    case "explosion":
+                        self.can_be_through = 1                                         #物件是否可通過(布林值)
+                        self.delete = 0
+                        self.surface= pygame.transform.scale(self.surface,(350,350))
+                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
+                        self.ATK=ATK
+                        self.KB=KB
+                        self.dur = 39
+                        
+                        self.state={}
+                        self.state["playing"]=False
+                        
+                        self.frames = [pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\eps1.png"), (350, 350)),
+                                        pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\eps2.png"), (350, 350)),
+                                        pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\eps3.png"), (350, 350)),
+                                        pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\eps4.png"), (350, 350)),
+                                        pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\eps5.png"), (350, 350)),
+                                        pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\eps6.png"), (350, 350)),
+                                        pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\eps7.png"), (350, 350)),
+                                        pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\eps8.png"), (350, 350))]
