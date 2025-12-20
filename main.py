@@ -419,7 +419,7 @@ while True:
                     scene_ctrl.B_edge = 350
                     
 
-                    scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
+                    scene.append(pygame.image.load("Image/Background/background.png"))                               #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
                     scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
@@ -435,7 +435,7 @@ while True:
                     #NT_object.append(object_class.object(-200,300,tool.HRZ_combine("Image/Background/floor.png",2),"mirror_wall",0,0,3,0,0,0))
                     
                     #Enemy.append(player_class.enemy("The_Second",-400,-300,450,"boss","The_Tank"))
-                    Enemy.append(player_class.enemy("The_Third",-200,-300,200,"boss","The_Sun"))
+                    Enemy.append(player_class.enemy("The_Third",-200,380,100,"boss","The_Sun"))
 
 
                     door = pygame.image.load("Image/Object/door.png")

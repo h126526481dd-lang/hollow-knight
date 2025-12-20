@@ -326,6 +326,7 @@ class enemy():
 
         self.type = type
         self.dif  = dif
+        self.distant = None
 
         self.image = 0                                        #敵人圖片
         self.vx = 0                                                   #敵人速度
@@ -410,6 +411,7 @@ class enemy():
                         self.III =(0,0)
                         self.IV = (0,0)
                         self.V =(0,0)
+                        self.VI =(0,0)
                         
                         self.sun_blaze = 0
                         self.light_count = 0
@@ -421,7 +423,7 @@ class enemy():
                         self.NoGravity = 1
                         self.skill_time = 0
 
-                        self.phase = 0
+                        self.phase = 3
                         self.phase_cd = 0
 
                         self.right_down_x = self.rect.x+self.rect.width +20
@@ -430,8 +432,9 @@ class enemy():
                         self.Test_rect = pygame.rect.Rect(self.right_down_x,self.right_down_y,20,20)     
                         self.summon = 1
                         self.summon_cd = 0
+                        
 
-
+                        self.second_HP = 200
 
 
 

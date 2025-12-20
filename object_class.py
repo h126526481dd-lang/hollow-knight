@@ -236,6 +236,8 @@ class object():
                         self.vy = 0
                         self.can_be_through = 1                                         #物件是否可通過(布林值)
                         self.dur = 300
+                        
+                        self.num = num
 
                         self.delete = 0
                         self.surface= pygame.transform.scale(self.surface,(50,150))
