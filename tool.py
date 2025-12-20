@@ -2149,9 +2149,14 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     print("二階段")
                     enemy.HP = enemy.second_HP
                     enemy.second_HP = 0
-                    enemy.phase_cd = 30
-                    enemy.phase = 3
-                    
+                    if enemy.dif == "The_Sun":
+                        enemy.phase_cd = 30
+                        enemy.phase = 3
+                        for atk in ATKs_EN:
+                            if atk.dif == "light_sword":
+                                atk.delete = 1
+                            if atk.dif == "light_ball":
+                                atk.delete = 1                    
                     
                     
             else:
