@@ -58,9 +58,9 @@ class object():
                 self.org_x = self.x
                 self.org_y = self.y
                 
-                self.FS = [self.S_Px - self.F_Px , (self.S_Py - self.F_Py)*-1]
-                self.ST = [self.T_Px - self.S_Px , (self.T_Py - self.S_Py)*-1]
-                self.TF = [self.F_Px - self.T_Px , (self.F_Py - self.T_Py)*-1]
+                self.FS = [self.S_Px - self.F_Px , (self.S_Py - self.F_Py)]
+                self.ST = [self.T_Px - self.S_Px , (self.T_Py - self.S_Py)]
+                self.TF = [self.F_Px - self.T_Px , (self.F_Py - self.T_Py)]
                 
                 self.L_FS = [self.FS[1] , self.FS[0]*-1]
                 self.L_ST = [self.ST[1] , self.ST[0]*-1]

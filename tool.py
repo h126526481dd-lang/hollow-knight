@@ -274,6 +274,15 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                 atk.rect.y += atk.tag_y
                                                     
                 if atk.rect.colliderect(player.rect) and player.unhurtable_cd <= 0:
+                    
+                    
+
+                    if player.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
+                        player.unhurtable_cd = 60
+                        player.block_state["playing"] = False
+                        print("block_success!")
+                    
+                    
                     if player.unhurtable_cd <= 0 and player.HP > 1:
                         if player.rect.x-atk.rect.x -atk.rect.width//2 > 0:
                             player.vx = 10
@@ -1252,7 +1261,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         enemy.V =(16,0)
                                         
                                         
-                                    case 1: #鏡反
+                                    case 1: #雙簡諧
                                         start_animation(enemy.attack_state,enemy.boss_idle, 45, enemy.back, False) 
                                         enemy.I = (0,16)
 
@@ -1263,6 +1272,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         
                                     case 3: #絕滅劍殺
                                         start_animation(enemy.attack_state,enemy.boss_idle, 60, enemy.back, False) 
+                                        
+                                    case 4: #單簡諧
+                                        start_animation(enemy.attack_state,enemy.boss_idle, 45, enemy.back, False) 
+                                        enemy.I = (0,16)
 
 
                                                 
@@ -1336,6 +1349,53 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     case 1:
                                         ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",1,None,None,300)) 
 
+                                        
+                                        for obj in NT_object:
+                                            if obj.type == "mirror_wall":
+                                                
+                                                
+                                                obj.center_x = obj.x + obj.rect.width /2
+                                                obj.center_y = obj.y + obj.rect.height /2
+                                                
+                                                if obj.dif == 2 :
+                                                    
+                                                    obj.angle -= 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                    #print("angle=",obj.angle)
+                                                
+                                                if obj.dif == 1:
+                                                    
+                                                    obj.angle += 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                
+                                            
+                                                obj.outerect = obj.rect.inflate(160,160)
+                                                    
+                                                obj.x = obj.rect.x
+                                                obj.y = obj.rect.y
+                                                    
+                                                obj.S_Px = obj.center_x + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.cos(math.radians(344 - obj.angle))
+                                                obj.S_Py = obj.center_y + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.sin(math.radians(344 - obj.angle))
+
+                                                    
+                                                    
+                                                obj.F_Px = obj.S_Px - math.cos(math.radians(-obj.angle)) * obj.org_rect_w
+                                                obj.F_Py = obj.S_Py - math.sin(math.radians(-obj.angle)) * obj.org_rect_w
+                                                    
+                                                obj.T_Px = obj.S_Px - math.cos(math.radians(-obj.angle-30)) * obj.org_rect_h *2
+                                                obj.T_Py = obj.S_Py - math.sin(math.radians(-obj.angle-30)) * obj.org_rect_h *2 
+
+                                                    
+                                                if obj.angle >= 360:
+                                                    obj.angle -= 360
+                                                elif obj.angle < 0 :
+                                                    obj.angle += 360
+                                                    
+                                                if obj.angle != 0:
+                                                    obj.can_be_through = 1
+                                                    
                                         enemy.phase_cd = -1
 
 
@@ -1418,10 +1478,63 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                         
                                                     obj.T_Px = obj.S_Px - math.cos(math.radians(-obj.angle-30)) * obj.org_rect_h *2
                                                     obj.T_Py = obj.S_Py - math.sin(math.radians(-obj.angle-30)) * obj.org_rect_h *2 
-                                                    
-                                                    
-                                                                                                
+                                                                                         
                                         enemy.phase_cd = -1
+                                        
+                                        
+                                    case 4:
+                                
+                                        ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",1,None,None,300)) 
+
+                                        enemy.phase_cd = -1
+                                        for obj in NT_object:
+                                            if obj.type == "mirror_wall":
+                                                
+                                                
+                                                obj.center_x = obj.x + obj.rect.width /2
+                                                obj.center_y = obj.y + obj.rect.height /2
+                                                
+                                                if obj.dif == 2 :
+                                                    
+                                                    obj.angle += 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                    #print("angle=",obj.angle)
+                                                
+                                                if obj.dif == 1:
+                                                    
+                                                    obj.angle -= 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                
+                                            
+                                                obj.outerect = obj.rect.inflate(160,160)
+                                                    
+                                                obj.x = obj.rect.x
+                                                obj.y = obj.rect.y
+                                                    
+                                                obj.S_Px = obj.center_x + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.cos(math.radians(344 - obj.angle))
+                                                obj.S_Py = obj.center_y + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.sin(math.radians(344 - obj.angle))
+
+                                                    
+                                                    
+                                                obj.F_Px = obj.S_Px - math.cos(math.radians(-obj.angle)) * obj.org_rect_w
+                                                obj.F_Py = obj.S_Py - math.sin(math.radians(-obj.angle)) * obj.org_rect_w
+                                                    
+                                                obj.T_Px = obj.S_Px - math.cos(math.radians(-obj.angle-30)) * obj.org_rect_h *2
+                                                obj.T_Py = obj.S_Py - math.sin(math.radians(-obj.angle-30)) * obj.org_rect_h *2 
+
+                                                    
+                                                if obj.angle >= 360:
+                                                    obj.angle -= 360
+                                                elif obj.angle < 0 :
+                                                    obj.angle += 360
+                                                    
+                                                if obj.angle != 0:
+                                                    obj.can_be_through = 1
+                                                                                         
+                                        enemy.phase_cd = -1
+                                        
                                         
 
 
@@ -1478,11 +1591,103 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                     print(obj.dif,obj.can_be_through)
                                     case 1:
                                         enemy.phase_cd = -2
+                                        for obj in NT_object:
+                                            if obj.type == "mirror_wall":
+                                                
+                                                
+                                                obj.center_x = obj.x + obj.rect.width /2
+                                                obj.center_y = obj.y + obj.rect.height /2
+                                                
+                                                if obj.dif == 2 :
+                                                    
+                                                    obj.angle -= 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                    #print("angle=",obj.angle)
+                                                
+                                                if obj.dif == 1:
+                                                    
+                                                    obj.angle += 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                
+                                            
+                                                obj.outerect = obj.rect.inflate(160,160)
+                                                    
+                                                obj.x = obj.rect.x
+                                                obj.y = obj.rect.y
+                                                    
+                                                obj.S_Px = obj.center_x + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.cos(math.radians(344 - obj.angle))
+                                                obj.S_Py = obj.center_y + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.sin(math.radians(344 - obj.angle))
+
+                                                    
+                                                    
+                                                obj.F_Px = obj.S_Px - math.cos(math.radians(-obj.angle)) * obj.org_rect_w
+                                                obj.F_Py = obj.S_Py - math.sin(math.radians(-obj.angle)) * obj.org_rect_w
+                                                    
+                                                obj.T_Px = obj.S_Px - math.cos(math.radians(-obj.angle-30)) * obj.org_rect_h *2
+                                                obj.T_Py = obj.S_Py - math.sin(math.radians(-obj.angle-30)) * obj.org_rect_h *2 
+
+                                                    
+                                                if obj.angle >= 360:
+                                                    obj.angle -= 360
+                                                elif obj.angle < 0 :
+                                                    obj.angle += 360
+                                                    
+                                                if obj.angle != 0:
+                                                    obj.can_be_through = 1
                                     case 2:
                                         enemy.phase_cd = -2
                                     case 3:
                                         enemy.phase_cd = -2
+                                    case 4:
+                                        enemy.phase_cd = -2
+                                        for obj in NT_object:
+                                            if obj.type == "mirror_wall":
+                                                
+                                                
+                                                obj.center_x = obj.x + obj.rect.width /2
+                                                obj.center_y = obj.y + obj.rect.height /2
+                                                
+                                                if obj.dif == 2 :
+                                                    
+                                                    obj.angle += 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                    #print("angle=",obj.angle)
+                                                
+                                                if obj.dif == 1:
+                                                    
+                                                    obj.angle -= 1
+                                                    obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
+                                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                
+                                            
+                                                obj.outerect = obj.rect.inflate(160,160)
+                                                    
+                                                obj.x = obj.rect.x
+                                                obj.y = obj.rect.y
+                                                    
+                                                obj.S_Px = obj.center_x + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.cos(math.radians(344 - obj.angle))
+                                                obj.S_Py = obj.center_y + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.sin(math.radians(344 - obj.angle))
 
+                                                    
+                                                    
+                                                obj.F_Px = obj.S_Px - math.cos(math.radians(-obj.angle)) * obj.org_rect_w
+                                                obj.F_Py = obj.S_Py - math.sin(math.radians(-obj.angle)) * obj.org_rect_w
+                                                    
+                                                obj.T_Px = obj.S_Px - math.cos(math.radians(-obj.angle-30)) * obj.org_rect_h *2
+                                                obj.T_Py = obj.S_Py - math.sin(math.radians(-obj.angle-30)) * obj.org_rect_h *2 
+
+                                                    
+                                                if obj.angle >= 360:
+                                                    obj.angle -= 360
+                                                elif obj.angle < 0 :
+                                                    obj.angle += 360
+                                                    
+                                                if obj.angle != 0:
+                                                    obj.can_be_through = 1
+                                        
 
                             elif enemy.phase_cd == -2:                  #前搖完二次初始化
 
@@ -1493,7 +1698,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                                                 
 
-                                    case 1:     #鏡反
+                                    case 1:     #雙簡諧
                                         enemy.skill_time = 720
                                         
                                     case 2:     #光球
@@ -1502,6 +1707,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     case 3:
                                         enemy.skill_time = 510
 
+                                    case 4:     #單簡諧
+                                        enemy.skill_time = 810
 
                                 enemy.phase_cd = -3                     #招式發動階段
 
@@ -1817,9 +2024,62 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                     
                                                 if atk_en.chase == 0:
                                                     atk_en.surface = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),(50,150)),enemy.skill_time*5)
-                                                        
-                                                        
-                                                        
+                                    
+                                    
+                                    
+                                    
+                                    case 4:                    
+                                        P = [1000*math.sin(math.pi/180 * (810-enemy.skill_time)),-abs(1000*math.cos(math.pi/180 * (810-enemy.skill_time)))+700]
+                                        V = [P[0],-700+P[1]]
+                                        enemy.I = ( 16 * V[0] / math.sqrt(pow( V[0] , 2 ) + pow( V[1] , 2 )) , 16 * V[1] / math.sqrt(pow( V[0] , 2 ) + pow( V[1] , 2 )) )
+                                        enemy.II = ( -16 * V[0] / math.sqrt(pow( V[0] , 2 ) + pow( V[1] , 2 )) , 16 * V[1] / math.sqrt(pow( V[0] , 2 ) + pow( V[1] , 2 )) )
+
+                                        ATKs_EN.append(object_class.object(0,650,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",1,None,None,300))
+                                        ATKs_EN.append(object_class.object(0,650,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",2,None,None,300))
+
+                                        
+                                        if (enemy.skill_time-90) % 180 != 0 :
+                                            
+                                            if enemy.summon_cd > 0:
+                                                enemy.summon_cd -=1
+                                            
+                                            if enemy.summon % 2 != 0 and enemy.summon_cd == 0:
+                                                ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 - 370 ,enemy.rect.y+enemy.rect.height //2 + 200,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,600))
+                                                enemy.summon_cd = 25
+                                                enemy.summon *= 2
+                                            elif enemy.summon %3 != 0 and enemy.summon_cd == 0:
+                                                ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 + 170 ,enemy.rect.y+enemy.rect.height //2 + 150 ,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",2,None,None,600))
+                                                enemy.summon_cd = 25
+                                                enemy.summon *= 3
+                                            elif enemy.summon %5 != 0 and enemy.summon_cd == 0:
+                                                ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 - 270 ,enemy.rect.y+enemy.rect.height //2 + 100 ,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",3,None,None,600))
+                                                enemy.summon_cd = 25
+                                                enemy.summon *= 5
+                                            elif enemy.summon %7 != 0 and enemy.summon_cd == 0:
+                                                ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 + 270 ,enemy.rect.y+enemy.rect.height //2 + 100 ,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",4,None,None,600))
+                                                enemy.summon_cd = 25
+                                                enemy.summon *= 7
+                                            elif enemy.summon %11 != 0 and enemy.summon_cd == 0:
+                                                ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 - 170 ,enemy.rect.y+enemy.rect.height //2 + 150,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",5,None,None,600))
+                                                enemy.summon_cd = 25
+                                                enemy.summon *= 11
+                                            elif enemy.summon %13 != 0 and enemy.summon_cd == 0:
+                                                ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 + 370 ,enemy.rect.y+enemy.rect.height //2 + 200,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",6,None,None,600))
+                                                enemy.summon_cd = 25
+                                                enemy.summon *= 13
+                                                
+                                        else:
+                                            for atk in ATKs_EN:
+                                                if atk.dif == "light_sword":
+                                                    atk.chase =1
+                                                    enemy.summon = 1
+                                        
+                                        if enemy.skill_time == 0:
+                                            for atk in ATKs_EN:
+                                                if atk.dif == "light_sword":
+                                                    atk.chase =1
+                                                    
+                                        
                                                         
                                                         
                                                             
@@ -1844,7 +2104,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                 else:
                                     enemy.summon = 1
                                     enemy.light_count = 0
-                                    enemy.phase=random.randint(0,3)                                         #重骰招 & cd
+                                    enemy.phase=random.randint(0,4)                                         #重骰招 & cd
                                     enemy.phase_cd = random.randint(60,90)
 
                                 if enemy.broke == 10 :                                                  #吃18刀癱瘓
