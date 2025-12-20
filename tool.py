@@ -854,7 +854,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
     if Main.is_hurt == 0:
 
-        if (not Main.attack_state["playing"] and not Main.block_state["playing"]) or Main.atk_procedure != 0:     #如果不是第三段攻擊
+        if (not Main.attack_state["playing"] or Main.atk_procedure != 0) and not Main.block_state["playing"]:     #如果不是第三段攻擊且不是格檔中
             if keys[pygame.K_d] and keys[pygame.K_a] and Main.move_lock == 0:                       #避免同時按兩個方向鍵
                 if  Main.inertia == 0:
                     Main.idle() 
@@ -886,7 +886,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             elif Main.vy < 0:
                 Main.surface = pygame.transform.flip(Main.Jump[6], Main.flip, False)
 
-#=================================================偵測角色攻擊按鍵(是否按下j鍵, 是否在撥放攻擊動畫, 前一偵是否按著j鍵)
+#=================================================偵測角色攻擊按鍵(是否按下j鍵, 是否在撥放攻擊動畫, 前一偵是否按著j鍵, 是否在執行格檔)
 
         if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j] and Main.HP > 0 and not Main.block_state["playing"]:
 
@@ -1060,7 +1060,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         match enemy.type:                                       #分流 (波鼠 菁英 路邊) 
 
             case "boss":
-                print("enemy=",enemy.type,"、",enemy.dif,",cd=",enemy.phase_cd,",wait=",enemy.wait,",found=",enemy.found,",phase=",enemy.phase,",skill_time=",enemy.skill_time,",back=",enemy.back,",HP=",enemy.HP,",broke=",enemy.broke)
+                #print("enemy=",enemy.type,"、",enemy.dif,",cd=",enemy.phase_cd,",wait=",enemy.wait,",found=",enemy.found,",phase=",enemy.phase,",skill_time=",enemy.skill_time,",back=",enemy.back,",HP=",enemy.HP,",broke=",enemy.broke)
 
 
                 match enemy.dif:                                #分流不同波鼠
@@ -1291,7 +1291,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                     obj.angle -= 1
                                                     obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
                                                     obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
-                                                    print("angle=",obj.angle)
+                                                    #print("angle=",obj.angle)
                                                 
                                                 if obj.dif == 1:
                                                     
@@ -1879,7 +1879,13 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
         if enemy.wait == 0:                                         #怪停頓無碰撞傷害
             if Touch(Main,enemy) and enemy.TDamage == 1:
-                if Main.unhurtable_cd <= 0 and Main.HP > 1:         #碰撞傷害
+
+                if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
+                    Main.unhurtable_cd = 60
+                    Main.block_state["playing"] = False
+                    print("block_success!")
+
+                elif Main.unhurtable_cd <= 0 and Main.HP > 1:         #碰撞傷害
 
                     if Main.rect.x-enemy.rect.x > 0:                #玩家受擊
                         Main.vx = 10
@@ -1946,10 +1952,15 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     atk_al.y = atk_al.rect.y
 
                     if atk_al.rect.colliderect(Main.rect):              #打到玩家
-                                
-                        if Main.unhurtable_cd <= 0:
+
+                        if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
+                            Main.unhurtable_cd = 60
+                            Main.block_state["playing"] = False
+                            print("block_success!")   
+
+                        elif Main.unhurtable_cd <= 0:
                                             
-                            if Main.unhurtable_cd <= 0 and Main.HP > 1:
+                            if Main.HP > 1:
                                 if Main.rect.x-atk_al.rect.x > 0:
                                     Main.vx = 10
                                 else:
@@ -1960,7 +1971,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                 Main.is_hurt = 30
                                 Main.get_hit()
                                             
-                            elif Main.unhurtable_cd <= 0 and Main.HP == 1:
+                            elif Main.HP == 1:
                                 Main.get_hit()
                             atk_al.delete = 1
 
@@ -2190,10 +2201,14 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                             
                 if atk_en.rect.colliderect(Main.rect):              #打到玩家
-                            
-                    if Main.unhurtable_cd <= 0:
-                                        
-                        if Main.unhurtable_cd <= 0 and Main.HP > 1:
+
+                    if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
+                            Main.unhurtable_cd = 60
+                            Main.block_state["playing"] = False
+                            print("block_success!")
+                          
+                    elif Main.unhurtable_cd <= 0:                
+                        if Main.HP > 1:
                             if Main.rect.x-atk_en.rect.x > 0:
                                 Main.vx = 10
                             else:
@@ -2204,7 +2219,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                             Main.is_hurt = 30
                             Main.get_hit()
                                         
-                        elif Main.unhurtable_cd <= 0 and Main.HP == 1:
+                        elif Main.HP == 1:
                             Main.get_hit()
                         atk_en.delete = 1
             
@@ -2218,9 +2233,13 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                             
                 if atk_en.rect.colliderect(Main.rect):              #打到玩家
-                            
-                    if Main.unhurtable_cd <= 0:
-                                        
+
+                    if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
+                            Main.unhurtable_cd = 60
+                            Main.block_state["playing"] = False
+                            print("block_success!")     
+                         
+                    elif Main.unhurtable_cd <= 0:          
                         if Main.HP > 1:
                             if Main.rect.x-atk_en.rect.x > 0:
                                 Main.vx = 10
@@ -2232,7 +2251,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                             Main.is_hurt = 30
                             Main.get_hit()
                                         
-                        elif Main.unhurtable_cd <= 0 and Main.HP == 1:
+                        elif Main.HP == 1:
                             Main.get_hit()
 
 
@@ -2266,10 +2285,15 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
                     if atk_en.rect.colliderect(Main.rect):              #打到玩家
-                                
-                        if Main.unhurtable_cd <= 0:
+
+                        if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
+                            Main.unhurtable_cd = 60
+                            Main.block_state["playing"] = False
+                            print("block_success!")   
+                               
+                        elif Main.unhurtable_cd <= 0:
                                             
-                            if Main.unhurtable_cd <= 0 and Main.HP > 1:
+                            if Main.HP > 1:
                                 if Main.rect.x-atk_en.rect.x > 0:
                                     Main.vx = 10
                                 else:
@@ -2280,7 +2304,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                 Main.is_hurt = 30
                                 Main.get_hit()
                                             
-                            elif Main.unhurtable_cd <= 0 and Main.HP == 1:
+                            elif Main.HP == 1:
                                 Main.get_hit()
                             atk_en.delete = 1
 
@@ -2385,10 +2409,15 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                 atk_en.surface = atk_en.frames[atk_en.dur//5]
                 if atk_en.rect.colliderect(Main.rect):              #打到玩家
-                                
-                    if Main.unhurtable_cd <= 0:
+
+                    if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
+                            Main.unhurtable_cd = 60
+                            Main.block_state["playing"] = False
+                            print("block_success!")   
+
+                    elif Main.unhurtable_cd <= 0:
                                             
-                        if Main.unhurtable_cd <= 0 and Main.HP > 1:
+                        if Main.HP > 1:
                             if Main.rect.x-atk_en.rect.x > 0:
                                 Main.vx = 10
                             else:
@@ -2399,7 +2428,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                             Main.is_hurt = 30
                             Main.get_hit()
                                             
-                        elif Main.unhurtable_cd <= 0 and Main.HP == 1:
+                        elif Main.HP == 1:
                             Main.get_hit()
                         atk_en.delete = 1
                 
