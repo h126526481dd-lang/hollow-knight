@@ -74,6 +74,8 @@ class object():
         
                 self.tag_x = None
                 self.tag_y = None
+                
+                self.W = False
         
         
             case "door":
