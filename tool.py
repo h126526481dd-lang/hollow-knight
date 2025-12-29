@@ -877,8 +877,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 #=====================================================================格擋
 
     update_animation(Main, Main.block_state)
-    #if keys[pygame.K_l] and Main.on_ground and not Main.attack_state["playing"] and not Main.block_state["playing"]:
-        #Main.block()
+    if keys[pygame.K_l] and Main.on_ground and not Main.attack_state["playing"] and not Main.block_state["playing"] and Main.endurance > 1:
+        Main.endurance -= 2
+        Main.block()
         
 #===========================================================移動按鍵判定(動vx)(動角色圖片)
 
@@ -936,6 +937,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground or (Main.on_ground==False and Main.skill_key[5]==1)) and Main.endurance > 0 and Main.HP > 0 and Main.move_lock == 0:
             if Main.inertia == 0:
                 Main.vx = 0
+
+            Main.Dodge_sound.play()
             Main.unhurtable_cd = max(22,Main.unhurtable_cd)
             Main.skill_key[6] = 2
             Main.skill6_time = 20
@@ -1234,8 +1237,21 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
                     case "The_Sun":
+                        
+                        if enemy.found == 1:
+                        
+                            if scene_ctrl.BGM_state["playing"] == False:
+                                scene_ctrl.BGM = "boss2"
+                                scene_ctrl.BGM_state["playing"] = True
+                                pygame.mixer.music.load("Sound\BGM\MIT Concert Choir - O Fortuna.mp3")
+                                pygame.mixer.music.play(-1)
+                        
                         if enemy.found and enemy.wait == 0:                                         #已發現玩家且停頓幀==0
                             
+
+                                
+                                
+                                
                             if enemy.phase_cd > 0:                                                  #出招冷卻倒數
                                 enemy.phase_cd -= 1
                                 
@@ -1441,26 +1457,33 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                             enemy.summon_cd -=1
                                         
                                         if enemy.summon % 2 != 0 and enemy.summon_cd == 0:
+                                            pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
+                                            
                                             ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 - 370 ,enemy.rect.y+enemy.rect.height //2 + 200,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,600))
                                             enemy.summon_cd = 20
                                             enemy.summon *= 2
                                         elif enemy.summon %3 != 0 and enemy.summon_cd == 0:
+                                            pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                             ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 - 170 ,enemy.rect.y+enemy.rect.height //2 + 150 ,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",2,None,None,600))
                                             enemy.summon_cd = 20
                                             enemy.summon *= 3
                                         elif enemy.summon %5 != 0 and enemy.summon_cd == 0:
+                                            pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                             ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 - 270 ,enemy.rect.y+enemy.rect.height //2 + 100 ,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",3,None,None,600))
                                             enemy.summon_cd = 20
                                             enemy.summon *= 5
                                         elif enemy.summon %7 != 0 and enemy.summon_cd == 0:
+                                            pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                             ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 + 270 ,enemy.rect.y+enemy.rect.height //2 + 100 ,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",4,None,None,600))
                                             enemy.summon_cd = 20
                                             enemy.summon *= 7
                                         elif enemy.summon %11 != 0 and enemy.summon_cd == 0:
+                                            pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                             ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 + 170 ,enemy.rect.y+enemy.rect.height //2 + 150,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",5,None,None,600))
                                             enemy.summon_cd = 20
                                             enemy.summon *= 11
                                         elif enemy.summon %13 != 0 and enemy.summon_cd == 0:
+                                            pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                             ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 + 370 ,enemy.rect.y+enemy.rect.height //2 + 200,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",6,None,None,600))
                                             enemy.summon_cd = 20
                                             enemy.summon *= 13
@@ -1547,7 +1570,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     
                                     
                                     case 5:
+                                        
                                         for obj in NT_object:
+                                        
                                             if obj.type == "mirror_wall":
                                                 
                                                 
@@ -1555,7 +1580,11 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                 obj.center_y = obj.y + obj.rect.height /2
                                                 
                                                 if obj.dif == 2 :
-                                                    
+
+                                                    if obj.play == False:
+                                                        pygame.mixer.Sound("Sound\spin.wav").play()
+                                                        obj.play = True
+
                                                     obj.angle -= 12
                                                     obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
                                                     obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
@@ -1563,6 +1592,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                 
                                                 if obj.dif == 1:
                                                     
+                                                    if obj.play == False:
+                                                        pygame.mixer.Sound("Sound\spin.wav").play()
+                                                        obj.play = True
+                                        
                                                     obj.angle += 12
                                                     obj.surface = pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180)
                                                     obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
@@ -1600,6 +1633,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         if enemy.summon_cd == 0 and enemy.summon > 0:
                                             
                                             if enemy.summon % 2 != 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 20),210+300*math.sin(math.pi/10* 20),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon *= 2
@@ -1607,114 +1641,133 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                 
                                                 print("S")
                                             elif enemy.summon %3 != 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 19),210+300*math.sin(math.pi/10* 19),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",2,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon *= 3
                                                 print("S")
 
                                             elif enemy.summon %5 != 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 18),210+300*math.sin(math.pi/10* 18),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",3,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon *= 5
                                                 print("S")
 
                                             elif enemy.summon %7 != 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 17),210+300*math.sin(math.pi/10* 17),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",4,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon *= 7
 
                                                 print("S")
                                             elif enemy.summon %11 != 0:
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 16),210+300*math.sin(math.pi/10* 16),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",5,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon *= 11
 
                                                 print("S")
                                             elif enemy.summon %13 != 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 15),210+300*math.sin(math.pi/10* 15),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",6,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon *= 13
 
                                                 print("S")
                                             elif enemy.summon %17 != 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 14),210+300*math.sin(math.pi/10* 14),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",7,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon *= 17
 
                                                 print("S")
                                             elif enemy.summon %19 != 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 13),210+300*math.sin(math.pi/10* 13),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",8,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon *= 19
 
                                                 print("S")
                                             elif enemy.summon %23 != 0:
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 12),210+300*math.sin(math.pi/10* 12),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",9,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon *= 23
 
                                                 print("S")
                                             elif enemy.summon %29 != 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 11),210+300*math.sin(math.pi/10* 11),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",10,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon *= -29
                                                 
                                         elif enemy.summon_cd == 0 and enemy.summon < 0:
                                             if enemy.summon % 2 == 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 10),210+300*math.sin(math.pi/10* 10),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",11,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon /= 2
 
                                                 print("S")
                                             elif enemy.summon %3 == 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 9),210+300*math.sin(math.pi/10* 9),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",12,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon /= 3
 
                                                 print("S")
                                             elif enemy.summon %5 == 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 8),210+300*math.sin(math.pi/10* 8),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",13,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon /= 5
 
                                                 print("S")
                                             elif enemy.summon %7 == 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 7),210+300*math.sin(math.pi/10* 7),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",14,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon /= 7
 
                                                 print("S")
                                             elif enemy.summon %11 == 0:
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 6),210+300*math.sin(math.pi/10* 6),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",15,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon /= 11
 
                                                 print("S")
                                             elif enemy.summon %13 == 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 5),210+300*math.sin(math.pi/10* 5),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",16,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon /= 13
 
                                                 print("S")
                                             elif enemy.summon %17 == 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 4),210+300*math.sin(math.pi/10* 4) ,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",17,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon /= 17
                                                 
                                                 print("S")
                                             elif enemy.summon %19 == 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 3),210+300*math.sin(math.pi/10* 3) ,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",18,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon /= 19
 
                                                 print("S")
                                             elif enemy.summon %23 == 0:
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 2),210+300*math.sin(math.pi/10* 2),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",19,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon /= 23
 
                                                 print("S")
                                             elif enemy.summon %29 == 0 :
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(-30+300*math.cos(math.pi/10* 1),210+300*math.sin(math.pi/10* 1),pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",20,None,None,600))
                                                 enemy.summon_cd = 3
                                                 enemy.summon /= 29
@@ -1881,6 +1934,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         for obj in NT_object:
                                             if obj.type == "mirror_wall":
                                                 
+                                                obj.play = False
+                                                
                                                 
                                                 obj.center_x = obj.x + obj.rect.width /2
                                                 obj.center_y = obj.y + obj.rect.height /2
@@ -1973,7 +2028,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                 match enemy.phase:
                                     
                                     case 0:                                                 #輻(射)光(線)
-                                            
+                                        
                                         
                                         ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",1,None,None)) 
                                         ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",2,None,None)) 
@@ -1985,6 +2040,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     
                                     
                                     case 1:                                                 #鏡反
+                                        
                                         
                                         O = [-(600*math.sin(math.pi/180 * (720-enemy.skill_time))),560]
                                         
@@ -2001,6 +2057,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         enemy.II = ( 16 * V2[0] / math.sqrt(pow( V2[0] , 2 ) + pow( V2[1] , 2 )) , 16 * V2[1] / math.sqrt(pow( V2[0] , 2 ) + pow( V2[1] , 2 )) )
 
                                         if math.sin(math.pi/180 * (720-enemy.skill_time)) <= 0.5 and enemy.summon % 2 != 0 and math.sin(math.pi/180 * (720-enemy.skill_time)) > 0.1 :
+                                            pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                             print("summon L")
                                             ATKs_EN.append(object_class.object(-1050 ,300,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
                                             ATKs_EN.append(object_class.object(-950 ,0,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
@@ -2008,6 +2065,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                             enemy.summon *= 2
 
                                         if math.sin(math.pi/180 * (720-enemy.skill_time)) >= -0.5 and enemy.summon % 3 !=0 and math.sin(math.pi/180 * (720-enemy.skill_time)) < -0.1:
+                                            pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                             print("summon R")
                                             ATKs_EN.append(object_class.object(700 ,300,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
                                             ATKs_EN.append(object_class.object(600 ,0,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,300))
@@ -2098,6 +2156,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         enemy.V = (16,0)
                                         print(enemy.skill_time)
                                         if (enemy.skill_time % 90)  ==0:
+                                            pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                             ATKs_EN.append(object_class.object(-1500,450,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",None,None,None))
                                             ATKs_EN.append(object_class.object(1000,450,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",None,None,None))
                                             
@@ -2154,6 +2213,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                         
                                                         
                                         if enemy.skill_time < 420 and enemy.skill_time > 350:
+
                                             enemy.I = (16,0)
                                             enemy.II = (16,0)
                                             ATKs_EN.append(object_class.object(-1000,660,pygame.image.load("Image\Object\pre_light.png"),"dangerous",1,0,"pre_light",1,None,None)) 
@@ -2170,6 +2230,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                             
                                             
                                         elif enemy.skill_time <300 and enemy.skill_time > 250:
+
                                             ATKs_EN.append(object_class.object(-1000,660,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",1,None,None)) 
                                             ATKs_EN.append(object_class.object(-1000,160,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",2,None,None)) 
                                             
@@ -2177,6 +2238,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                             ATKs_EN.append(object_class.object(550*math.cos(math.pi/50 * (enemy.skill_time-250)),-560,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",4,None,None)) 
                                             
                                         elif enemy.skill_time < 250 and enemy.skill_time >215:
+
                                             ATKs_EN.append(object_class.object(-1000,660,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",1,None,None)) 
                                             ATKs_EN.append(object_class.object(-1000,160,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",2,None,None)) 
                                             
@@ -2228,7 +2290,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                     elif atk.num ==6 and enemy.VI == (0,0):
                                                         enemy.VI = ( 16 * V[0] / math.sqrt(pow( V[0] , 2 ) + pow( V[1] , 2 )) , 16 * V[1] / math.sqrt(pow( V[0] , 2 ) + pow( V[1] , 2 )) )
                                                     
-                                                    
+        
                                                     ATKs_EN.append(object_class.object(atk.rect.x,atk.rect.y,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",atk.num,None,None))
                                         
                                         elif enemy.skill_time == 120:
@@ -2277,7 +2339,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     
                                     
                                     
-                                    case 4:                    
+                                    case 4:           
+                                        pygame.mixer.Sound("Sound\lazer.wav").play()
+         
                                         P = [1000*math.sin(math.pi/180 * (810-enemy.skill_time)),-abs(1000*math.cos(math.pi/180 * (810-enemy.skill_time)))+700]
                                         V = [P[0],-700+P[1]]
                                         enemy.I = ( 16 * V[0] / math.sqrt(pow( V[0] , 2 ) + pow( V[1] , 2 )) , 16 * V[1] / math.sqrt(pow( V[0] , 2 ) + pow( V[1] , 2 )) )
@@ -2293,26 +2357,32 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                 enemy.summon_cd -=1
                                             
                                             if enemy.summon % 2 != 0 and enemy.summon_cd == 0:
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 - 370 ,enemy.rect.y+enemy.rect.height //2 + 200,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",1,None,None,600))
                                                 enemy.summon_cd = 25
                                                 enemy.summon *= 2
                                             elif enemy.summon %3 != 0 and enemy.summon_cd == 0:
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 + 170 ,enemy.rect.y+enemy.rect.height //2 + 150 ,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",2,None,None,600))
                                                 enemy.summon_cd = 25
                                                 enemy.summon *= 3
                                             elif enemy.summon %5 != 0 and enemy.summon_cd == 0:
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 - 270 ,enemy.rect.y+enemy.rect.height //2 + 100 ,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",3,None,None,600))
                                                 enemy.summon_cd = 25
                                                 enemy.summon *= 5
                                             elif enemy.summon %7 != 0 and enemy.summon_cd == 0:
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 + 270 ,enemy.rect.y+enemy.rect.height //2 + 100 ,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",4,None,None,600))
                                                 enemy.summon_cd = 25
                                                 enemy.summon *= 7
                                             elif enemy.summon %11 != 0 and enemy.summon_cd == 0:
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 - 170 ,enemy.rect.y+enemy.rect.height //2 + 150,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",5,None,None,600))
                                                 enemy.summon_cd = 25
                                                 enemy.summon *= 11
                                             elif enemy.summon %13 != 0 and enemy.summon_cd == 0:
+                                                pygame.mixer.Sound("Sound\summon_light_sword.wav").play()
                                                 ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 + 370 ,enemy.rect.y+enemy.rect.height //2 + 200,pygame.image.load("Image\Character\Enemy\Boss\light_sword.png"),"dangerous",1,0,"light_sword",6,None,None,600))
                                                 enemy.summon_cd = 25
                                                 enemy.summon *= 13
@@ -2365,6 +2435,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                     
                                                     
                                                     if obj.dif == 0:
+                                                        if obj.play == False:
+                                                            
+                                                            pygame.mixer.Sound("Sound\spin.wav").play()
+                                                            obj.play = True
                                                         
                                                         if obj.W:
                                                             
@@ -2406,7 +2480,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         
                                         
                                         if enemy.skill_time < 270 and enemy.skill_time >=170:
-                                                    
+
                                             
                                             ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2-1100 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",1,None,None)) 
                                             ATKs_EN.append(object_class.object(enemy.rect.x+enemy.rect.width //2 ,enemy.rect.y+enemy.rect.height //2,pygame.image.load("Image\Object\skill.png"),"dangerous",1,0,"light",2,None,None)) 
@@ -2417,6 +2491,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         
                                         
                                         if enemy.skill_time < 230 and enemy.skill_time >=170:
+                                            for obj in NT_object:
+                                                if obj.type == "mirror_wall" and obj.dif == 0:
+                                                    obj.play = False
                                             if enemy.summon_cd > 0:
                                                 enemy.summon_cd -=1
                                             if enemy.summon_cd == 0:
@@ -2618,7 +2695,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                     
                                                     
                                                     if obj.dif == 0:
-                                                        
+                                                        if obj.play == False:
+                                                            pygame.mixer.Sound("Sound\spin.wav").play()
+                                                            obj.play = True
+
                                                         if obj.W:
                                                             
                                                             obj.angle += 18
@@ -2768,6 +2848,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     if atk_en.dif == "light_sword":
                         if atk_al.dif != "light_sword" and atk_en.chase == 1:
                             if atk_al.rect.colliderect(atk_en.rect):
+                                pygame.mixer.Sound("Sound\hit_light_sword.wav").play()
                                 atk_en.delete = 1
                                 atk_en.tag_x = None
                                 atk_en.ATK = Main.ATK
@@ -2780,6 +2861,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                 if atk_al.chase ==1:
                     if atk_al.tag_x == None:                            #飛行方向初始化 & 轉向
+                        
 
                         for enemy in Enemy:
                             enemy.distant =math.sqrt(pow(enemy.rect.x+enemy.rect.width/2   -   Main.rect.x-Main.rect.width/2,2)+pow(enemy.rect.y+enemy.rect.height/2   -   Main.rect.y-Main.rect.height/2,2))
@@ -3018,7 +3100,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     enemy.second_HP = 0
                     if enemy.dif == "The_Sun":
                         enemy.phase_cd = 30
-                        enemy.phase = 3
+                        enemy.phase = 5
                         for atk in ATKs_EN:
                             if atk.dif == "light_sword":
                                 atk.delete = 1
@@ -3125,6 +3207,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                 if atk_en.chase ==1:
                     if atk_en.tag_x == None:                            #飛行方向初始化 & 轉向
+                        
+                        pygame.mixer.Sound("Sound\shoot.wav").play()
+                        
                         tem_x = (Main.rect.x+Main.rect.width/2 - atk_en.rect.x- atk_en.rect.width/2)
                         tem_y = (Main.rect.y+Main.rect.height/2 - atk_en.rect.y- atk_en.rect.height/2)           
 
@@ -3261,9 +3346,11 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         
                     for obj in NT_object:                               #撞牆掰掰
                         if atk_en.rect.colliderect(obj.rect) or atk_en.rect.colliderect(Main.rect):
+                            pygame.mixer.Sound("Sound\Boom.wav").play()
                             ATKs_EN.append(object_class.object(atk_en.rect.x-75,atk_en.rect.y-50,pygame.image.load("Image/Character/Enemy/Boss/eps1.png"),"dangerous",1,0,"explosion",None,None,None,39))
 
                             atk_en.delete = 1
+                            break
                     
             elif atk_en.dif == "explosion":
                 atk_en.dur -= 1                                     #扣時(存在時間)
@@ -3295,7 +3382,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                             
                         elif Main.HP == 1:
                             Main.get_hit()
-                        atk_en.delete = 1
+                        
                 
 
                 

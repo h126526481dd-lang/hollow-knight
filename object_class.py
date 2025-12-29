@@ -76,6 +76,8 @@ class object():
                 self.tag_y = None
                 
                 self.W = False
+                
+                self.play = False
         
         
             case "door":

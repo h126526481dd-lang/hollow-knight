@@ -76,6 +76,7 @@ class player():
         self.attack_sound = "Sound/blade.wav"
         self.dead_sound = "Sound\dead.wav"
         self.hurt_sound = "Sound\hurt.wav"
+        self.dodge_sound = "Sound\dodge.wav"
         
         #匯入Jump.png圖片並切分成動畫
         self.jumping = "Image\Character\mainchacter\Jump.png"
@@ -244,7 +245,7 @@ class player():
             self.atk_procedure = 1
 
     def block(self):
-        print("Block")
+        self.vx = 0
         tool.start_animation(self.block_state, self.Shield, 60, self.flip, False)
             
     def to_dict(self):
@@ -260,6 +261,7 @@ class player():
         #匯入Hurt.png圖片並切分成動畫
         self.Hurt = None
         self.Hurt_sound = None
+        self.Dodge_sound = None
         self.Walk = None
         self.surface = None
         self.rect = None
@@ -290,6 +292,7 @@ class player():
         self.Attack_sound = pygame.mixer.Sound(self.attack_sound)
         self.Dead_sound = pygame.mixer.Sound(self.dead_sound)
         self.Hurt_sound = pygame.mixer.Sound(self.hurt_sound)
+        self.Dodge_sound = pygame.mixer.Sound(self.dodge_sound)
         
         #匯入Jump.png圖片並切分成動畫
         self.Jump = tool.split(self.jumping, 12)
@@ -423,7 +426,7 @@ class enemy():
                         self.NoGravity = 1
                         self.skill_time = 0
 
-                        self.phase = 5
+                        self.phase = 2
                         self.phase_cd = 0
 
                         self.right_down_x = self.rect.x+self.rect.width +20

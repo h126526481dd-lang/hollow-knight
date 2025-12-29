@@ -48,6 +48,9 @@ class scene_c():
         self.reset = 0
         self.Save = None
         self.time = 0
+        self.BGM = None
+        self.BGM_state = {}
+        self.BGM_state["playing"] = False
         
 
 def Load(save):
