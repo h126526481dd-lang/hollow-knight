@@ -167,6 +167,7 @@ while True:
         
         case 0:                                                              #初始畫面
 
+            scene_ctrl.BGM_state["playing"] = False
 
             pygame.mixer.music.load("Sound\BGM\項斯華古箏獨奏：高山流水  Traditional GuZheng music High Mountain and Running River - bossa (youtube).wav")
             pygame.mixer.music.play(-1)
