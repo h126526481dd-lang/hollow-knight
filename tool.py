@@ -1241,7 +1241,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         if enemy.found == 1:
                         
                             if scene_ctrl.BGM_state["playing"] == False:
-                                scene_ctrl.BGM = "boss2"
                                 scene_ctrl.BGM_state["playing"] = True
                                 pygame.mixer.music.load("Sound\BGM\MIT Concert Choir - O Fortuna.mp3")
                                 pygame.mixer.music.play(-1)
@@ -2042,9 +2041,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     case 1:                                                 #鏡反
                                         
                                         
-                                        O = [-(600*math.sin(math.pi/180 * (720-enemy.skill_time))),560]
+                                        O = [-20-(590*math.sin(math.pi/180 * (720-enemy.skill_time))),560]
                                         
-                                        P = [600*math.sin(math.pi/180 * (720-enemy.skill_time)),560]
+                                        P = [-20+(590*math.sin(math.pi/180 * (720-enemy.skill_time))),560]
 
 
 
@@ -3090,6 +3089,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         if enemy.HP <= 0 :                                       #怪清除
             if enemy.type == "boss":
                 if enemy.second_HP <= 0:
+                    scene_ctrl.BGM_state["playing"] = False
+                    pygame.mixer.music.stop()
                     Enemy.remove(enemy)
                     del enemy
                     

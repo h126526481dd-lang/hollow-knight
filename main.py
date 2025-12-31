@@ -167,6 +167,11 @@ while True:
         
         case 0:                                                              #初始畫面
 
+
+            pygame.mixer.music.load("Sound\BGM\項斯華古箏獨奏：高山流水  Traditional GuZheng music High Mountain and Running River - bossa (youtube).wav")
+            pygame.mixer.music.play(-1)
+
+
             count_time = 0                                                      #計算時間的邏輯閘
             
             scene = []
