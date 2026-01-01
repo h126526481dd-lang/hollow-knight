@@ -520,9 +520,13 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
     pygame.draw.rect(screen, (255,255,255), (screen_width//20, screen_height//8, player.Max_HP*50, screen_height//40))
     pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, player.HP*50, screen_height//40))
     
-    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//20+145, player.Max_endurance*50+10, screen_height//50+10))
-    pygame.draw.rect(screen, (255,255,255), (screen_width//20, screen_height//20+150, player.Max_endurance*50, screen_height//50))
-    pygame.draw.rect(screen, (135,206,235), (screen_width//20, screen_height//20+150, player.endurance*50, screen_height//50))
+    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//8+95, player.Max_endurance*50+10, screen_height//50+10))
+    pygame.draw.rect(screen, (255,255,255), (screen_width//20, screen_height//8+100, player.Max_endurance*50, screen_height//50))
+    pygame.draw.rect(screen, (135,206,235), (screen_width//20, screen_height//8+100, player.endurance*50, screen_height//50))
+
+    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//8+45, player.Max_backup*50+10, screen_height//50+10))
+    pygame.draw.rect(screen, (255,255,255), (screen_width//20, screen_height//8+50, player.Max_backup*50, screen_height//50))
+    pygame.draw.rect(screen, (0,255,127), (screen_width//20, screen_height//8+50, player.backup*50, screen_height//50))
     
     
     
@@ -825,17 +829,22 @@ def summon_blade(Main, ATKs_AL):
 
 def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys,hint_backpack,trans,scene_ctrl):
     
-    if Main.current_HP != Main.HP:
-        
-        Main.lost_HP = Main.HP-Main.current_HP
-    
-    Main.current_HP = Main.HP
-    
     if Main.endurance < 4:
         Main.endurance_cd -= 1
         if Main.endurance_cd == 0:
             Main.endurance += 1
             Main.endurance_cd = 120
+
+    if Main.backup < 3:
+        Main.backup_cd -= 1
+        if Main.backup_cd == 0:
+            Main.backup +=1
+            Main.backup_cd = 3600
+
+    if Main.drinking > 0:
+        Main.drinking -= 1
+        if Main.drinking == 0:
+            Main.movelock = 0
 
     if Main.hurt_flashing > 0:
         Main.hurt_flashing -= 1
@@ -880,7 +889,18 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if keys[pygame.K_l] and Main.on_ground and not Main.attack_state["playing"] and not Main.block_state["playing"] and Main.endurance > 1:
         Main.endurance -= 2
         Main.block()
-        
+
+#=====================================================================哈氣
+
+    if keys[pygame.K_r] and not pre_keys[pygame.K_r] and Main.backup >0 and not Main.HP == Main.Max_HP:
+        if (Main.HP+4) > Main.Max_HP:
+            Main.HP = Main.Max_HP
+        else:
+            Main.HP += 4
+        Main.backup -= 1
+        Main.move_lock == 1
+        Main.drinking = 180
+
 #===========================================================移動按鍵判定(動vx)(動角色圖片)
 
     if Main.is_hurt == 0:
