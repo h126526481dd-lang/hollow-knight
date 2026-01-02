@@ -113,7 +113,8 @@ def reset(save,scene_ctrl):
         scene_ctrl.done = 0
         scene_ctrl.minute = 0
         scene_ctrl.second = 0
-
+        scene_ctrl.BGM = None
+        scene_ctrl.BGM_state = {}
 
         json.dump(scene_ctrl.__dict__,f)
 

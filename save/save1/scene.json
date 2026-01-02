@@ -1,5 +1,1 @@
-<<<<<<< HEAD:save/save1/scene.json
-{"num": 5, "menu": 0, "fps": 60, "button_cd": 0, "game": -3, "pre_game": 0, "trans": 0, "R_edge": 0, "L_edge": 0, "B_edge": 1500, "T_edge": -1000, "init": 0, "back_cd": 0, "From": 0, "backpack": 0, "done": 0, "reset": 1, "Save": 1, "time": 0, "minute": 487, "second": 29}
-=======
-{"num": 5, "menu": 0, "fps": 60, "button_cd": 0, "game": -3, "pre_game": 0, "trans": 0, "R_edge": 0, "L_edge": 0, "B_edge": 1500, "T_edge": -1000, "init": 0, "back_cd": 0, "From": 0, "backpack": 0, "done": 0, "reset": 1, "Save": 1, "time": 0, "minute": 485, "second": 28}
->>>>>>> cdc423897b689356c2fe3490aea34c34c60e9044:Image/save/save1/scene.json
+{"num": 5, "menu": 0, "fps": 60, "button_cd": 0, "game": -3, "pre_game": 0, "trans": 0, "R_edge": 0, "L_edge": 0, "B_edge": 1500, "T_edge": -1000, "init": 0, "back_cd": 0, "From": 0, "backpack": 0, "done": 0, "reset": 1, "Save": 1, "time": 0, "minute": 487, "second": 46, "BGM": null, "BGM_state": {}}
