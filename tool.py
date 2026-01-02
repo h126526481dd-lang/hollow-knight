@@ -1118,7 +1118,13 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 match enemy.dif:                                #分流不同波鼠
 
                     case "The_Tank":                            #牢坦克
-
+                        
+                        if enemy.found == 1:
+                        
+                            if scene_ctrl.BGM_state["playing"] == False:
+                                scene_ctrl.BGM_state["playing"] = True
+                                pygame.mixer.music.load("Sound\BGM\Flares of the Blazing Sun - YMIR x HOYO-MiX  Official English Lyrics Honkai Star Rail Phainon Full - Yxelixi (youtube).mp3")
+                                pygame.mixer.music.play(-1)
 
                         if enemy.found and enemy.wait == 0:                                         #已發現玩家且停頓幀==0
 
