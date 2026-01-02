@@ -30,6 +30,12 @@ class player():
         self.endurance = 4
         self.Max_endurance = 4
         self.endurance_cd = 120
+
+        self.Max_backup = 3
+        self.backup = 3
+        self.backup_cd = 3600
+        self.drinking = 0
+
         self.hurt_flashing = 0
         self.death_cd = 0
         
