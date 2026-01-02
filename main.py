@@ -505,7 +505,7 @@ while True:
                     NT_object.append(object_class.object(400,-1500,tool.HRZ_combine("Image/Background/floor.png",15),"wall",0,0,0,0,0,0))
 
 
-                    Enemy.append(player_class.enemy("The_Second",1200,-200,450,"boss","The_Tank"))
+                    Enemy.append(player_class.enemy("The_Second",1200,-200,250,"boss","The_Tank"))
                     #Enemy.append(player_class.enemy("The_Third",1200,-600,200,"boss","The_Sun"))
 
 

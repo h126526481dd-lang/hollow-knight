@@ -325,6 +325,7 @@ class player():
 class enemy():
              
     def __init__(self,name,x,y,HP,type,dif):                                    #敵人模型
+        
         self.name = name                                              #敵人名稱
         self.x = x                                                    #敵人位置
         self.y = y
@@ -338,6 +339,7 @@ class enemy():
         self.distant = None
 
         self.image = 0                                        #敵人圖片
+        self.is_hit = 0
         self.vx = 0                                                   #敵人速度
         self.vy = 0
         self.through = 0
@@ -394,10 +396,11 @@ class enemy():
                         self.rect.width -= 41
                         self.rect.height -= 80
 
+                        self.second_HP = 200
 
-                        self.skill_time = 0
+                        self.skill_time = -1
 
-                        self.phase = 3
+                        self.phase = 0
                         self.phase_cd = 0
 
                         self.right_down_x = self.rect.x+self.rect.width +20
@@ -580,22 +583,24 @@ class enemy():
                                         tool.Touch(self, obj)
 
                                     if self.Test_rect.colliderect(obj.rect):
-                                        self.back_check += 1
+                                        self.back_check += 1                    #碰到一個物件+1
 
-                                if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
-                                    self.back *= -1
-                                    self.back_check = 1
-                                    self.back_cd = 1
-                                    self.surface = pygame.transform.flip(self.surface, True, False)
+                                if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch and self.back_cd == 0:  #觸邊反彈
+                                    self.back_cd =-1
                                                         
-                                if not (self.phase_cd == -3 and self.skill_time > 0 and self.wait == 0) and self.back_check == 0 and self.back_cd == 0:
+                                if not ((self.skill_time > 0 and self.wait == 0) or self.vy < 0) and self.back_check == 0 and self.back_cd == 0:  #觸界反彈
+                                    self.back_cd =-1
+
+
+                                if self.back_cd == -1:
+                                    
                                     self.back *= -1
-                                    self.back_cd = 1
+                                    self.back_check = 0
+                                    self.back_cd = 2
                                     self.surface = pygame.transform.flip(self.surface, True, False)
-
-
-                                if self.back_check > 0:
-                                    self.back_cd = 0
+                                    
+                                if self.back_cd > 0:
+                                    self.back_cd -= 1
 
 
                                 if "1_D" in self.now_NT_Touch:
@@ -607,7 +612,7 @@ class enemy():
                                 
 
 
-                                if (self.phase == 0 or self.phase == 3) and self.skill_time > 0:
+                                if (self.phase == 0 or self.phase == 2 or self.phase == 3) and self.skill_time > 0:
 
                                     if self.on_ground :
                                         self.vy = 0    
@@ -628,7 +633,7 @@ class enemy():
 
 
                                         self.vy = 0
-                                        self.vx = 7*self.back
+                                        self.vx = 0
                                         if self.attack_state["playing"]:
                                             self.vx = 0
                                         self.x += self.vx
@@ -674,23 +679,7 @@ class enemy():
                                     if not (self.phase_cd == -3 and self.skill_time > 0 and self.wait == 0):
                                         tool.Touch(self, obj)
 
-                                    if self.Test_rect.colliderect(obj.rect):
-                                        self.back_check += 1
 
-                                if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
-                                    self.back *= -1
-                                    self.back_check = 1
-                                    self.back_cd = 1
-                                    self.surface = pygame.transform.flip(self.surface, True, False)
-                                                        
-                                if not (self.phase_cd == -3 and self.skill_time > 0 and self.wait == 0) and self.back_check == 0 and self.back_cd == 0:
-                                    self.back *= -1
-                                    self.back_cd = 1
-                                    self.surface = pygame.transform.flip(self.surface, True, False)
-
-
-                                if self.back_check > 0:
-                                    self.back_cd = 0
 
 
                                 if "1_D" in self.now_NT_Touch:
@@ -748,20 +737,22 @@ class enemy():
                         tool.Touch(self, obj)
                         if self.Test_rect.colliderect(obj.rect):
                             self.back_check += 1
+                                
+                    if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch and self.back_cd == 0:  #觸邊反彈
+                        self.back_cd =-1
+                                                        
+                    if self.back_check == 0 and self.back_cd == 0:  #觸界反彈
+                        self.back_cd =-1
 
-                    if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch:
+
+                    if self.back_cd == -1:
                         self.back *= -1
-                        self.back_check = 1
+                        self.back_check = 0
+                        self.back_cd = 10
                         self.surface = pygame.transform.flip(self.surface, True, False)
-                                            
-                    if self.back_check == 0 and self.back_cd == 0:
-                        self.back *= -1
-                        self.back_cd = 1
-                        self.surface = pygame.transform.flip(self.surface, True, False)
-
-
-                    if self.back_check > 0:
-                        self.back_cd = 0
+                                        
+                    if self.back_cd > 0:
+                        self.back_cd -= 1
 
 
                     if "1_D" in self.now_NT_Touch:
