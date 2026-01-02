@@ -33,7 +33,7 @@ class player():
 
         self.Max_backup = 3
         self.backup = 3
-        self.backup_cd = 3600
+        self.backup_cd = 1800
         self.drinking = 0
 
         self.hurt_flashing = 0

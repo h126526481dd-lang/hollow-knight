@@ -853,7 +853,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         Main.backup_cd -= 1
         if Main.backup_cd == 0:
             Main.backup +=1
-            Main.backup_cd = 3600
+            Main.backup_cd = 1800
 
     if Main.drinking > 0:
         Main.drinking -= 1
