@@ -694,7 +694,7 @@ while True:
 
 
                     CT_object.append(object_class.object(3000,300,door,"path",0,0,0,0,0,[2,0]))
-                    CT_object.append(object_class.object(-800,-900,door,"path",0,0,0,0,0,[0,0]))
+                    CT_object.append(object_class.object(-800,-1800,door,"path",0,0,0,0,0,[0,0]))
                     CT_object.append(object_class.object(2000,1000,save_point,"save_point",0,0,0,0,0,0))
                     CT_object.append(object_class.object(1800,1700,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,6,0,0))
 

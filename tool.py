@@ -242,10 +242,10 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                     
                     if enemy.light_count == 3:
                         enemy.theta =math.pi*4/5
-                        enemy.I = (16*math.cos(enemy.theta+0.01*enemy.skill_time),16*math.sin(enemy.theta+0.01*enemy.skill_time))
-                        enemy.II =(16*math.cos(enemy.theta/4*3+0.01*enemy.skill_time),16*math.sin(enemy.theta/4*3+0.01*enemy.skill_time))
-                        enemy.III =(16*math.cos(enemy.theta/4*2+0.01*enemy.skill_time),16*math.sin(enemy.theta/4*2+0.01*enemy.skill_time))
-                        enemy.IV =(16*math.cos(enemy.theta/4+0.01*enemy.skill_time),16*math.sin(enemy.theta/4+0.01*enemy.skill_time))
+                        enemy.I = (16*math.cos(enemy.theta+0.6-0.01*enemy.skill_time),16*math.sin(enemy.theta+0.6-0.01*enemy.skill_time))
+                        enemy.II =(16*math.cos(enemy.theta/4*3+0.6-0.01*enemy.skill_time),16*math.sin(enemy.theta/4*3+0.6-0.01*enemy.skill_time))
+                        enemy.III =(16*math.cos(enemy.theta/4*2+0.6-0.01*enemy.skill_time),16*math.sin(enemy.theta/4*2+0.6-0.01*enemy.skill_time))
+                        enemy.IV =(16*math.cos(enemy.theta/4+0.6-0.01*enemy.skill_time),16*math.sin(enemy.theta/4+0.6-0.01*enemy.skill_time))
                         enemy.V =(16,0)
                     
                     match atk.num:
@@ -2765,6 +2765,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                 if enemy.phase == 0 and enemy.light_count < 3:                                         
                                     enemy.light_count += 1
                                     enemy.phase_cd = random.randint(60,90)
+                                    for ATK in ATKs_EN:
+                                        if  ATK.dif == "light":
+                                            ATK.delete = 1
 
 
                                 elif enemy.second_HP > 0:
