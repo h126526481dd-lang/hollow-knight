@@ -984,7 +984,7 @@ while True:
                                     pre_keys = keys
                                     keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
 
-                                    screen.blit(scene[1], (0,0))                  #繪製背景圖片
+                                    screen.dit(scene[1], (0,0))                  #繪製背景圖片
 
                                     if scene_ctrl.button_cd > 0:
                                         scene_ctrl.button_cd-=1
