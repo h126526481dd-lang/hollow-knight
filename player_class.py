@@ -253,7 +253,7 @@ class player():
 
     def block(self):
         self.vx = 0
-        tool.start_animation(self.block_state, self.Shield, 60, self.flip, False)
+        tool.start_animation(self.block_state, self.Shield, 30, self.flip, False)
             
     def to_dict(self):
         self.Attack1 = None
