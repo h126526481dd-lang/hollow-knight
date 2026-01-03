@@ -397,11 +397,11 @@ class enemy():
                         self.rect.width -= 41
                         self.rect.height -= 80
 
-                        self.second_HP = 0
+                        self.second_HP = 250
 
                         self.skill_time = -1
 
-                        self.phase = 6
+                        self.phase = 0
                         self.phase_cd = 0
 
                         self.right_down_x = self.rect.x+self.rect.width +20
