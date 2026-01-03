@@ -1162,10 +1162,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         enemy.rect.y += enemy.vy
                                                 
                                     case 3: #火焰衝刺
-                                        if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:    #衝刺前轉向玩家
-                                            enemy.back = 1
-                                        else:
-                                            enemy.back = -1
+
                                         start_animation(enemy.attack_state, enemy.boss_attack3, 10, enemy.back-1, False, (320,300))   
                                         
                                         
