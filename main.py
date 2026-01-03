@@ -446,7 +446,7 @@ while True:
                     #Enemy.append(player_class.enemy("The_Second",-400,-300,450,"boss","The_Tank"))
                     Enemy.append(player_class.enemy("The_Third",-200,380,100,"boss","The_Sun"))
 
-
+    
                     door = pygame.image.load("Image/Object/door.png")
                     door = pygame.transform.scale(door, (200, 700))  # 調整大小
 

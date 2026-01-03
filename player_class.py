@@ -232,12 +232,13 @@ class player():
                 tool.start_animation(self.attack_state, self.Attack2, 5, self.flip, False)   #第二段攻擊
                 self.atk_procedure = 2
             elif self.atk_procedure == 2:
-                self.inertia = 21
                 tool.start_animation(self.attack_state, self.Attack3, 7, self.flip, False)   #第三段攻擊會向前滑行
-                if self.flip:
-                    self.vx = -35
-                else:
-                    self.vx = 35
+                if self.move_lock == 0:
+                    self.inertia = 21
+                    if self.flip:
+                        self.vx = -35
+                    else:
+                        self.vx = 35
                 self.atk_procedure = 0
                 self.unhurtable_cd = max(20,self.unhurtable_cd)
             else:
@@ -396,11 +397,11 @@ class enemy():
                         self.rect.width -= 41
                         self.rect.height -= 80
 
-                        self.second_HP = 200
+                        self.second_HP = 0
 
                         self.skill_time = -1
 
-                        self.phase = 0
+                        self.phase = 6
                         self.phase_cd = 0
 
                         self.right_down_x = self.rect.x+self.rect.width +20
@@ -435,7 +436,7 @@ class enemy():
                         self.NoGravity = 1
                         self.skill_time = 0
 
-                        self.phase = 0
+                        self.phase = 2
                         self.phase_cd = 0
 
                         self.right_down_x = self.rect.x+self.rect.width +20
@@ -586,10 +587,15 @@ class enemy():
                                         self.back_check += 1                    #碰到一個物件+1
 
                                 if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch and self.back_cd == 0:  #觸邊反彈
-                                    self.back_cd =-1
+                                    if self.phase == 3:
+                                        if player.rect.x - self.rect.x - self.rect.width//2 > 0:    #起跳前轉向玩家
+                                            self.back = 1
+                                        else:
+                                            self.back = -1
+                                    else:
+                                        self.back_cd =-1
                                                         
-                                if not ((self.skill_time > 0 and self.wait == 0) or self.vy < 0) and self.back_check == 0 and self.back_cd == 0:  #觸界反彈
-                                    self.back_cd =-1
+
 
 
                                 if self.back_cd == -1:
@@ -612,10 +618,11 @@ class enemy():
                                 
 
 
-                                if (self.phase == 0 or self.phase == 2 or self.phase == 3) and self.skill_time > 0:
+                                if (self.phase == 0 or self.phase == 2 or self.phase == 3 or self.phase == 5 or self.phase == 6) and self.skill_time > 0:
 
                                     if self.on_ground :
-                                        self.vy = 0    
+                                        if not self.phase == 6:
+                                            self.vy = 0    
                                         self.x += self.vx * self.back
                                         self.rect.x += self.vx * self.back
                                         self.y += self.vy

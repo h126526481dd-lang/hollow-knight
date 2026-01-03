@@ -185,6 +185,26 @@ class object():
                         self.delete = 0
                         self.dur = 60
 
+                    case "web":
+                        
+                        self.num = num
+                        self.vx = 0
+                        self.vy = 0
+                        self.can_be_through = 1                                         #物件是否可通過(布林值)
+                        self.surface= pygame.transform.scale(self.surface,(100,100))
+
+                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
+                        
+                        self.tag_x = None
+                        self.tag_y = None
+                        self.delete = 0
+                        self.dur = 180
+                        
+                        self.frames = [pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\web2.png"), (100, 100)),
+                                        pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\web3.png"), (150, 100)),
+                                        pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\web4.png"), (140, 140)),
+                                        pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\web5.png"), (200, 220)),
+                                        pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\web6.png"), (260, 260))]
 
                     case "light":
                         
