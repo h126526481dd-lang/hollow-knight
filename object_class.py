@@ -22,6 +22,13 @@ class object():
 
         
         match type:
+            
+            
+            case "Effect":
+                self.can_be_through = 1                                         #物件是否可通過      
+                self.dur = dur            
+            
+            
             case "wall":
                 self.can_be_through = 0                                         #物件是否可通過      
                 self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)

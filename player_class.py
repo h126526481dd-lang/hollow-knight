@@ -157,6 +157,10 @@ class player():
         self.Walljump_direct = 0
         self.Walljump_time = 0
         self.Wall_slip = 0
+        self.block_attack = False
+
+        self.isblock = False
+
 
 #角色移動
 
@@ -253,6 +257,8 @@ class player():
 
     def block(self):
         self.vx = 0
+        self.unhurtable_cd = 30
+        self.block_attack = False
         tool.start_animation(self.block_state, self.Shield, 30, self.flip, False)
             
     def to_dict(self):
@@ -401,7 +407,7 @@ class enemy():
 
                         self.skill_time = -1
 
-                        self.phase = 3
+                        self.phase = 5
                         self.phase_cd = 0
 
                         self.right_down_x = self.rect.x+self.rect.width +20

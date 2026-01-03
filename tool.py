@@ -292,10 +292,8 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                     
 
                     if player.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
-                        player.unhurtable_cd = 60
-                        player.block_state["playing"] = False
-                        summon_blade(player, ATKs_AL)
-                        print("block_success!")
+                        player.block_attack = True
+                        print("block_success!") 
                     
                     
                     if player.unhurtable_cd <= 0 and player.HP > 1:
@@ -525,6 +523,14 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
     
     if not player.hurt_flashing % 8 > 4:
         screen.blit(player.surface, ( player.x - camera_x,player.y - camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
+    
+    for effect in scene_ctrl.Effect:
+        if effect.dur > 0:
+            effect.dur -= 1
+            screen.blit(effect.surface, (effect.x - camera_x , effect.y - camera_y))
+        else:
+            scene_ctrl.Effect.remove(effect)
+            del effect
     
     pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
 
@@ -840,6 +846,42 @@ def summon_blade(Main, ATKs_AL):
                 ATKs_AL.append(object_class.object(Main.x,Main.y + 30,pygame.image.load("Image\Character\mainchacter\\blade1_start.png"),"dangerous",Main.ATK,20,"blade3",0,1,0))
     Main.attack()
 
+def hurt_check(Main, atk, scene_ctrl, delete=False):
+    
+    if Main.unhurtable_cd > 0 and Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
+        Main.isblock = True
+        if not Main.block_attack:
+            Main.unhurtable_cd += 30
+            Main.block_attack = True
+            pygame.mixer.Sound("Sound\parry.mp3").play()
+            scene_ctrl.Effect.append(object_class.object(atk.rect.x+atk.rect.width/2, atk.rect.y+atk.rect.height/2, pygame.image.load("Image\Object\hit_light3.png"), "Effect",0,0,None,None,None,None,30))
+            print("block_success!")
+            if Main.move_lock == 0:
+                if Main.rect.x-atk.rect.x > 0:
+                    Main.vx = 7
+                else:
+                    Main.vx =- 7
+        if delete:
+            atk.delete = 1
+
+    elif Main.unhurtable_cd <= 0:
+                                            
+        if Main.HP > 1:
+            if Main.move_lock == 0:
+                if Main.rect.x-atk.rect.x > 0:
+                    Main.vx = 10
+                else:
+                    Main.vx =- 10
+                Main.y -= 10
+                Main.rect.y -= 10
+                Main.vy = -15
+                Main.is_hurt = 30
+                Main.get_hit()
+        elif Main.HP == 1:
+            Main.get_hit()
+        if delete:
+            atk.delete = 1
+    return True
 
 def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys,hint_backpack,trans,scene_ctrl):
     
@@ -899,10 +941,15 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=====================================================================格擋
 
-    update_animation(Main, Main.block_state)
+    Block = update_animation(Main, Main.block_state)
     if keys[pygame.K_l] and Main.on_ground and not Main.attack_state["playing"] and not Main.block_state["playing"] and Main.endurance > 1:
         Main.endurance -= 2
         Main.block()
+    elif keys[pygame.K_l] and Main.block_attack and Main.block_state["playing"]:
+        Main.block()
+    if Block and Main.block_attack:
+        Main.attack()
+        summon_blade(Main, ATKs_AL)
 
 #=====================================================================哈氣
 
@@ -3005,31 +3052,10 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
 #====================================================================碰撞清單清除、傷害判定
-
+        Main.isblock = False
         if enemy.wait == 0:                                         #怪停頓無碰撞傷害
             if Touch(Main,enemy) and enemy.TDamage == 1:
-
-                if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
-                    Main.unhurtable_cd = 60
-                    Main.block_state["playing"] = False
-                    summon_blade(Main, ATKs_AL)
-                    print("block_success!")
-
-                elif Main.unhurtable_cd <= 0 and Main.HP > 1:         #碰撞傷害
-
-                    if Main.move_lock == 0:
-                        if Main.rect.x-enemy.rect.x > 0:
-                            Main.vx = 10
-                        else:
-                            Main.vx =- 10
-                        Main.y -= 10
-                        Main.rect.y -= 10
-                        Main.vy = -15
-                        Main.is_hurt = 30
-                    Main.get_hit()
-                    
-                elif Main.unhurtable_cd <= 0 and Main.HP == 1:
-                    Main.get_hit()
+                hurt_check(Main,enemy)
             
 
         for atk_al in ATKs_AL:                                      #我方攻擊
@@ -3084,29 +3110,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     atk_al.x = atk_al.rect.x
                     atk_al.y = atk_al.rect.y
 
-                    if atk_al.rect.colliderect(Main.rect):              #打到玩家
-
-                        if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
-                            Main.unhurtable_cd = 60
-                            Main.block_state["playing"] = False
-                            summon_blade(Main, ATKs_AL)
-                            print("block_success!")   
-
-                        elif Main.unhurtable_cd <= 0:
-                                            
-                            if Main.HP > 1:
-                                if Main.move_lock == 0:
-                                    if Main.rect.x-atk_en.rect.x > 0:
-                                        Main.vx = 10
-                                    else:
-                                        Main.vx =- 10
-                                    Main.y -= 10
-                                    Main.rect.y -= 10
-                                    Main.vy = -15
-                                    Main.is_hurt = 30
-                            elif Main.HP == 1:
-                                Main.get_hit()
-                            atk_al.delete = 1
 
 
                     for obj in NT_object:                               #撞牆掰掰
@@ -3367,29 +3370,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                             
                 if atk_en.rect.colliderect(Main.rect):              #打到玩家
+                    hurt_check(Main,atk_en,True)
 
-                    if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
-                            Main.unhurtable_cd = 60
-                            Main.block_state["playing"] = False
-                            summon_blade(Main, ATKs_AL)
-                            print("block_success!")
-                          
-                    elif Main.unhurtable_cd <= 0:                
-                        if Main.HP > 1:
-                            if Main.move_lock == 0:
-                                if Main.rect.x-atk_en.rect.x > 0:
-                                    Main.vx = 10
-                                else:
-                                    Main.vx =- 10
-                                Main.y -= 10
-                                Main.rect.y -= 10
-                                Main.vy = -15
-                                Main.is_hurt = 30
-                            Main.get_hit()
-                                        
-                        elif Main.HP == 1:
-                            Main.get_hit()
-                        atk_en.delete = 1
             
             elif atk_en.dif == "fire":
                 atk_en.dur -= 1                                     #扣時(存在時間)
@@ -3398,29 +3380,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     atk_en.delete = 1
                 
                 if atk_en.rect.colliderect(Main.rect):              #打到玩家
-
-                    if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
-                            Main.unhurtable_cd = 60
-                            Main.block_state["playing"] = False
-                            summon_blade(Main, ATKs_AL)
-                            print("block_success!")
-                          
-                    elif Main.unhurtable_cd <= 0:                
-                        if Main.HP > 1:
-                            if Main.move_lock == 0:
-                                if Main.rect.x-atk_en.rect.x > 0:
-                                    Main.vx = 10
-                                else:
-                                    Main.vx =- 10
-                                Main.y -= 10
-                                Main.rect.y -= 10
-                                Main.vy = -15
-                                Main.is_hurt = 30
-                            Main.get_hit()
-                                        
-                        elif Main.HP == 1:
-                            Main.get_hit()
-                        atk_en.delete = 1
+                    hurt_check(Main,atk_en,True)
 
 
             elif atk_en.dif == "web":
@@ -3488,28 +3448,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                             
                 if atk_en.rect.colliderect(Main.rect):              #打到玩家
+                    hurt_check(Main,atk_en)
 
-                    if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
-                            Main.unhurtable_cd = 60
-                            Main.block_state["playing"] = False
-                            summon_blade(Main, ATKs_AL)
-                            print("block_success!")     
-                         
-                    elif Main.unhurtable_cd <= 0:          
-                        if Main.HP > 1:
-                            if Main.move_lock == 0:
-                                if Main.rect.x-atk_en.rect.x > 0:
-                                    Main.vx = 10
-                                else:
-                                    Main.vx =- 10
-                                Main.y -= 10
-                                Main.rect.y -= 10
-                                Main.vy = -15
-                                Main.is_hurt = 30
-                            Main.get_hit()
-                                        
-                        elif Main.HP == 1:
-                            Main.get_hit()
 
 
 
@@ -3545,29 +3485,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
                     if atk_en.rect.colliderect(Main.rect):              #打到玩家
+                        hurt_check(Main,atk_en,True)
 
-                        if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
-                            Main.unhurtable_cd = 60
-                            Main.block_state["playing"] = False
-                            summon_blade(Main, ATKs_AL)
-                            print("block_success!")   
-                               
-                        elif Main.unhurtable_cd <= 0:
-                                            
-                            if Main.HP > 1:
-                                if Main.move_lock == 0:
-                                    if Main.rect.x-atk_en.rect.x > 0:
-                                        Main.vx = 10
-                                    else:
-                                        Main.vx =- 10
-                                    Main.y -= 10
-                                    Main.rect.y -= 10
-                                    Main.vy = -15
-                                    Main.is_hurt = 30
-                                            
-                            elif Main.HP == 1:
-                                Main.get_hit()
-                            atk_en.delete = 1
 
 
                     for obj in NT_object:                               #撞牆掰掰
@@ -3672,29 +3591,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                 atk_en.surface = atk_en.frames[atk_en.dur//5]
                 if atk_en.rect.colliderect(Main.rect):              #打到玩家
+                    hurt_check(Main,atk_en)
 
-                    if Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
-                            Main.unhurtable_cd = 60
-                            Main.block_state["playing"] = False
-                            summon_blade(Main, ATKs_AL)
-                            print("block_success!")   
-
-                    elif Main.unhurtable_cd <= 0:
-                                            
-                        if Main.HP > 1:
-                            if Main.move_lock == 0:
-                                if Main.rect.x-atk_en.rect.x > 0:
-                                    Main.vx = 10
-                                else:
-                                    Main.vx =- 10
-                                Main.y -= 10
-                                Main.rect.y -= 10
-                                Main.vy = -15
-                                Main.is_hurt = 30
-                            Main.get_hit()
-                                            
-                        elif Main.HP == 1:
-                            Main.get_hit()
                         
                 
 
@@ -3711,13 +3609,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             ATKs_EN.remove(atk_en)
             del atk_en            
             
-
-
-
-
-
-
-
     for obj in NT_object:
         Main.now_Touch.append(Touch(Main,obj))
     if not any(Main.now_Touch):
@@ -3726,7 +3617,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             
             
     #print(Main.now_Touch)
-
+    if not Main.isblock and Main.block_state["playing"]:
+        Main.vx = 0
 
 #==================================================================蹬牆跳後的位移(動vx)
 
