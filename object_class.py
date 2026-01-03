@@ -26,7 +26,8 @@ class object():
             
             case "Effect":
                 self.can_be_through = 1                                         #物件是否可通過      
-                self.dur = dur            
+                self.dur = dur
+                self.org_surface = self.surface            
             
             
             case "wall":

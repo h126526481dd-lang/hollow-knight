@@ -180,6 +180,7 @@ def load_s(save,scene_ctrl):
     scene_ctrl.L_edge = 0
     scene_ctrl.From = 0
     scene_ctrl.done = 0
+    scene_ctrl.Effect = []
 
     return scene_ctrl
 
@@ -527,6 +528,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
     for effect in scene_ctrl.Effect:
         if effect.dur > 0:
             effect.dur -= 1
+            effect.surface = pygame.transform.scale(effect.org_surface, (64 * effect.dur // 30, 64 * effect.dur // 30))
             screen.blit(effect.surface, (effect.x - camera_x , effect.y - camera_y))
         else:
             scene_ctrl.Effect.remove(effect)
@@ -3055,7 +3057,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         Main.isblock = False
         if enemy.wait == 0:                                         #怪停頓無碰撞傷害
             if Touch(Main,enemy) and enemy.TDamage == 1:
-                hurt_check(Main,enemy)
+                hurt_check(Main,enemy,scene_ctrl)
             
 
         for atk_al in ATKs_AL:                                      #我方攻擊
@@ -3370,7 +3372,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                             
                 if atk_en.rect.colliderect(Main.rect):              #打到玩家
-                    hurt_check(Main,atk_en,True)
+                    hurt_check(Main,atk_en,scene_ctrl,True)
 
             
             elif atk_en.dif == "fire":
@@ -3380,7 +3382,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     atk_en.delete = 1
                 
                 if atk_en.rect.colliderect(Main.rect):              #打到玩家
-                    hurt_check(Main,atk_en,True)
+                    hurt_check(Main,atk_en,scene_ctrl,True)
 
 
             elif atk_en.dif == "web":
@@ -3448,7 +3450,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                             
                 if atk_en.rect.colliderect(Main.rect):              #打到玩家
-                    hurt_check(Main,atk_en)
+                    hurt_check(Main,atk_en,scene_ctrl)
 
 
 
@@ -3485,7 +3487,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
                     if atk_en.rect.colliderect(Main.rect):              #打到玩家
-                        hurt_check(Main,atk_en,True)
+                        hurt_check(Main,atk_en,scene_ctrl,True)
 
 
 
@@ -3591,7 +3593,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                 atk_en.surface = atk_en.frames[atk_en.dur//5]
                 if atk_en.rect.colliderect(Main.rect):              #打到玩家
-                    hurt_check(Main,atk_en)
+                    hurt_check(Main,atk_en,scene_ctrl)
 
                         
                 
