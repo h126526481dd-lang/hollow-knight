@@ -397,11 +397,11 @@ class enemy():
                         self.rect.width -= 41
                         self.rect.height -= 80
 
-                        self.second_HP = 250
+                        self.second_HP = 300
 
                         self.skill_time = -1
 
-                        self.phase = 0
+                        self.phase = 3
                         self.phase_cd = 0
 
                         self.right_down_x = self.rect.x+self.rect.width +20
@@ -587,11 +587,23 @@ class enemy():
                                         self.back_check += 1                    #碰到一個物件+1
 
                                 if "1_L" in self.now_NT_Touch or "1_R" in self.now_NT_Touch and self.back_cd == 0:  #觸邊反彈
-                                    if self.phase == 3:
-                                        if player.rect.x - self.rect.x - self.rect.width//2 > 0:    #起跳前轉向玩家
-                                            self.back = 1
+                                    if "1_L" in self.now_NT_Touch:
+                                        self.x+=5
+                                        self.rect.x+=5
+
+                                    else:
+                                        self.x-=5
+                                        self.rect.x-=5
+
+                                    if self.phase == 0 or self.phase == 3:
+                                        self.skill_time = -1
+                                        self.vx = 0
+                                        self.phase_cd = random.randint(30,40)
+                                        if self.second_HP > 0:
+                                            self.phase = random.randint(0,2)
                                         else:
-                                            self.back = -1
+                                            self.phase = random.randint(0,6)
+                                    
                                     else:
                                         self.back_cd =-1
                                                         
