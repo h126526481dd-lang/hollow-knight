@@ -19,8 +19,8 @@ class player():
         self.y = y
         self.move_lock = 0
 
-        self.HP = 10
-        self.Max_HP = 10
+        self.HP = 5
+        self.Max_HP = 5
 
         self.current_HP = 10
         self.Hurt_HP = 0
@@ -348,6 +348,7 @@ class enemy():
         self.image = 0                                        #敵人圖片
         self.is_hit = 0
         self.vx = 0                                                   #敵人速度
+        self.is_parry = 0
         self.vy = 0
         self.through = 0
         self.on_ground = 0                                      #敵人是否在地面上
@@ -601,14 +602,14 @@ class enemy():
                                         self.x-=5
                                         self.rect.x-=5
 
-                                    if self.phase == 0 or self.phase == 3:
+                                    if self.phase == 0 or self.phase == 6:
                                         self.skill_time = -1
                                         self.vx = 0
                                         self.phase_cd = random.randint(30,40)
                                         if self.second_HP > 0:
                                             self.phase = random.randint(0,2)
                                         else:
-                                            self.phase = random.randint(0,6)
+                                            self.phase = random.randint(1,5)
                                     
                                     else:
                                         self.back_cd =-1
@@ -639,7 +640,7 @@ class enemy():
                                 if (self.phase == 0 or self.phase == 2 or self.phase == 3 or self.phase == 5 or self.phase == 6) and self.skill_time > 0:
 
                                     if self.on_ground :
-                                        if not self.phase == 6:
+                                        if not self.phase == 3:
                                             self.vy = 0    
                                         self.x += self.vx * self.back
                                         self.rect.x += self.vx * self.back

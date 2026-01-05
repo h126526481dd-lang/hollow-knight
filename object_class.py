@@ -27,7 +27,26 @@ class object():
             case "Effect":
                 self.can_be_through = 1                                         #物件是否可通過      
                 self.dur = dur
-                self.org_surface = self.surface            
+                self.org_surface = self.surface
+                
+                match dif:
+                    case "parry":
+                        self.rotate = random.randint(0,359)
+                        self.frames = [pygame.image.load("Image\Object\Effect\parry\p1.png"),
+                                       pygame.image.load("Image\Object\Effect\parry\p2.png"),
+                                       pygame.image.load("Image\Object\Effect\parry\p3.png"),
+                                       pygame.image.load("Image\Object\Effect\parry\p4.png"),
+                                       pygame.image.load("Image\Object\Effect\parry\p5.png"),
+                                       pygame.image.load("Image\Object\Effect\parry\p6.png"),
+                                       pygame.image.load("Image\Object\Effect\parry\p7.png"),
+                                       pygame.image.load("Image\Object\Effect\parry\p8.png"),
+                                       pygame.image.load("Image\Object\Effect\parry\p9.png"),
+                                       pygame.image.load("Image\Object\Effect\parry\p10.png"),
+                                       pygame.image.load("Image\Object\Effect\parry\p11.png"),
+                                       pygame.image.load("Image\Object\Effect\parry\p12.png")]
+                                       
+                        
+                        self.rect = self.surface.get_rect(topleft=(self.x, self.y))     #物件碰撞盒(規則)
             
             
             case "wall":
@@ -113,6 +132,7 @@ class object():
 
             case "dangerous":
                 
+                self.is_parry = 0
                 
                 match dif:
                     

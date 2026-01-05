@@ -288,28 +288,8 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                 atk.y += atk.tag_y
                 atk.rect.y += atk.tag_y
                                                     
-                if atk.rect.colliderect(player.rect) and player.unhurtable_cd <= 0:
-                    
-                    
-
-                    if player.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
-                        player.block_attack = True
-                        print("block_success!") 
-                    
-                    
-                    if player.unhurtable_cd <= 0 and player.HP > 1:
-                        if player.move_lock == 0:
-                            if player.rect.x-atk.rect.x > 0:
-                                player.vx = 10
-                            else:
-                                player.vx =- 10
-                            player.y -= 10
-                            player.rect.y -= 10
-                            player.vy = -15
-                            player.is_hurt = 30
-                                    
-                    elif player.unhurtable_cd <= 0 and player.HP == 1:
-                        player.get_hit()                                  
+                if atk.rect.colliderect(player.rect):
+                    hurt_check(player,atk,scene_ctrl)                                 
                         
                     
 
@@ -528,7 +508,18 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
     for effect in scene_ctrl.Effect:
         if effect.dur > 0:
             effect.dur -= 1
-            effect.surface = pygame.transform.scale(effect.org_surface, (64 * effect.dur // 30, 64 * effect.dur // 30))
+            
+            match effect.dif:
+                case "parry":
+                    effect.org_surface = effect.frames[11-(effect.dur // 5)]
+                    
+                    effect.surface = pygame.transform.rotate(pygame.transform.scale(effect.org_surface, (64 * effect.dur // 60, 64 * effect.dur // 60)),effect.rotate)
+            
+                case _:
+                    pass
+            
+            
+            
             screen.blit(effect.surface, (effect.x - camera_x , effect.y - camera_y))
         else:
             scene_ctrl.Effect.remove(effect)
@@ -852,14 +843,18 @@ def hurt_check(Main, atk, scene_ctrl, delete=False):
     
     if Main.unhurtable_cd > 0 and Main.block_state["playing"]:                     #如果在格檔則獲得短暫無敵
         Main.isblock = True
-        if not Main.block_attack:
+        if not Main.block_attack and atk.is_parry == 0:
             Main.unhurtable_cd += 30
             Main.block_attack = True
             pygame.mixer.Sound("Sound\parry.mp3").play()
-            scene_ctrl.Effect.append(object_class.object(atk.rect.x+atk.rect.width/2, atk.rect.y+atk.rect.height/2, pygame.image.load("Image\Object\hit_light3.png"), "Effect",0,0,None,None,None,None,30))
+            atk.is_parry = 1
+            
+            overlap = Main.rect.clip(atk.rect)
+            
+            scene_ctrl.Effect.append(object_class.object(overlap.x+overlap.width/2 , overlap.y+overlap.height/2-30,  pygame.image.load("Image\Object\Effect\parry\p1.png"), "Effect",0,0,"parry",None,None,None,60))
             print("block_success!")
             if Main.move_lock == 0:
-                if Main.rect.x-atk.rect.x > 0:
+                if Main.rect.x+Main.rect.width/2 -atk.rect.x-atk.rect.width/2 > 0:
                     Main.vx = 7
                 else:
                     Main.vx =- 7
@@ -870,7 +865,7 @@ def hurt_check(Main, atk, scene_ctrl, delete=False):
                                             
         if Main.HP > 1:
             if Main.move_lock == 0:
-                if Main.rect.x-atk.rect.x > 0:
+                if Main.rect.x+Main.rect.width/2 -atk.rect.x-atk.rect.width/2 > 0:
                     Main.vx = 10
                 else:
                     Main.vx =- 10
@@ -879,8 +874,10 @@ def hurt_check(Main, atk, scene_ctrl, delete=False):
                 Main.vy = -15
                 Main.is_hurt = 30
                 Main.get_hit()
+                
         elif Main.HP == 1:
             Main.get_hit()
+            
         if delete:
             atk.delete = 1
     return True
@@ -946,11 +943,18 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     Block = update_animation(Main, Main.block_state)
     if keys[pygame.K_l] and Main.on_ground and not Main.attack_state["playing"] and not Main.block_state["playing"] and Main.endurance > 1:
         Main.endurance -= 2
+        for enemy in Enemy:
+            enemy.is_parry = 0
         Main.block()
     elif keys[pygame.K_l] and Main.block_attack and Main.block_state["playing"]:
+        for enemy in Enemy:
+            enemy.is_parry = 0
         Main.block()
     if Block and Main.block_attack:
         Main.attack()
+        Main.atk_procedure =2
+        Main.atk_next = 1
+
         summon_blade(Main, ATKs_AL)
 
 #=====================================================================哈氣
@@ -1210,7 +1214,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         enemy.y += enemy.vy
                                         enemy.rect.y += enemy.vy
                                                 
-                                    case 3: #火焰衝刺
+                                    case 6: #火焰衝刺
 
                                         start_animation(enemy.attack_state, enemy.boss_attack3, 10, enemy.back-1, False, (320,300))   
                                         
@@ -1237,7 +1241,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                             enemy.back = -1
                                         start_animation(enemy.attack_state, enemy.boss_attack1, 6, enemy.back-1, False, (320,300))
                                         
-                                    case 6:
+                                    case 3:
                                         if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:    
                                             enemy.back = 1
                                         else:
@@ -1248,8 +1252,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                             elif enemy.attack_state["playing"] and enemy.skill_time == -1:         #動畫執行中，出招cd = -1
                                 enemy.phase_cd = -1
-                                if enemy.phase == 3:                    #若招為因果律起跳，補上重力加速度
-                                    enemy.vy+=2
+
 
                             elif enemy.anime:                           #動畫播放完畢，出招cd = -2
                                 enemy.phase_cd = -2
@@ -1285,7 +1288,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                         else:
                                             enemy.back = -1
                                             
-                                    case 3:     #火焰衝刺
+                                    case 6:     #火焰衝刺
                                         enemy.skill_time = 50           #技能時長30幀
                                         enemy.vx = 0                    #初始速度歸零
                                         enemy.vy = 0
@@ -1307,7 +1310,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                             ATKs_EN.append(object_class.object(enemy.x+enemy.rect.width//2,enemy.y,pygame.image.load("Image\Character\Enemy\Boss\web2.png"),"dangerous",1,0,"web",1,None,None))
                                         else:
                                             ATKs_EN.append(object_class.object(enemy.x+enemy.rect.width//2,enemy.y,pygame.image.load("Image\Character\Enemy\Boss\web2.png"),"dangerous",1,0,"web",None,None,None)) 
-                                    case 6:
+                                    case 3:
                                         enemy.skill_time = 50
                                         if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:    #轉向
                                             enemy.back = 1
@@ -1330,18 +1333,14 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                             
                                         if enemy.skill_time >= 15:                          #前半加速
                                                 
-                                            enemy.vx += 3 
+                                            enemy.vx += 5 
 
                                         elif enemy.skill_time >= 0 and abs(enemy.vx) > 3:   #後半減速
                                             
-                                            enemy.vx -= 3
+                                            enemy.vx -= 5
 
 
-                                        if enemy.skill_time == 1:                           #停止時轉向
-                                            if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
-                                                enemy.back = 1
-                                            else:
-                                                enemy.back = -1
+
                                             
                                     case 2:                                                 #因果律起跳
                                     
@@ -1361,7 +1360,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                                     enemy.back = -1
      
                                                 
-                                    case 3:                                                 #火焰衝刺
+                                    case 6:                                                 #火焰衝刺
                                         
                                         if enemy.skill_time == 49:
                                             ATKs_EN.append(object_class.object(enemy.rect.x + enemy.rect.width//2,enemy.rect.y+enemy.rect.height//2-50,pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"),"dangerous",1,0,"bullet",None,None,None))    
@@ -1369,7 +1368,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                             ATKs_EN.append(object_class.object(enemy.rect.x + enemy.rect.width//2,enemy.rect.y+enemy.rect.height//2-150,pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"),"dangerous",1,0,"bullet",None,None,None))    
                                         
                                         if enemy.skill_time >= 38:                          #衝
-                                            enemy.vx -= 2
+                                            enemy.vx = -15
                                             
                                         if enemy.skill_time > 0:
                                             ATKs_EN.append(object_class.object(enemy.rect.x + enemy.rect.width//2,enemy.rect.y+enemy.rect.height-50,pygame.image.load("Image\Object\Fire.png"),"dangerous",1,0,"fire",None,None,None))
@@ -1406,7 +1405,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                                                 ATKs_EN.append(object_class.object(enemy.x+enemy.rect.width//2,enemy.y,pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"),"dangerous",1,0,"bullet",3,None,None))
 
-                                    case 6:                                            
+                                    case 3:                                            
                                         if enemy.skill_time > 35:                          #前半加速
                                                 
                                             enemy.vx -= 3 
@@ -1439,22 +1438,27 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                 if enemy.second_HP == 0:
                                     
                                     if enemy.phase == 2:
-                                        enemy.phase = 3
+                                        enemy.phase = 6
                                         enemy.phase_cd = 10
                                         enemy.skill_time = -1
                                     
                                     elif enemy.phase == 4:
-                                        enemy.phase = 3
+                                        enemy.phase = 0
                                         enemy.phase_cd = 10
                                         enemy.skill_time = -1
                                     
-                                    elif enemy.phase == 6:
+                                    elif enemy.phase == 3:
                                         enemy.phase = 5
                                         enemy.phase_cd = 10
                                         enemy.skill_time = -1
+                                        
+                                    elif enemy.phase == 0:
+                                        enemy.phase = 6
+                                        enemy.phase_cd =5
+                                        enemy.skill_time = -1
                                     
                                     else:
-                                        enemy.phase=random.randint(0,6)                                         #重骰招 & cd
+                                        enemy.phase=random.randint(0,5)                                         #重骰招 & cd
                                         enemy.phase_cd = random.randint(30,40)
                                         enemy.skill_time = -1
                                         
@@ -3258,13 +3262,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
                             match enemy.dif:
 
-                                case "The_Tank":                #坦克背刀轉身、直接發現玩家 、 癱瘓計數
-                                    if not enemy.wait:
-                                        if Main.rect.x - enemy.rect.x - enemy.rect.width//2 > 0:
-                                            enemy.back = 1
-
-                                        else:
-                                            enemy.back = -1
+                                case "The_Tank":                #直接發現玩家 、 癱瘓計數
 
                                     if enemy.found==0:    
                                         enemy.found = True
@@ -3293,6 +3291,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 if enemy.second_HP <= 0:
                     scene_ctrl.BGM_state["playing"] = False
                     pygame.mixer.music.stop()
+                    if enemy.dif == "The_Tank":
+                        scene_ctrl.done = 2
                     Enemy.remove(enemy)
                     del enemy
                     
@@ -3356,8 +3356,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         atk_en.tag_y = (Main.rect.y - atk_en.rect.y)/ math.sqrt(pow(Main.rect.x - atk_en.rect.x,2)+ pow(Main.rect.y - atk_en.rect.y,2)) *20
                         atk_en.surface = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"),(20,30)),math.degrees(math.atan2(-atk_en.tag_y,atk_en.tag_x))-30)
                     elif atk_en.num == 3:
-                        atk_en.tag_x = (Main.rect.x+random.randint(-200,200) - atk_en.rect.x)/ math.sqrt(pow(Main.rect.x - atk_en.rect.x,2)+ pow(Main.rect.y - atk_en.rect.y,2)) *30
-                        atk_en.tag_y = (Main.rect.y+random.randint(-200,200) - atk_en.rect.y)/ math.sqrt(pow(Main.rect.x - atk_en.rect.x,2)+ pow(Main.rect.y - atk_en.rect.y,2)) *30
+                        atk_en.tag_x = (Main.rect.x+random.randint(-200,200) - atk_en.rect.x)/ math.sqrt(pow(Main.rect.x - atk_en.rect.x,2)+ pow(Main.rect.y - atk_en.rect.y,2)) *25
+                        atk_en.tag_y = (Main.rect.y+random.randint(-200,200) - atk_en.rect.y)/ math.sqrt(pow(Main.rect.x - atk_en.rect.x,2)+ pow(Main.rect.y - atk_en.rect.y,2)) *25
                         atk_en.surface = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("Image\Character\Enemy\Boss\Bullet.png"),(20,30)),math.degrees(math.atan2(-atk_en.tag_y,atk_en.tag_x))-30)
                         
                         

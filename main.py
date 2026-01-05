@@ -794,6 +794,9 @@ while True:
                         if Main.rect.x >= 600 and scene_ctrl.done == 0:                     
                             NT_object.append(object_class.object(400,-1500,tool.V_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
                             scene_ctrl.done = 1
+                        if scene_ctrl.done == 2:
+                            NT_object.pop()
+                            scene_ctrl.done =3
                             
                     case -3:
                         if Main.rect.x <= 0 and scene_ctrl.done == 0:
