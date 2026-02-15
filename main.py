@@ -250,8 +250,6 @@ while True:
             
             while scene_ctrl.num == 2:
                 
-                
-
                 if scene_ctrl.button_cd > 0:
                     scene_ctrl.button_cd-=1
 
@@ -839,49 +837,6 @@ while True:
                                 
                 tool.tick_mission(screen, scene, Main, Enemy, ATKs_AL, ATKs_EN, NT_object, CT_object, keys, pre_keys, hint_backpack, trans, scene_ctrl)
                 
-
-                if keys[pygame.K_b] and not pre_keys[pygame.K_b]:
-
-                    scene_ctrl.backpack = 1
-
-                    while scene_ctrl.backpack > 0:
-
-                        match   scene_ctrl.backpack:
-                            
-                            case 1:
-
-                                BUTTON.empty()
-
-                                while scene_ctrl.backpack == 1:
-
-                                    if scene_ctrl.button_cd > 0:
-                                        scene_ctrl.button_cd-=1
-
-                                    if keys[pygame.K_b] and not pre_keys[pygame.K_b]:
-
-                                        scene_ctrl.backpack = 0
-
-                                    for event in pygame.event.get():                               #偵測事件
-                                        if event.type == pygame.QUIT:
-                                            Exit_game()
-                                            
-
-                if keys[pygame.K_b] and not pre_keys[pygame.K_b]:                                         
-
-                    scene_ctrl.backpack = 1
-
-                    while scene_ctrl.backpack > 0:
-
-                        match scene_ctrl.backpack > 0:
-
-                            case 1:       #背包
-
-                                BUTTON.empty()
-
-                                screen.blit(scene[2], (0,0))
-
-                                
-
                 if keys[pygame.K_ESCAPE] and not pre_keys[pygame.K_ESCAPE]:                               #按ESC後暫停
 
                     scene_ctrl.menu = 1

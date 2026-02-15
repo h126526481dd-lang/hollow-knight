@@ -959,7 +959,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=====================================================================哈氣
 
-    if keys[pygame.K_r] and not pre_keys[pygame.K_r] and Main.backup >0 and not Main.HP == Main.Max_HP:
+    if keys[pygame.K_r] and not pre_keys[pygame.K_r] and Main.backup >0 and not Main.HP == Main.Max_HP and not Main.HP == 0:
         if (Main.HP+4) > Main.Max_HP:
             Main.HP = Main.Max_HP
         else:
