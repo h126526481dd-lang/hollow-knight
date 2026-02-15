@@ -52,6 +52,13 @@ class scene_c():
         self.BGM_state = {}
         self.BGM_state["playing"] = False
         self.Effect = []
+        '''self.go_up = keys[pygame.K_w]
+        self.go_left = keys[pygame.K_a]
+        self.go_right = keys[pygame.K_d]
+        self.attack = keys[pygame.K_j]
+        self.block = keys[pygame.K_l]
+        self.recover = keys[pygame.K_r]
+        self.dash = keys[pygame.K_LSHIFT]'''
         
 
 def Load(save):
