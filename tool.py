@@ -7,35 +7,35 @@ import object_class
 import json
 
 
-def draw_hit_flash(screen, image, pos, flash_timer, max_flash=6):
+def draw_hit_flash(display, image, pos, flash_timer, max_flash=6):
     if flash_timer > 0:
         alpha = int(255 * flash_timer / max_flash)
         flash = image.copy()
         flash.fill((alpha, alpha, alpha), special_flags=pygame.BLEND_RGB_ADD)
-        screen.blit(flash, pos)
+        display.blit(flash, pos)
     else:
-        screen.blit(image, pos)
+        display.blit(image, pos)
 
 
 def cross(A, B):
     return A[0]*B[1] - A[1]*B[0]
 
 
-def draw_line(screen, L,adj_x,adj_y, color=(255,0,0)):
+def draw_line(display, L,adj_x,adj_y, color=(255,0,0)):
     A, B, C = L
-    W, H = screen.get_size()
+    W, H = display.get_size()
 
     # vertical line (B = 0)
     if abs(B) < 1e-6:
         x = -C / A
-        pygame.draw.line(screen, color, (x-adj_x, 0-adj_y), (x-adj_x, H-adj_y))
+        pygame.draw.line(display, color, (x-adj_x, 0-adj_y), (x-adj_x, H-adj_y))
         return
 
     # otherwise compute y for x=0, x=W
     y1 = -(A*-1000 + C) / B
     y2 = -(A*W + C) / B
 
-    pygame.draw.line(screen, color, (-1000-adj_x, y1-adj_y), (W-adj_x, y2-adj_y))
+    pygame.draw.line(display, color, (-1000-adj_x, y1-adj_y), (W-adj_x, y2-adj_y))
 
 
 
@@ -186,16 +186,17 @@ def load_s(save,scene_ctrl):
 
           
 
-def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_backpack,trans,scene_ctrl):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
+def show(screen,display,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_backpack,trans,scene_ctrl):                          #繪製畫面(待修，以後應該是以場景為單位來繪製，要新增場景的class，裡面包含現在要輸入的東西)
 
     Info = pygame.display.Info()                                      #偵測用戶顯示參數
     screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
     screen_width  = Info.current_w
 
+
     adjust_y = screen_height//2                                 #螢幕中心座標
     adjust_x = screen_width//2
-    camera_x = player.x - adjust_x                              #把角色置中所需要的向量  
-    camera_y = player.y - adjust_y
+    camera_x = player.rect.x - adjust_x                              #把角色置中所需要的向量  
+    camera_y = player.rect.y - adjust_y
     camera_x = max(camera_x, scene_ctrl.L_edge)
     camera_x = min(camera_x, scene_ctrl.R_edge)
     camera_y = max(camera_y, scene_ctrl.T_edge)
@@ -205,19 +206,19 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
     camera_rect = pygame.Rect(camera_x,camera_y,screen_width,screen_height)  #攝影機碰撞盒(只顯示在螢幕中的物件)
     
 
-    screen.blit(scene, (-2000-camera_x, -2500 - camera_y))                  #繪製背景圖片(背景位置=原位置-置中向量)
+    display.blit(scene, (-2000-camera_x, -2500 - camera_y))                  #繪製背景圖片(背景位置=原位置-置中向量)
    
     for obj in NT_object:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(obj.rect):
-            screen.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
-            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.rect.x - camera_x, obj.rect.y - camera_y, obj.rect.width, obj.rect.height),1) 
+            display.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
+            pygame.draw.rect(display, (255, 0, 0),pygame.Rect(obj.rect.x - camera_x, obj.rect.y - camera_y, obj.rect.width, obj.rect.height),1) 
         
         #if obj.type == "mirror_wall":
-         #   pygame.draw.rect(screen, (255, 255, 0),pygame.Rect(obj.outerect.x - camera_x, obj.outerect.y - camera_y, obj.outerect.width, obj.outerect.height),1) 
+         #   pygame.draw.rect(display, (255, 255, 0),pygame.Rect(obj.outerect.x - camera_x, obj.outerect.y - camera_y, obj.outerect.width, obj.outerect.height),1) 
             
-          #  pygame.draw.rect(screen, (0, 255, 0),pygame.Rect(obj.F_Px - camera_x, obj.F_Py - camera_y, 10, 10),0)
-           # pygame.draw.rect(screen, (0, 0, 255),pygame.Rect(obj.S_Px - camera_x, obj.S_Py - camera_y, 10, 10),0)
-            #pygame.draw.rect(screen, (30, 30, 30),pygame.Rect(obj.T_Px - camera_x, obj.T_Py - camera_y, 10, 10),0)
+          #  pygame.draw.rect(display, (0, 255, 0),pygame.Rect(obj.F_Px - camera_x, obj.F_Py - camera_y, 10, 10),0)
+           # pygame.draw.rect(display, (0, 0, 255),pygame.Rect(obj.S_Px - camera_x, obj.S_Py - camera_y, 10, 10),0)
+            #pygame.draw.rect(display, (30, 30, 30),pygame.Rect(obj.T_Px - camera_x, obj.T_Py - camera_y, 10, 10),0)
             
 
 
@@ -226,30 +227,30 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
             
     for obj in CT_object:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(obj.rect):
-            screen.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
-            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1)
+            display.blit(obj.surface, (obj.x - camera_x, obj.y - camera_y))
+            pygame.draw.rect(display, (255, 0, 0),pygame.Rect(obj.x - camera_x, obj.y - camera_y, obj.rect.width, obj.rect.height),1)
     
 
     for enemy in Enemy:
         if camera_rect.colliderect(enemy.rect):
             if enemy.is_hit > 0:
-                draw_hit_flash(screen, enemy.surface, (enemy.x - camera_x, enemy.y - camera_y), enemy.is_hit)
+                draw_hit_flash(display, enemy.surface, (enemy.x - camera_x, enemy.y - camera_y), enemy.is_hit)
             else:
-                screen.blit(enemy.surface, (enemy.x - camera_x, enemy.y - camera_y))
-            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.rect.x - camera_x, enemy.rect.y - camera_y, enemy.rect.width, enemy.rect.height),1)
-            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(enemy.right_down_x - enemy.Test_rect.width - camera_x,  enemy.right_down_y - camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
+                display.blit(enemy.surface, (enemy.x - camera_x, enemy.y - camera_y))
+            pygame.draw.rect(display, (255, 0, 0),pygame.Rect(enemy.rect.x - camera_x, enemy.rect.y - camera_y, enemy.rect.width, enemy.rect.height),1)
+            pygame.draw.rect(display, (255, 0, 0),pygame.Rect(enemy.right_down_x - enemy.Test_rect.width - camera_x,  enemy.right_down_y - camera_y, enemy.Test_rect.width, enemy.Test_rect.height),1)
     
 
     for atk in ATKs_AL:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(atk.rect):
-            screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))
-            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
+            display.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))
+            pygame.draw.rect(display, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
     
 
     for atk in ATKs_EN:                                 #繪製物件    (若與camera有碰撞，物件位置=原位置-置中向量)
         if camera_rect.colliderect(atk.rect):
-            screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))
-            pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
+            display.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))
+            pygame.draw.rect(display, (255, 0, 0),pygame.Rect(atk.x - camera_x, atk.y - camera_y, atk.rect.width,atk.rect.height),1)
             
         if atk.dif == "light":
             for enemy in Enemy:
@@ -370,7 +371,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                         
                         
                 if camera_rect.colliderect(atk.rect):
-                    screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))                
+                    display.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))                
 
                     
                 if atk.delete == 1:
@@ -491,7 +492,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
                         
                         
                 if camera_rect.colliderect(atk.rect):
-                    screen.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))                
+                    display.blit(atk.surface, (atk.x - camera_x, atk.y - camera_y))                
 
                     
                 if atk.delete == 1:
@@ -503,7 +504,7 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
             
     
     if not player.hurt_flashing % 8 > 4:
-        screen.blit(player.surface, ( player.x - camera_x,player.y - camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
+        display.blit(player.surface, ( player.x - camera_x,player.y - camera_y))#繪製角色    (角色位置=原位置-置中向量=螢幕中心)
     
     for effect in scene_ctrl.Effect:
         if effect.dur > 0:
@@ -520,26 +521,26 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
             
             
             
-            screen.blit(effect.surface, (effect.x - camera_x , effect.y - camera_y))
+            display.blit(effect.surface, (effect.x - camera_x , effect.y - camera_y))
         else:
             scene_ctrl.Effect.remove(effect)
             del effect
     
-    pygame.draw.rect(screen, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
+    pygame.draw.rect(display, (255, 0, 0),pygame.Rect(player.rect.x - camera_x,player.rect.y - camera_y, player.rect.width, player.rect.height),1)
 
-    screen.blit(hint_backpack, (screen_width//100, screen_height//40*39))
+    display.blit(hint_backpack, (screen_width//100, screen_height//40*39))
 
-    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//8-5, player.Max_HP*50+10, screen_height//40+10))
-    pygame.draw.rect(screen, (255,255,255), (screen_width//20, screen_height//8, player.Max_HP*50, screen_height//40))
-    pygame.draw.rect(screen, (255,0,0), (screen_width//20, screen_height//8, player.HP*50, screen_height//40))
+    pygame.draw.rect(display, (0,0,0), (screen_width//20-5, screen_height//8-5, player.Max_HP*50+10, screen_height//40+10))
+    pygame.draw.rect(display, (255,255,255), (screen_width//20, screen_height//8, player.Max_HP*50, screen_height//40))
+    pygame.draw.rect(display, (255,0,0), (screen_width//20, screen_height//8, player.HP*50, screen_height//40))
     
-    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//8+95, player.Max_endurance*50+10, screen_height//50+10))
-    pygame.draw.rect(screen, (255,255,255), (screen_width//20, screen_height//8+100, player.Max_endurance*50, screen_height//50))
-    pygame.draw.rect(screen, (135,206,235), (screen_width//20, screen_height//8+100, player.endurance*50, screen_height//50))
+    pygame.draw.rect(display, (0,0,0), (screen_width//20-5, screen_height//8+95, player.Max_endurance*50+10, screen_height//50+10))
+    pygame.draw.rect(display, (255,255,255), (screen_width//20, screen_height//8+100, player.Max_endurance*50, screen_height//50))
+    pygame.draw.rect(display, (135,206,235), (screen_width//20, screen_height//8+100, player.endurance*50, screen_height//50))
 
-    pygame.draw.rect(screen, (0,0,0), (screen_width//20-5, screen_height//8+45, player.Max_backup*50+10, screen_height//50+10))
-    pygame.draw.rect(screen, (255,255,255), (screen_width//20, screen_height//8+50, player.Max_backup*50, screen_height//50))
-    pygame.draw.rect(screen, (0,255,127), (screen_width//20, screen_height//8+50, player.backup*50, screen_height//50))
+    pygame.draw.rect(display, (0,0,0), (screen_width//20-5, screen_height//8+45, player.Max_backup*50+10, screen_height//50+10))
+    pygame.draw.rect(display, (255,255,255), (screen_width//20, screen_height//8+50, player.Max_backup*50, screen_height//50))
+    pygame.draw.rect(display, (0,255,127), (screen_width//20, screen_height//8+50, player.backup*50, screen_height//50))
     
     
     
@@ -547,10 +548,11 @@ def show(screen,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,hint_back
         trans.x+=screen_width//30
         trans.rect.x+=screen_width//30
         scene_ctrl.trans -= 1
-        screen.blit(trans.surface, (trans.x, trans.y))
+        display.blit(trans.surface, (trans.x, trans.y))
 
+    scaled = pygame.transform.scale(display, (screen_width, screen_height))
+    screen.blit(scaled, (0,0))
     pygame.display.update()
-
 
 
 def Touch(object1,object2):   #物件和物件  或  物件和玩家 的碰撞偵測
@@ -865,15 +867,16 @@ def hurt_check(Main, atk, scene_ctrl, delete=False):
                                             
         if Main.HP > 1:
             if Main.move_lock == 0:
-                if Main.rect.x+Main.rect.width/2 -atk.rect.x-atk.rect.width/2 > 0:
-                    Main.vx = 10
-                else:
-                    Main.vx =- 10
                 Main.y -= 10
                 Main.rect.y -= 10
                 Main.vy = -15
-                Main.is_hurt = 30
-                Main.get_hit()
+                if Main.rect.x+Main.rect.width/2 -atk.rect.x-atk.rect.width/2 > 0:
+                    Main.vx = 10
+                    
+                else:
+                    Main.vx =- 10
+            Main.is_hurt = 30
+            Main.get_hit()
                 
         elif Main.HP == 1:
             Main.get_hit()
@@ -883,6 +886,9 @@ def hurt_check(Main, atk, scene_ctrl, delete=False):
     return True
 
 def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,keys,pre_keys,hint_backpack,trans,scene_ctrl):
+    
+    display = pygame.Surface((1536, 864))
+
     
     if Main.endurance < 4:
         Main.endurance_cd -= 1
@@ -904,7 +910,8 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if Main.hurt_flashing > 0:
         Main.hurt_flashing -= 1
     
-    Main.unhurtable_cd -= 1
+    if Main.unhurtable_cd > 0:
+        Main.unhurtable_cd -= 1
     
     if Main.inertia > 0:
         Main.inertia -= 1
@@ -3433,7 +3440,9 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     if atk_en.tag_y <0:
                         Main.vy = atk_en.tag_y-1
                     else:
-                        Main.vy = atk_en.tag_y                    
+                        Main.vy = atk_en.tag_y
+                    print(Main.unhurtable_cd)
+                        
                 for obj in NT_object:                               #撞牆掰掰
                     if atk_en.rect.colliderect(obj.rect):
                         atk_en.tag_x = 0
@@ -3686,4 +3695,5 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 #=========================================================================刷新畫面
 
    
-    show(screen,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,hint_backpack,trans,scene_ctrl)    #最終印刷
+    show(screen,display,scene[0],NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,Main,hint_backpack,trans,scene_ctrl)    #最終印刷
+    
