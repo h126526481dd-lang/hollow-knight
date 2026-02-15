@@ -428,10 +428,10 @@ while True:
 
                     BUTTON.empty()
                                          
-                    scene_ctrl.R_edge = 2500 - screen_width//2
-                    scene_ctrl.L_edge = -3200 + screen_width//2
-                    scene_ctrl.T_edge = -2300 + screen_height //2
-                    scene_ctrl.B_edge = 350
+                    scene_ctrl.R_edge = 1700 
+                    scene_ctrl.L_edge = -2500
+                    scene_ctrl.T_edge = -1700
+                    scene_ctrl.B_edge = -50
                     
 
                     scene.append(pygame.image.load("Image/Background/background.png"))                               #導入背景圖片
@@ -491,10 +491,10 @@ while True:
                     BUTTON.empty()
                     
                     
-                    scene_ctrl.R_edge = 1800 - screen_width//2
-                    scene_ctrl.L_edge = -1500 + screen_width//2
-                    scene_ctrl.T_edge = -1900 + screen_height //2
-                    scene_ctrl.B_edge = -250
+                    scene_ctrl.R_edge = 1000
+                    scene_ctrl.L_edge = -750
+                    scene_ctrl.T_edge = -1900
+                    scene_ctrl.B_edge = -700
 
                     scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*5, screen_height*5))  # 調整大小
@@ -556,10 +556,10 @@ while True:
                     BUTTON.empty()
                     
                     
-                    scene_ctrl.R_edge = 1800 - screen_width//2
-                    scene_ctrl.L_edge = -1500 + screen_width//2
-                    scene_ctrl.T_edge = -2200 + screen_height //2
-                    scene_ctrl.B_edge = 1300
+                    scene_ctrl.R_edge = 1050
+                    scene_ctrl.L_edge = -700
+                    scene_ctrl.T_edge = -1750
+                    scene_ctrl.B_edge = 900
 
 
                     scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
@@ -621,9 +621,9 @@ while True:
                     ATKs_EN = []
                     BUTTON.empty()
                     
-                    scene_ctrl.R_edge = 2150 - screen_width//2
-                    scene_ctrl.L_edge = -1500 + screen_width//2
-                    scene_ctrl.B_edge = 1500
+                    scene_ctrl.R_edge = 1300
+                    scene_ctrl.L_edge = -770
+                    scene_ctrl.B_edge = 200
 
 
                     scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
@@ -674,10 +674,10 @@ while True:
                     ATKs_EN = []
                     BUTTON.empty()
 
-                    scene_ctrl.R_edge = 2000 - screen_width//2
-                    scene_ctrl.L_edge = -1300 + screen_width//2
-                    scene_ctrl.B_edge = 2000
-                    scene_ctrl.T_edge = -1800 + screen_height//2
+                    scene_ctrl.R_edge = 1400 
+                    scene_ctrl.L_edge = -500 
+                    scene_ctrl.B_edge = 1500
+                    scene_ctrl.T_edge = -1200 
 
                     scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
                     scene[0] = pygame.transform.scale(scene[0], (screen_width*7, screen_height*7))  # 調整大小
@@ -715,9 +715,9 @@ while True:
                         (Main.x,Main.y) = Exit[scene_ctrl.From]
                         (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)
 
-                    scene_ctrl.R_edge = 2000 - screen_width//2
-                    scene_ctrl.L_edge = -1300 + screen_width//2
-                    scene_ctrl.B_edge = 2000
+                    scene_ctrl.R_edge = 1200 
+                    scene_ctrl.L_edge = -500
+                    scene_ctrl.B_edge = 1200
 
 
                     scene = []
@@ -742,23 +742,17 @@ while True:
 
 
                     
-                    NT_object.append(object_class.object(1800,1300,tool.HRZ_combine("Image/Background/floor.png",10),"wall",0,0,0,0,0,0))
 
 
                     door = pygame.image.load("Image/Object/door.png")
                     door = pygame.transform.scale(door, (200, 1200))  # 調整大小
 
-                    save_point = pygame.image.load("Image/Object/save_point.png")
-                    save_point = pygame.transform.scale(save_point, (400, 200))  # 調整大小
 
 
                     CT_object.append(object_class.object(-800,-200,door,"path",0,0,0,0,0,[1,1]))
 
                     CT_object.append(object_class.object(-800,-1200,door,"path",0,0,0,0,0,[1,2]))
-                    CT_object.append(object_class.object(2000,1000,save_point,"save_point",0,0,0,0,0,0))
                     
-                    CT_object.append(object_class.object(1800,1700,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,6,0,0))
-
                     hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
                     hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
 

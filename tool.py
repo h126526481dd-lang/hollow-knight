@@ -200,7 +200,7 @@ def show(screen,display,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,h
     camera_x = max(camera_x, scene_ctrl.L_edge)
     camera_x = min(camera_x, scene_ctrl.R_edge)
     camera_y = max(camera_y, scene_ctrl.T_edge)
-    camera_y = min(camera_y, scene_ctrl.B_edge - screen_height//2)
+    camera_y = min(camera_y, scene_ctrl.B_edge)
     #print(camera_x, camera_y)
     
     camera_rect = pygame.Rect(camera_x,camera_y,screen_width,screen_height)  #攝影機碰撞盒(只顯示在螢幕中的物件)
@@ -3673,7 +3673,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     Main.pre_vx = Main.vx
     Main.pre_vy = Main.vy
 
-    if Main.y > scene_ctrl.B_edge + 500:
+    if Main.y > scene_ctrl.B_edge + 836:
         Main.HP = 0
     
     
