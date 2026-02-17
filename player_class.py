@@ -68,7 +68,7 @@ class player():
         self.atk_next = 0
 
 
-        
+        self.K_power = 0
 
         #匯入Walk.png圖片並切分成動畫       
 
@@ -125,9 +125,10 @@ class player():
         #[12]小怪不以你為目標
         #[13]疾跑：double a or d
         self.skill13_time = 0
-        #[14]指定敵怪閃現貼臉：Tab選取+Lshift+長K
+        #[14]指定敵怪閃現貼臉：Tab選取+長K+Lshift
         self.skill14_time = 0
-        #[15]強化普攻命中僵直：w+長K
+        self.skill14_select =  None
+        #[15]強化普攻命中僵直：長K+w
         #[16]強化普攻命中觸發特殊對話(類似夢釘)：s+長K
         #[17]佩刀可切換刀背，傷害砍半斬擊不致死，敵怪剩餘1HP視作擊敗(劇情用)
         self.Attack1 = None
@@ -340,6 +341,8 @@ class enemy():
         self.now_CT_Touch = []                                   
         self.unhurtable_cd = 0
         self.wait = 0
+        
+        self.be_selected = False
 
         self.type = type
         self.dif  = dif

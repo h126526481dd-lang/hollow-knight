@@ -10,7 +10,7 @@ import player_class
 class object():
              
     def __init__(self,x,y,IMG,type,ATK,KB,dif,num,flip,goto,dur=200):                         #物件模型
-
+        #goto是給門用的，list，首項是目的地，次項是目的地的Exit編號
         self.type=type
         self.x = x                                                    #物件位置
         self.y = y
