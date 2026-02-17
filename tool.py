@@ -201,6 +201,10 @@ def show(screen,display,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,h
 
     adjust_y = screen_height//2                                 #螢幕中心座標
     adjust_x = screen_width//2
+    
+    global camera_x
+    global camera_y
+    
     camera_x = player.rect.x - adjust_x                              #把角色置中所需要的向量  
     camera_y = player.rect.y - adjust_y
     camera_x = max(camera_x, scene_ctrl.L_edge)
@@ -208,7 +212,7 @@ def show(screen,display,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,h
     camera_y = max(camera_y, scene_ctrl.T_edge)
     camera_y = min(camera_y, scene_ctrl.B_edge)
     #print(camera_x, camera_y)
-    
+    global camera_rect
     camera_rect = pygame.Rect(camera_x,camera_y,1536,864)  #攝影機碰撞盒(只顯示在螢幕中的物件)
     
 
@@ -975,20 +979,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         
         Main.skill_key[14] = 2
         
-        Info = pygame.display.Info()                                      #偵測用戶顯示參數
-        screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
-        screen_width  = Info.current_w
-        adjust_y = screen_height//2                                 #螢幕中心座標
-        adjust_x = screen_width//2
-        camera_x = Main.rect.x - adjust_x                              #把角色置中所需要的向量  
-        camera_y = Main.rect.y - adjust_y
-        camera_x = max(camera_x, scene_ctrl.L_edge)
-        camera_x = min(camera_x, scene_ctrl.R_edge)
-        camera_y = max(camera_y, scene_ctrl.T_edge)
-        camera_y = min(camera_y, scene_ctrl.B_edge)
-        #print(camera_x, camera_y)
-        
-        camera_rect = pygame.Rect(camera_x,camera_y,1536,864)  #攝影機碰撞盒(只顯示在螢幕中的物件)
+
         
         Main.skill14_select = 0
         
@@ -1009,49 +1000,26 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             enemy.distant =math.sqrt(pow(enemy.rect.x+enemy.rect.width/2   -   Main.rect.x-Main.rect.width/2,2)+pow(enemy.rect.y+enemy.rect.height/2   -   Main.rect.y-Main.rect.height/2,2))
         Enemy.sort(key=lambda e: e.distant)  
 
-        Info = pygame.display.Info()                                      #偵測用戶顯示參數
-        screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
-        screen_width  = Info.current_w
-        adjust_y = screen_height//2                                 #螢幕中心座標
-        adjust_x = screen_width//2
-        camera_x = Main.rect.x - adjust_x                              #把角色置中所需要的向量  
-        camera_y = Main.rect.y - adjust_y
-        camera_x = max(camera_x, scene_ctrl.L_edge)
-        camera_x = min(camera_x, scene_ctrl.R_edge)
-        camera_y = max(camera_y, scene_ctrl.T_edge)
-        camera_y = min(camera_y, scene_ctrl.B_edge)
-        #print(camera_x, camera_y)
-        
-        camera_rect = pygame.Rect(camera_x,camera_y,1536,864)  #攝影機碰撞盒(只顯示在螢幕中的物件)
         
         Main.skill14_select += 1
-        while not Enemy[Main.skill14_select].rect.colliderect(camera_rect):
-            Main.skill14_select += 1
-            if Main.skill14_select >= len(Enemy)-1:
-                Main.skill14_select = None
-                Main.skill_key[14] = 1
-                break
-
+        
         if Main.skill14_select >= len(Enemy)-1:
             Main.skill14_select = None
             Main.skill_key[14] = 1
             
+        if Main.skill14_select != None: 
+            while not Enemy[Main.skill14_select].rect.colliderect(camera_rect):
+                Main.skill14_select += 1
+                if Main.skill14_select >= len(Enemy)-1:
+                    Main.skill14_select = None
+                    Main.skill_key[14] = 1
+                    break
+
+
+            
     elif Main.skill_key[14] == 2:
         
-        Info = pygame.display.Info()                                      #偵測用戶顯示參數
-        screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
-        screen_width  = Info.current_w
-        adjust_y = screen_height//2                                 #螢幕中心座標
-        adjust_x = screen_width//2
-        camera_x = Main.rect.x - adjust_x                              #把角色置中所需要的向量  
-        camera_y = Main.rect.y - adjust_y
-        camera_x = max(camera_x, scene_ctrl.L_edge)
-        camera_x = min(camera_x, scene_ctrl.R_edge)
-        camera_y = max(camera_y, scene_ctrl.T_edge)
-        camera_y = min(camera_y, scene_ctrl.B_edge)
-        #print(camera_x, camera_y)
         
-        camera_rect = pygame.Rect(camera_x,camera_y,1536,864)  #攝影機碰撞盒(只顯示在螢幕中的物件)
         if not Enemy[Main.skill14_select].rect.colliderect(camera_rect):
             
             print("out of sight")
@@ -1078,16 +1046,16 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         summon_blade(Main, ATKs_AL)
 #=====================================================================So Fucking Cool Skill Area
 
-    if keys[pygame.K_k] and pre_keys[pygame.K_k] and Main.K_power < 90  and not Main.block_state["playing"] and Main.HP > 0:
+    if keys[pygame.K_k] and pre_keys[pygame.K_k] and Main.K_power < 60  and not Main.block_state["playing"] and Main.HP > 0:
         Main.K_power += 1
+        if Main.K_power == 60:
+            pygame.mixer.Sound("Sound\K.mp3").play()
+            print("K_power:", Main.K_power)
     elif not keys[pygame.K_k] and not Main.K_power < 0:
         Main.K_power = 0
 
-    else:
-        #pygame.mixer.Sound("Sound\K_skill.mp3").play()
-        print("K_power:", Main.K_power)
     
-    if Main.K_power == 90 and keys[pygame.K_LSHIFT] and not Main.block_state["playing"] and Main.HP > 0 and Main.skill_key[14]==2:
+    if Main.K_power == 60 and keys[pygame.K_LSHIFT] and not Main.block_state["playing"] and Main.HP > 0 and Main.skill_key[14]==2:
         Main.K_power = 0
         org_x = Main.rect.x
         org_y = Main.rect.y
@@ -1116,29 +1084,20 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
             (Blade.x, Blade.y) = (Blade.x + V[0]*20, Blade.y + V[1]*20)
             for enemy in Enemy:
                 if enemy.rect.colliderect(Blade) and enemy.unhurtable_cd == 0:
-                    enemy.HP -= Main.ATK*2
+                    enemy.HP -= Main.ATK*4
                     enemy.unhurtable_cd = 20
                     enemy.is_hit = 6
         Main.skill_key[14] = 3
         
 
     if Main.skill_key[14] == 3:        
-        Info = pygame.display.Info()                                      #偵測用戶顯示參數
-        screen_height = Info.current_h                                  #設定畫面大小成用戶螢幕大小
-        screen_width  = Info.current_w
-        adjust_y = screen_height//2                                 #螢幕中心座標
-        adjust_x = screen_width//2
-        camera_x = Main.rect.x - adjust_x                              #把角色置中所需要的向量  
-        camera_y = Main.rect.y - adjust_y
-        camera_x = max(camera_x, scene_ctrl.L_edge)
-        camera_x = min(camera_x, scene_ctrl.R_edge)
-        camera_y = max(camera_y, scene_ctrl.T_edge)
-        camera_y = min(camera_y, scene_ctrl.B_edge)
+
         Main.skill14_time -= 1
         
         pygame.display.update()
         if Main.skill14_time == 0:
             Main.skill_key[14] = 1
+            Main.skill14_select = None
             del org
             del Blade
 
@@ -1206,7 +1165,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=====================================================================衝刺按鍵
 
-        if keys[key_manager.get_key("dash")] and Main.skill_key[6]==1 and (Main.on_ground or (Main.on_ground==False and Main.skill_key[5]==1)) and Main.endurance > 0 and Main.HP > 0 and Main.move_lock == 0:
+        if keys[key_manager.get_key("dash")] and Main.skill_key[6]==1 and (Main.on_ground or (Main.on_ground==False and Main.skill_key[5]==1)) and not Main.skill14_time > 0 and Main.endurance > 0 and Main.HP > 0 and Main.move_lock == 0:
             if Main.inertia == 0:
                 Main.vx = 0
 
