@@ -1151,7 +1151,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=================================================偵測角色攻擊按鍵(是否按下j鍵, 是否在撥放攻擊動畫, 前一偵是否按著j鍵, 是否在執行格檔)
 
-        if keys[key_manager.get_key("attack")] and not Main.attack_state["playing"] and not pre_keys[key_manager.get_key("attack")] and Main.HP > 0 and not Main.block_state["playing"]:
+        if keys[key_manager.get_key("attack")] and not Main.attack_state["playing"] and not pre_keys[key_manager.get_key("attack")] and Main.HP > 0 and not Main.block_state["playing"] and not Main.drinking > 0:
 
             #如果未銜接攻擊，攻擊步驟歸零
             if Main.atk_next <= 0:
