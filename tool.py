@@ -5,7 +5,9 @@ import math
 import player_class
 import object_class
 import json
+from key_bind import KeyBindingManager
 
+key_manager = KeyBindingManager()
 
 def draw_hit_flash(display, image, pos, flash_timer, max_flash=6):
     if flash_timer > 0:
@@ -120,6 +122,8 @@ def reset(save,scene_ctrl):
         scene_ctrl.R_edge = 0
         scene_ctrl.L_edge = 0
         scene_ctrl.From = 0
+        scene_ctrl.backpack = 0
+        scene_ctrl.key_set = 0
         scene_ctrl.done = 0
         scene_ctrl.minute = 0
         scene_ctrl.second = 0
@@ -181,6 +185,8 @@ def load_s(save,scene_ctrl):
     scene_ctrl.From = 0
     scene_ctrl.done = 0
     scene_ctrl.Effect = []
+    scene_ctrl.minute = data["minute"]
+    scene_ctrl.second = data["second"]
 
     return scene_ctrl
 
@@ -916,7 +922,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
     if Main.drinking > 0:
         Main.drinking -= 1
         if Main.drinking == 0:
-            Main.movelock = 0
+            Main.move_lock = 0
 
     if Main.hurt_flashing > 0:
         Main.hurt_flashing -= 1
@@ -1055,12 +1061,12 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 #=====================================================================格擋
 
     Block = update_animation(Main, Main.block_state)
-    if keys[pygame.K_l] and Main.on_ground and not Main.attack_state["playing"] and not Main.block_state["playing"] and Main.endurance > 1:
+    if keys[key_manager.get_key("block")] and Main.on_ground and not Main.attack_state["playing"] and not Main.block_state["playing"] and Main.endurance > 1:
         Main.endurance -= 2
         for enemy in Enemy:
             enemy.is_parry = 0
         Main.block()
-    elif keys[pygame.K_l] and Main.block_attack and Main.block_state["playing"]:
+    elif keys[key_manager.get_key("block")] and Main.block_attack and Main.block_state["playing"]:
         for enemy in Enemy:
             enemy.is_parry = 0
         Main.block()
@@ -1138,14 +1144,14 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=====================================================================哈氣
 
-    if keys[pygame.K_r] and not pre_keys[pygame.K_r] and Main.backup >0 and not Main.HP == Main.Max_HP and not Main.HP == 0:
+    if keys[key_manager.get_key("heal")] and not pre_keys[key_manager.get_key("heal")] and Main.backup >0 and not Main.HP == Main.Max_HP and not Main.HP == 0:
         if (Main.HP+4) > Main.Max_HP:
             Main.HP = Main.Max_HP
         else:
             Main.HP += 4
         Main.backup -= 1
-        Main.move_lock == 1
-        Main.drinking = 180
+        Main.move_lock = 1
+        Main.drinking = 120
 
 #===========================================================移動按鍵判定(動vx)(動角色圖片)
 
@@ -1153,17 +1159,17 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
         if (not Main.attack_state["playing"] or Main.atk_procedure != 0):     #如果不是第三段攻擊且不是格檔中
             if not Main.block_state["playing"]:
-                if keys[pygame.K_d] and keys[pygame.K_a] and Main.move_lock == 0:                       #避免同時按兩個方向鍵
+                if keys[key_manager.get_key("move_right")] and keys[key_manager.get_key("move_left")] and Main.move_lock == 0:                       #避免同時按兩個方向鍵
                     if  Main.inertia == 0:
                         Main.idle() 
                         Main.vx = 0
                             
                 else:
                             
-                    if keys[pygame.K_d] and Main.move_lock == 0:                                        #按下d鍵右移
+                    if keys[key_manager.get_key("move_right")] and Main.move_lock == 0:                                        #按下d鍵右移
                         Main.R_move()
 
-                    elif keys[pygame.K_a] and Main.move_lock == 0:                                      #按下a鍵左移
+                    elif keys[key_manager.get_key("move_left")] and Main.move_lock == 0:                                      #按下a鍵左移
                         Main.L_move()
 
                     else:                                                       #不移動時水平速度歸零(沒有慣性)
@@ -1186,7 +1192,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=================================================偵測角色攻擊按鍵(是否按下j鍵, 是否在撥放攻擊動畫, 前一偵是否按著j鍵, 是否在執行格檔)
 
-        if keys[pygame.K_j] and not Main.attack_state["playing"] and not pre_keys[pygame.K_j] and Main.HP > 0 and not Main.block_state["playing"]:
+        if keys[key_manager.get_key("attack")] and not Main.attack_state["playing"] and not pre_keys[key_manager.get_key("attack")] and Main.HP > 0 and not Main.block_state["playing"]:
 
             #如果未銜接攻擊，攻擊步驟歸零
             if Main.atk_next <= 0:
@@ -1200,7 +1206,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=====================================================================衝刺按鍵
 
-        if keys[pygame.K_LSHIFT] and Main.skill_key[6]==1 and (Main.on_ground or (Main.on_ground==False and Main.skill_key[5]==1)) and not ((Main.skill_key[14]==2 and Main.K_power == 90) or Main.skill14_time > 0) and Main.endurance > 0 and Main.HP > 0 and Main.move_lock == 0:
+        if keys[key_manager.get_key("dash")] and Main.skill_key[6]==1 and (Main.on_ground or (Main.on_ground==False and Main.skill_key[5]==1)) and Main.endurance > 0 and Main.HP > 0 and Main.move_lock == 0:
             if Main.inertia == 0:
                 Main.vx = 0
 
@@ -1299,7 +1305,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         Main.inertia = 0
 #=================================================================w判定
 
-    if keys[pygame.K_w]:
+    if keys[key_manager.get_key("saving")]:
         for obj in CT_object:
             if Touch(Main,obj):
                 
@@ -3830,11 +3836,11 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 
     #如果(按下空格, 在地上, 剛才沒按空格)
-    if keys[pygame.K_SPACE] and keys[pygame.K_s] and "1_DP" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0 and Main.move_lock == 0:                      #按下空白鍵跳躍
+    if keys[key_manager.get_key("jump")] and keys[key_manager.get_key("go_down")] and "1_DP" in Main.now_NT_Touch and not pre_keys[key_manager.get_key("jump")] and Main.HP > 0 and Main.move_lock == 0:                      #按下空白鍵跳躍
         Main.through = 1
         Main.vy = 1
 
-    elif keys[pygame.K_SPACE] and not "1_U" in Main.now_NT_Touch and not pre_keys[pygame.K_SPACE] and Main.HP > 0 and Main.move_lock == 0 and not Main.block_state["playing"]:                      #按下空白鍵跳躍
+    elif keys[key_manager.get_key("jump")] and not "1_U" in Main.now_NT_Touch and not pre_keys[key_manager.get_key("jump")] and Main.HP > 0 and Main.move_lock == 0 and not Main.block_state["playing"]:                      #按下空白鍵跳躍
         Main.jump()
     
     if Main.is_hurt > 0:

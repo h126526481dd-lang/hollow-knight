@@ -9,6 +9,8 @@ import tool
 import sys
 import json
 import ctypes
+import key_bind
+
 
 def force_english_input():
     # 0x0409 是英文(美國)鍵盤代碼
@@ -44,6 +46,7 @@ class scene_c():
         self.back_cd = 0
         self.From = 0
         self.backpack = 0
+        self.key_set = 0
         self.done = 0
         self.reset = 0
         self.Save = None
@@ -52,13 +55,7 @@ class scene_c():
         self.BGM_state = {}
         self.BGM_state["playing"] = False
         self.Effect = []
-        '''self.go_up = keys[pygame.K_w]
-        self.go_left = keys[pygame.K_a]
-        self.go_right = keys[pygame.K_d]
-        self.attack = keys[pygame.K_j]
-        self.block = keys[pygame.K_l]
-        self.recover = keys[pygame.K_r]
-        self.dash = keys[pygame.K_LSHIFT]'''
+        
         
 
 def Load(save):
@@ -139,6 +136,7 @@ screen_width  = Info.current_w
 
 trans=object_class.object(-1*screen_width,-0.5*screen_height,pygame.transform.scale(pygame.image.load("Image/Background/trans.png"), (screen_width*2, screen_height*2)),"trans",0,0,0,0,0,0)
 
+key_manager = key_bind.KeyBindingManager()
 
 scene_ctrl=scene_c()
 
@@ -223,10 +221,11 @@ while True:
             BUTTON.empty()
 
             button1 = button.Button(screen_width//4, screen_height//4, "Audio", lambda:button.on_click(scene_ctrl,4))
-            button2 = button.Button(screen_width//4, screen_height//2, "Video", lambda:button.on_click(scene_ctrl,4))  
+            button2 = button.Button(screen_width//4, screen_height//4*2, "Video", lambda:button.on_click(scene_ctrl,4))
+            button3 = button.Button(screen_width//4, screen_height//4*3, "key setting", lambda:button.on_click(scene_ctrl,6))
             button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
 
-            BUTTON.add(button1, button2, button_back)
+            BUTTON.add(button1, button2, button3, button_back)
 
             while scene_ctrl.num == 1: 
             
@@ -285,7 +284,7 @@ while True:
             
             BUTTON.empty()
              
-            button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 0))
+            button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 1))
             BUTTON.add(button_back)
 
 
@@ -401,10 +400,287 @@ while True:
 
 #=======================================================================================================
 
-        #case 6:                                                               
-
-            #BUTTON.empty()
+        case 6:                                                                       #千呼萬喚的改按鍵
             
+            match scene_ctrl.key_set:
+
+                case 0:
+
+                    BUTTON.empty()
+
+                    button_back = button.Button(screen_width//4*3, screen_height//8*7, "Go back", lambda:button.on_click(scene_ctrl, 1))
+
+                    key_saving:str = "saving : " + key_manager.get_key_name("saving")
+                    text = font_2.render(key_saving, True, (0,0,0))
+                    rect = text.get_rect(center=(screen_width//4, screen_height//8*2))
+
+                    key_move_left:str = "move_left : " + key_manager.get_key_name("move_left")
+                    text2 = font_2.render(key_move_left, True, (0,0,0))
+                    rect2 = text2.get_rect(center=(screen_width//4, screen_height//8*3))
+
+                    key_move_right:str = "move_right : " + key_manager.get_key_name("move_right")
+                    text3 = font_2.render(key_move_right, True, (0,0,0))
+                    rect3 = text3.get_rect(center=(screen_width//4, screen_height//8*4))
+
+                    key_go_down:str = "go_down : " + key_manager.get_key_name("go_down")
+                    text4 = font_2.render(key_go_down, True, (0,0,0))
+                    rect4 = text4.get_rect(center=(screen_width//4, screen_height//8*5))
+
+                    key_jump:str = "jump : " + key_manager.get_key_name("jump")
+                    text5 = font_2.render(key_jump, True, (0,0,0))
+                    rect5 = text5.get_rect(center=(screen_width//4, screen_height//8*6))
+
+                    key_dash:str = "dash : " + key_manager.get_key_name("dash")
+                    text6 = font_2.render(key_dash, True, (0,0,0))
+                    rect6 = text6.get_rect(center=(screen_width//4*3, screen_height//8*2))
+
+                    key_attack:str = "attack : " + key_manager.get_key_name("attack")
+                    text7 = font_2.render(key_attack, True, (0,0,0))
+                    rect7 = text7.get_rect(center=(screen_width//4*3, screen_height//8*3))
+
+                    key_heal:str = "heal : " + key_manager.get_key_name("heal")
+                    text8 = font_2.render(key_heal, True, (0,0,0))
+                    rect8 = text8.get_rect(center=(screen_width//4*3, screen_height//8*4))
+
+                    key_block:str = "block : " + key_manager.get_key_name("block")
+                    text9 = font_2.render(key_block, True, (0,0,0))
+                    rect9 = text9.get_rect(center=(screen_width//4*3, screen_height//8*5))
+
+                    text10 = font_2.render("press f1 to go setting", True, (0,0,0))
+                    rect10 = text10.get_rect(center=(screen_width//4*2, screen_height//8))
+
+                    keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
+
+                    BUTTON.add(button_back)
+
+                    while scene_ctrl.num == 6 and scene_ctrl.key_set == 0:
+
+                        if scene_ctrl.button_cd > 0:
+                            scene_ctrl.button_cd-=1
+
+                        pre_keys = keys
+                        keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
+
+                        screen.fill((255,255,255))
+                        screen.blit(text, rect)
+                        screen.blit(text2, rect2)
+                        screen.blit(text3, rect3)
+                        screen.blit(text4, rect4)
+                        screen.blit(text5, rect5)
+                        screen.blit(text6, rect6)
+                        screen.blit(text7, rect7)
+                        screen.blit(text8, rect8)
+                        screen.blit(text9, rect9)
+                        screen.blit(text10, rect10)
+                        BUTTON.update(scene_ctrl)
+                        BUTTON.draw(screen)
+                        pygame.display.flip()
+
+                        if keys[pygame.K_F1] and not pre_keys[pygame.K_F1]:
+                            scene_ctrl.key_set = 1
+
+                        for event in pygame.event.get():                               #偵測事件
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                exit()
+
+                case 1:
+
+                    BUTTON.empty()
+
+                    text10 = font_2.render("press f1 to stop setting,press the keys you want to change", True, (0,0,0))
+                    rect10 = text10.get_rect(center=(screen_width//4*2, screen_height//8))
+
+                    while scene_ctrl.num == 6 and scene_ctrl.key_set == 1:
+
+                        if scene_ctrl.button_cd > 0:
+                            scene_ctrl.button_cd-=1
+
+                        pre_keys = keys
+                        keys = pygame.key.get_pressed()                             #偵測按鍵(把偵測按鍵拉出event.get()迴圈外，規避windows的按鍵延遲)
+
+                        screen.fill((255,255,255))
+                        screen.blit(text, rect)
+                        screen.blit(text2, rect2)
+                        screen.blit(text3, rect3)
+                        screen.blit(text4, rect4)
+                        screen.blit(text5, rect5)
+                        screen.blit(text6, rect6)
+                        screen.blit(text7, rect7)
+                        screen.blit(text8, rect8)
+                        screen.blit(text9, rect9)
+                        screen.blit(text10, rect10)
+                        pygame.display.flip()
+
+                        if keys[key_manager.get_key("saving")] and not pre_keys[key_manager.get_key("saving")]:
+                            scene_ctrl.key_set = 2
+                            text = font_3.render("now changing:saving,pls press the alternative key", True, (0,0,0))
+                            rect = text.get_rect(center=(screen_width//2, screen_height//2))
+                            while scene_ctrl.num == 6 and scene_ctrl.key_set == 2:
+                                screen.fill((255,255,255))
+                                screen.blit(text, rect)
+                                pygame.display.flip()
+                                                      
+                                if event.type == pygame.KEYDOWN:
+                                    key_manager.set_key("saving", event.key)
+                                    scene_ctrl.key_set = 1
+                                
+                                for event in pygame.event.get():                               #偵測事件
+                                    if event.type == pygame.QUIT:
+                                        pygame.quit()
+                                        exit()
+
+                        elif keys[key_manager.get_key("move_left")] and not pre_keys[key_manager.get_key("move_left")]:
+                            scene_ctrl.key_set = 3
+                            text = font_3.render("now changing:move_left,pls press the alternative key", True, (0,0,0))
+                            rect = text.get_rect(center=(screen_width//2, screen_height//2))
+                            while scene_ctrl.num == 6 and scene_ctrl.key_set == 3:
+                                screen.fill((255,255,255))
+                                screen.blit(text, rect)
+                                pygame.display.flip()
+                                if pygame.key.get_pressed():
+                                    key_manager.set_key("move_left", pygame.key.get_pressed())
+                                    key_manager.save()
+                                    scene_ctrl.key_set = 1
+                                
+                                for event in pygame.event.get():                               #偵測事件
+                                    if event.type == pygame.QUIT:
+                                        pygame.quit()
+                                        exit()
+
+                        elif keys[key_manager.get_key("move_right")] and not pre_keys[key_manager.get_key("move_right")]:
+                            scene_ctrl.key_set = 4
+                            text = font_3.render("now changing:move_right,pls press the alternative key", True, (0,0,0))
+                            rect = text.get_rect(center=(screen_width//2, screen_height//2))
+                            while scene_ctrl.num == 6 and scene_ctrl.key_set == 4:
+                                screen.fill((255,255,255))
+                                screen.blit(text, rect)
+                                pygame.display.flip()
+                                if pygame.key.get_pressed():
+                                    key_manager.set_key("move_right", pygame.key.get_pressed())
+                                    key_manager.save()
+                                    scene_ctrl.key_set = 1
+                                
+                                for event in pygame.event.get():                               #偵測事件
+                                    if event.type == pygame.QUIT:
+                                        pygame.quit()
+                                        exit()
+
+                        elif keys[key_manager.get_key("go_down")] and not pre_keys[key_manager.get_key("go_down")]:
+                            scene_ctrl.key_set = 5
+                            text = font_3.render("now changing:go_down,pls press the alternative key", True, (0,0,0))
+                            rect = text.get_rect(center=(screen_width//2, screen_height//2))
+                            while scene_ctrl.num == 6 and scene_ctrl.key_set == 5:
+                                screen.fill((255,255,255))
+                                screen.blit(text, rect)
+                                pygame.display.flip()
+                                if pygame.key.get_pressed():
+                                    key_manager.set_key("go_down", pygame.key.get_pressed())
+                                    key_manager.save()
+                                    scene_ctrl.key_set = 1
+                                
+                                for event in pygame.event.get():                               #偵測事件
+                                    if event.type == pygame.QUIT:
+                                        pygame.quit()
+                                        exit()
+
+                        elif keys[key_manager.get_key("jump")] and not pre_keys[key_manager.get_key("jump")]:
+                            scene_ctrl.key_set = 6
+                            text = font_3.render("now changing:jump,pls press the alternative key", True, (0,0,0))
+                            rect = text.get_rect(center=(screen_width//2, screen_height//2))
+                            while scene_ctrl.num == 6 and scene_ctrl.key_set == 6:
+                                screen.fill((255,255,255))
+                                screen.blit(text, rect)
+                                pygame.display.flip()
+                                if pygame.key.get_pressed():
+                                    key_manager.set_key("jump", pygame.key.get_pressed())
+                                    key_manager.save()
+                                    scene_ctrl.key_set = 1
+                                
+                                for event in pygame.event.get():                               #偵測事件
+                                    if event.type == pygame.QUIT:
+                                        pygame.quit()
+                                        exit()
+
+                        elif keys[key_manager.get_key("dash")] and not pre_keys[key_manager.get_key("dash")]:
+                            scene_ctrl.key_set = 7
+                            text = font_3.render("now changing:dash,pls press the alternative key", True, (0,0,0))
+                            rect = text.get_rect(center=(screen_width//2, screen_height//2))
+                            while scene_ctrl.num == 6 and scene_ctrl.key_set == 7:
+                                screen.fill((255,255,255))
+                                screen.blit(text, rect)
+                                pygame.display.flip()
+                                if pygame.key.get_pressed():
+                                    key_manager.set_key("dash", pygame.key.get_pressed())
+                                    key_manager.save()
+                                    scene_ctrl.key_set = 1
+                                
+                                for event in pygame.event.get():                               #偵測事件
+                                    if event.type == pygame.QUIT:
+                                        pygame.quit()
+                                        exit()
+
+                        elif keys[key_manager.get_key("attack")] and not pre_keys[key_manager.get_key("attack")]:
+                            scene_ctrl.key_set = 8
+                            text = font_3.render("now changing:attack,pls press the alternative key", True, (0,0,0))
+                            rect = text.get_rect(center=(screen_width//2, screen_height//2))
+                            while scene_ctrl.num == 6 and scene_ctrl.key_set == 8:
+                                screen.fill((255,255,255))
+                                screen.blit(text, rect)
+                                pygame.display.flip()
+                                if pygame.key.get_pressed():
+                                    key_manager.set_key("attack", pygame.key.get_pressed())
+                                    key_manager.save()
+                                    scene_ctrl.key_set = 1
+                                
+                                for event in pygame.event.get():                               #偵測事件
+                                    if event.type == pygame.QUIT:
+                                        pygame.quit()
+                                        exit()
+
+                        elif keys[key_manager.get_key("heal")] and not pre_keys[key_manager.get_key("heal")]:
+                            scene_ctrl.key_set = 9
+                            text = font_3.render("now changing:heal,pls press the alternative key", True, (0,0,0))
+                            rect = text.get_rect(center=(screen_width//2, screen_height//2))
+                            while scene_ctrl.num == 6 and scene_ctrl.key_set == 9:
+                                screen.fill((255,255,255))
+                                screen.blit(text, rect)
+                                pygame.display.flip()
+                                if pygame.key.get_pressed():
+                                    key_manager.set_key("heal", pygame.key.get_pressed())
+                                    key_manager.save()
+                                    scene_ctrl.key_set = 1
+                                
+                                for event in pygame.event.get():                               #偵測事件
+                                    if event.type == pygame.QUIT:
+                                        pygame.quit()
+                                        exit()
+
+                        elif keys[key_manager.get_key("block")] and not pre_keys[key_manager.get_key("block")]:
+                            scene_ctrl.key_set = 10
+                            text = font_3.render("now changing:block,pls press the alternative key", True, (0,0,0))
+                            rect = text.get_rect(center=(screen_width//2, screen_height//2))
+                            while scene_ctrl.num == 6 and scene_ctrl.key_set == 10:
+                                screen.fill((255,255,255))
+                                screen.blit(text, rect)
+                                pygame.display.flip()
+                                if pygame.key.get_pressed():
+                                    key_manager.set_key("block", pygame.key.get_pressed())
+                                    key_manager.save()
+                                    scene_ctrl.key_set = 1
+                                
+                                for event in pygame.event.get():                               #偵測事件
+                                    if event.type == pygame.QUIT:
+                                        pygame.quit()
+                                        exit()
+
+                        if keys[pygame.K_F1] and not pre_keys[pygame.K_F1]:
+                            scene_ctrl.key_set = 0
+
+                        for event in pygame.event.get():                               #偵測事件
+                            if event.type == pygame.QUIT:
+                                pygame.quit()
+                                exit()
             
 #=======================================================================================================
 
@@ -882,10 +1158,7 @@ while True:
                                         scene_ctrl.done = 1                     
                             
 
-     
-     
-     
-     
+
                 if scene_ctrl.init == 1:                                    #重返初始化(死亡回歸)
                     scene_ctrl.init = 0
                     break
