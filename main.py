@@ -510,8 +510,9 @@ while True:
 #=======================================================================================================
 
         case 10:                                                             #遊戲main loop
-
-            match scene_ctrl.game:
+            
+            match scene_ctrl.game:                    
+                #遊戲場景初始化，1.出口位置設定，2.場景物件清空，3.場景邊界設定 4.場景物件初始化
                 
                 case -3:
                     Exit = [(3000,-1500)]
@@ -811,11 +812,13 @@ while True:
 
 
                 case 2:
-                    Exit = [(-400,700),(2600,600)]
+                    Exit = [(-400,900),(2600,600)]
                     if scene_ctrl.pre_game == 1:
                         (Main.x,Main.y) = Exit[scene_ctrl.From]
                         (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)
-
+                    if scene_ctrl.pre_game == 3:
+                        (Main.x,Main.y) = Exit[scene_ctrl.From]
+                        (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)
                     scene_ctrl.R_edge = 1200 
                     scene_ctrl.L_edge = -500
                     scene_ctrl.B_edge = 1200
@@ -836,11 +839,13 @@ while True:
                     scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
                     
                     
-                    NT_object.append(object_class.object(-1000,800,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-1000,1000,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
                     
-                    NT_object.append(object_class.object(500,-400,tool.V_combine("Image/Background/floor.png",15),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(700,-1500,tool.V_combine("Image/Background/floor.png",23),"wall",0,0,0,0,0,0))
                     NT_object.append(object_class.object(-1000,-400,tool.HRZ_combine("Image/Background/floor.png",8),"wall",0,0,0,0,0,0))
+                    NT_object.append(object_class.object(-1000,-1500,tool.HRZ_combine("Image/Background/floor.png",15),"wall",0,0,0,0,0,0))
 
+                    NT_object.append(object_class.object(1800,800,tool.HRZ_combine("Image/Background/floor.png",25),"wall",0,0,0,0,0,0))
 
                     
 
@@ -854,10 +859,55 @@ while True:
 
                     CT_object.append(object_class.object(-800,-1200,door,"path",0,0,0,0,0,[1,2]))
                     
+                    CT_object.append(object_class.object(2770,0,door,"path",0,0,0,0,0,[3,0]))
+                    
                     hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
                     hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
 
+                case 3:
+                    Exit = [(-1200,0)]
+                    if scene_ctrl.pre_game == 2:
+                        (Main.x,Main.y) = Exit[scene_ctrl.From]
+                        (Main.rect.x,Main.rect.y) = (Main.x+50,Main.y+50)
+                        
+                        
+                    scene_ctrl.R_edge = 1500 
+                    scene_ctrl.L_edge = -1500
+                    scene_ctrl.B_edge = 0
 
+
+                    scene = []
+                    NT_object = []
+                    CT_object = []
+                    Enemy = []
+                    ATKs_AL = []
+                    ATKs_EN = []
+                    BUTTON.empty()
+
+                    scene.append(pygame.image.load("Image/Background/background.png"))                                 #導入背景圖片
+                    scene[0] = pygame.transform.scale(scene[0], (screen_width*7, screen_height*7))  # 調整大小
+                    scene.append(pygame.image.load("Image/Background/white.jpg"))                                    #導入背景圖片
+                    scene[1] = pygame.transform.scale(scene[1], (screen_width*5, screen_height*5))  # 調整大小
+                    
+                    
+                    NT_object.append(object_class.object(-2000,100,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+                    
+
+                    scene_ctrl.done = 0
+                
+
+
+
+                    door = pygame.image.load("Image/Object/door.png")
+                    door = pygame.transform.scale(door, (200, 1200))  # 調整大小
+
+
+
+                    CT_object.append(object_class.object(-1750,-1100,door,"path",0,0,0,0,0,[2,1]))
+
+                    
+                    hint_backpack = pygame.image.load("Image/keys/keyboard_b.png")
+                    hint_backpack = pygame.transform.scale(hint_backpack, (145,45))
 
                 case "dead":                                                #死亡緩衝區
                     Main.HP=Main.Max_HP
@@ -890,6 +940,31 @@ while True:
                 elapsed_ms = pygame.time.get_ticks() - start_time
 
                 match scene_ctrl.game:
+                    case 3:
+                        
+
+                        if Main.rect.x >= -700 and scene_ctrl.done == 0:
+                            Enemy.append(player_class.enemy("1",-1000,-700,100,"roadside",None))
+                            Enemy.append(player_class.enemy("2",-700,-1700,100,"roadside",None))
+                            Enemy.append(player_class.enemy("3",-600,-900,100,"roadside",None))
+                            Enemy.append(player_class.enemy("4",-200,-1100,100,"roadside",None))
+                            Enemy.append(player_class.enemy("5",0,-1500,100,"roadside",None))           
+                            
+                            NT_object.append(object_class.object(-1500,-1800,tool.V_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+                            NT_object.append(object_class.object(450,-1800,tool.V_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+                            NT_object.append(object_class.object(-1500,-1800,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+
+                            
+                                             
+                            scene_ctrl.done = 1
+                        elif scene_ctrl.done == 1 and len(Enemy) == 0:
+                            NT_object.append(object_class.object(-1500,700,tool.HRZ_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
+                            NT_object.pop(0)
+                            scene_ctrl.done = 2
+                            Enemy.append(player_class.enemy("6",-1100,200,200,"boss","The_Tank"))
+                            Enemy.append(player_class.enemy("7",0,200,200,"boss","The_Tank"))
+                            Enemy[1].found = 1
+
                     case -2:
                         if Main.rect.x >= 600 and scene_ctrl.done == 0:                     
                             NT_object.append(object_class.object(400,-1500,tool.V_combine("Image/Background/floor.png",20),"wall",0,0,0,0,0,0))
