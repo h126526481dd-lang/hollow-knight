@@ -1309,7 +1309,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         match enemy.type:                                       #分流 (波鼠 菁英 路邊) 
 
             case "boss":
-                print("enemy=",enemy.type,"、",enemy.dif,",cd=",enemy.phase_cd,",wait=",enemy.wait,",found=",enemy.found,",phase=",enemy.phase,",skill_time=",enemy.skill_time,",back=",enemy.back,",vx=",enemy.vx,",HP=",enemy.HP,",broke=",enemy.broke,",vy=",enemy.vy)
+                print("enemy=",enemy.type,"、",enemy.dif,",cd=",enemy.phase_cd,",wait=",enemy.wait,",found=",enemy.found,",phase=",enemy.phase,",skill_time=",enemy.skill_time,",back=",enemy.back,",vx=",enemy.vx,",HP=",enemy.HP,",broke=",enemy.broke,",vy=",enemy.vy,"on_ground=",enemy.on_ground)
 
 
                 match enemy.dif:                                #分流不同波鼠
@@ -2730,7 +2730,6 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                                     
                                     
                                     case 4:           
-                                        pygame.mixer.Sound("Sound\lazer.wav").play()
          
                                         P = [1000*math.sin(math.pi/180 * (810-enemy.skill_time)),-abs(1000*math.cos(math.pi/180 * (810-enemy.skill_time)))+700]
                                         V = [P[0],-700+P[1]]
@@ -3442,9 +3441,73 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                     pygame.mixer.music.stop()
                     if enemy.dif == "The_Tank":
                         scene_ctrl.done = 2
-                    Enemy.remove(enemy)
-                    del enemy
-                    
+                        Enemy.remove(enemy)
+                        del enemy
+                    elif enemy.dif == "The_Sun":
+                        enemy.NoGravity = 0
+                        enemy.wait = 999
+                        
+                        for obj in NT_object:
+                            if obj.type == "mirror_wall":
+                                                    
+                                                    
+                                obj.center_x = obj.x + obj.rect.width /2
+                                obj.center_y = obj.y + obj.rect.height /2
+                                                    
+                                                    
+                                if obj.dif == 0:
+                                    if obj.play == False:
+                                                            
+                                        pygame.mixer.Sound("Sound\spin.wav").play()
+                                        obj.play = True
+                                                        
+                                    if obj.angle != 0:
+                                        obj.angle -= 18
+
+                                    obj.surface = pygame.transform.rotozoom(pygame.image.load("Image\Object\\triangle_gray.png"),obj.angle+180,4)
+                                    obj.rect = obj.surface.get_rect(center=(obj.org_x+obj.org_rect_w//2, obj.org_y+obj.org_rect_h//2))
+                                                        
+                                    obj.outerect = obj.rect.inflate(160,160)
+                                                        
+                                    obj.x = obj.rect.x
+                                    obj.y = obj.rect.y
+                                                        
+                                    obj.S_Px = obj.center_x + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.cos(math.radians(344 - obj.angle))
+                                    obj.S_Py = obj.center_y + math.sqrt(pow(obj.org_rect_w/2,2)+ pow(obj.org_rect_h/2,2)) * math.sin(math.radians(344 - obj.angle))
+
+                                                        
+                                                        
+                                    obj.F_Px = obj.S_Px - math.cos(math.radians(-obj.angle)) * obj.org_rect_w
+                                    obj.F_Py = obj.S_Py - math.sin(math.radians(-obj.angle)) * obj.org_rect_w
+                                                        
+                                    obj.T_Px = obj.S_Px - math.cos(math.radians(-obj.angle-30)) * obj.org_rect_h *2
+                                    obj.T_Py = obj.S_Py - math.sin(math.radians(-obj.angle-30)) * obj.org_rect_h *2 
+
+                                                        
+                                    if obj.angle >= 360:
+                                        obj.angle -= 360
+                                    elif obj.angle < 0 :
+                                        obj.angle += 360
+                                                        
+                                    if obj.angle != 0:
+                                        obj.can_be_through = 1
+                                    elif obj.angle == 0 or obj.angle ==360:
+                                        obj.can_be_through = 2
+                                 
+                        
+                        
+                        
+                        
+                        if enemy.on_ground >= 1:
+                            CT_object.append(object_class.object(enemy.rect.x+enemy.rect.width//2,enemy.rect.y+enemy.rect.height//2,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,14,0,0))
+                            Enemy.remove(enemy)
+                            del enemy                    
+                            for atk in ATKs_EN:
+                                if atk.dif == "light_sword":
+                                    atk.delete = 1
+                                if atk.dif == "light_ball":
+                                    atk.delete = 1
+                            scene_ctrl.done = 2
                 else:
                     enemy.unhurtable_cd = 300
                     print("二階段")

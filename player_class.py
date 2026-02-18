@@ -446,7 +446,7 @@ class enemy():
                         self.NoGravity = 1
                         self.skill_time = 0
 
-                        self.phase = 4
+                        self.phase = 2
                         self.phase_cd = 0
 
                         self.right_down_x = self.rect.x+self.rect.width +20

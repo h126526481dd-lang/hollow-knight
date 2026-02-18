@@ -1156,7 +1156,13 @@ while True:
                                         NT_object.remove(obj)
                                         del obj
                                         scene_ctrl.done = 1                     
-                            
+                        if scene_ctrl.done == 2:
+                            NT_object.append(object_class.object(-100,400,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,0,0,0,0))
+                            NT_object.append(object_class.object(-100,0,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,0,0,0,0))
+                            NT_object.append(object_class.object(-100,-400,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,0,0,0,0))
+                            NT_object.append(object_class.object(-100,-800,pygame.transform.rotate(pygame.image.load("Image\Object\\triangle_gray.png"),180),"mirror_wall",0,0,0,0,0,0))
+                            NT_object.append(object_class.object(-100,-1200,pygame.transform.rotate(tool.HRZ_combine("Image\Object\\triangle_gray.png",7),180),"mirror_wall",0,0,0,0,0,0))
+                            scene_ctrl.done = 3             
 
 
                 if scene_ctrl.init == 1:                                    #重返初始化(死亡回歸)
