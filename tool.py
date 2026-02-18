@@ -199,8 +199,8 @@ def show(screen,display,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,h
     screen_width  = Info.current_w
 
 
-    adjust_y = screen_height//2                                 #螢幕中心座標
-    adjust_x = screen_width//2
+    adjust_y = 864//2                                 #螢幕中心座標
+    adjust_x = 1536//2
     
     global camera_x
     global camera_y
@@ -985,7 +985,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         
         while not Enemy[Main.skill14_select].rect.colliderect(camera_rect):
             Main.skill14_select += 1
-            if Main.skill14_select >= len(Enemy)-1:
+            if Main.skill14_select > len(Enemy)-1:
                 Main.skill14_select = None
                 Main.skill_key[14] = 1
                 
@@ -996,21 +996,18 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                 break
             
     elif Main.skill_key[14] == 2 and keys[pygame.K_TAB] and not pre_keys[pygame.K_TAB] and not Main.block_state["playing"] and len(Enemy) > 0 :
-        for enemy in Enemy:
-            enemy.distant =math.sqrt(pow(enemy.rect.x+enemy.rect.width/2   -   Main.rect.x-Main.rect.width/2,2)+pow(enemy.rect.y+enemy.rect.height/2   -   Main.rect.y-Main.rect.height/2,2))
-        Enemy.sort(key=lambda e: e.distant)  
 
         
         Main.skill14_select += 1
         
-        if Main.skill14_select >= len(Enemy)-1:
+        if Main.skill14_select > len(Enemy)-1:
             Main.skill14_select = None
             Main.skill_key[14] = 1
             
         if Main.skill14_select != None: 
             while not Enemy[Main.skill14_select].rect.colliderect(camera_rect):
                 Main.skill14_select += 1
-                if Main.skill14_select >= len(Enemy)-1:
+                if Main.skill14_select > len(Enemy)-1:
                     Main.skill14_select = None
                     Main.skill_key[14] = 1
                     break
@@ -1055,7 +1052,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         Main.K_power = 0
 
     
-    if Main.K_power == 60 and keys[pygame.K_LSHIFT] and not Main.block_state["playing"] and Main.HP > 0 and Main.skill_key[14]==2:
+    if Main.K_power == 60 and keys[pygame.K_LSHIFT] and not Main.block_state["playing"] and Main.HP > 0 and Main.skill_key[14]==2 and Main.endurance >= 2:
         Main.K_power = 0
         org_x = Main.rect.x
         org_y = Main.rect.y
@@ -1103,14 +1100,14 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
 
 #=====================================================================哈氣
 
-    if keys[key_manager.get_key("heal")] and not pre_keys[key_manager.get_key("heal")] and Main.backup >0 and not Main.HP == Main.Max_HP and not Main.HP == 0:
+    if keys[key_manager.get_key("heal")] and not pre_keys[key_manager.get_key("heal")] and Main.backup >0 and not Main.HP == Main.Max_HP and not Main.HP == 0 and Main.on_ground and not Main.block_state["playing"]:
         if (Main.HP+4) > Main.Max_HP:
             Main.HP = Main.Max_HP
         else:
             Main.HP += 4
         Main.backup -= 1
         Main.move_lock = 1
-        Main.drinking = 120
+        Main.drinking = 80
 
 #===========================================================移動按鍵判定(動vx)(動角色圖片)
 
