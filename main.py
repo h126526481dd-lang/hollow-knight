@@ -1146,6 +1146,7 @@ while True:
                             scene_ctrl.done = 1
                         if scene_ctrl.done == 2:
                             NT_object.pop()
+                            CT_object.append(object_class.object(800,0,pygame.image.load("Image/Object/skill.png"),"skill",0,0,0,13,0,0))
                             scene_ctrl.done =3
                             
                     case -3:

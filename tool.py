@@ -258,7 +258,7 @@ def show(screen,display,scene,NT_object,CT_object,Enemy,ATKs_AL,ATKs_EN,player,h
                         print("in sight") 
 
     if player.skill_key[14] == 3:
-        pygame.draw.line(display, (255, 255, 255), (org.x - camera_x + 15, org.y - camera_y + 15), (Blade.x - camera_x + 15, Blade.y - camera_y + 15), 3)
+        pygame.draw.line(display, (255, 255, 255), (org.x - camera_x + 15, org.y - camera_y + 15), (Blade.x - camera_x + 15, Blade.y - camera_y + 15), 2)
 
 
 
@@ -1061,7 +1061,7 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
         org_y = Main.rect.y
         
         Main.rect.x= Enemy[Main.skill14_select].rect.x+Enemy[Main.skill14_select].rect.width/2
-        Main.rect.y= Enemy[Main.skill14_select].rect.y
+        Main.rect.y= Enemy[Main.skill14_select].rect.y+Enemy[Main.skill14_select].rect.height/3
         
         Main.x = Main.rect.x-50
         Main.y = Main.rect.y-50
@@ -1124,17 +1124,86 @@ def tick_mission(screen,scene,Main,Enemy,ATKs_AL,ATKs_EN,NT_object,CT_object,key
                         Main.vx = 0
                             
                 else:
+                    if Main.skill_key[13] == 1:
+                        
+                        print(Main.run, Main.vx)
+                        
+                        if Main.run > 0:
+                            Main.run -= 1
+                        elif Main.run < 0:
+                            Main.run += 1
+                        
+                        
+                        if (keys[key_manager.get_key("move_right")] and not pre_keys[key_manager.get_key("move_right")] and Main.move_lock == 0) and Main.run > 0:                                        #按下d鍵右移
+                            Main.run = 30
                             
-                    if keys[key_manager.get_key("move_right")] and Main.move_lock == 0:                                        #按下d鍵右移
-                        Main.R_move()
+                        if (keys[key_manager.get_key("move_left")] and not pre_keys[key_manager.get_key("move_left")] and Main.move_lock == 0) and Main.run < 0:                                      #按下a鍵左移
+                            Main.run = -30
+                        
+                        if (keys[key_manager.get_key("move_right")] and not pre_keys[key_manager.get_key("move_right")] and Main.move_lock == 0) and Main.run == 0:                                        #按下d鍵右移
+                            Main.run += 15
+                            
+                        if (keys[key_manager.get_key("move_left")] and not pre_keys[key_manager.get_key("move_left")] and Main.move_lock == 0) and Main.run == 0:                                      #按下a鍵左移
+                            Main.run -= 15
+                                               
+                        if Main.run > 20:
+                        
+                            if keys[key_manager.get_key("move_right")] and Main.move_lock == 0:                                        #按下d鍵右移
+                                Main.R_move()
+                                Main.vx += min(3 + (Main.run // 30), 15)
+                                Main.run += 3
 
-                    elif keys[key_manager.get_key("move_left")] and Main.move_lock == 0:                                      #按下a鍵左移
-                        Main.L_move()
+                            elif keys[key_manager.get_key("move_left")] and Main.move_lock == 0:                                      #按下a鍵左移
+                                Main.L_move()
+                                Main.run = -15
 
-                    else:                                                       #不移動時水平速度歸零(沒有慣性)
-                        if  Main.inertia == 0:
-                            Main.idle() 
-                            Main.vx = 0
+                            else:                                                       #不移動時水平速度歸零(沒有慣性)
+                                if  Main.inertia == 0:
+                                    Main.idle() 
+                                    Main.vx = 0
+                                    
+                        elif Main.run < -20:
+                            if keys[key_manager.get_key("move_right")] and Main.move_lock == 0:                                        #按下d鍵右移
+                                Main.R_move()
+                                Main.run = 15
+
+                            elif keys[key_manager.get_key("move_left")] and Main.move_lock == 0:                                      #按下a鍵左移
+                                Main.L_move()
+                                Main.vx -= min(3 - (Main.run // 30), 15)
+                                Main.run -= 3
+
+                            else:                                                       #不移動時水平速度歸零(沒有慣性)
+                                if  Main.inertia == 0:
+                                    Main.idle() 
+                                    Main.vx = 0
+                            
+                                    
+                        else:
+                            if keys[key_manager.get_key("move_right")] and Main.move_lock == 0:                                        #按下d鍵右移
+                                Main.R_move()
+
+                            elif keys[key_manager.get_key("move_left")] and Main.move_lock == 0:                                      #按下a鍵左移
+                                Main.L_move()
+
+                            else:                                                       #不移動時水平速度歸零(沒有慣性)
+                                if  Main.inertia == 0:
+                                    Main.idle() 
+                                    Main.vx = 0
+
+                        
+                        
+                        
+                    else:
+                        if keys[key_manager.get_key("move_right")] and Main.move_lock == 0:                                        #按下d鍵右移
+                            Main.R_move()
+
+                        elif keys[key_manager.get_key("move_left")] and Main.move_lock == 0:                                      #按下a鍵左移
+                            Main.L_move()
+
+                        else:                                                       #不移動時水平速度歸零(沒有慣性)
+                            if  Main.inertia == 0:
+                                Main.idle() 
+                                Main.vx = 0
                                 
         elif abs(Main.vx) > 0:
             if Main.flip:

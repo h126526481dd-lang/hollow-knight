@@ -107,7 +107,7 @@ class player():
         # [1]水上漂
         # [2]劍氣：長k
         self.skill2_time = 0
-        # [3]瞬移路徑斬：a or d+ Lshift+t+ 長J
+        # [3]瞬移路徑斬：a or d+ Lshift+ 長J
         self.skill3_time = 0
         # [4]二段跳：double space
         # [5]下劈重製跳躍並上彈+蹬牆跳+可在空中使用步法(閃避或疾跑)
@@ -117,7 +117,7 @@ class player():
         self.skill7_time = 0
         # [8]上斬：w + 長J
         self.skill8_time = 0
-        # [9]彈反：L
+        # [9]格檔：L
         self.skill9_time = 0
         #[10]砍半無敵幀：長J
         self.skill10_time = 0
@@ -161,6 +161,8 @@ class player():
         self.block_attack = False
 
         self.isblock = False
+        
+        self.run = 0
 
 
 #角色移動
@@ -171,7 +173,7 @@ class player():
             if self.attack_state["playing"]:
                 self.vx = 5
             else:
-                self.vx = 10
+                self.vx = 8
             self.flip = False
             tool.anime_update(self,5,False,8,self.Walk)
 
@@ -183,7 +185,7 @@ class player():
             if self.attack_state["playing"]:
                 self.vx = -5
             else:
-                self.vx = -10
+                self.vx = -8
             self.flip = True
             tool.anime_update(self,5,True,8,self.Walk)
 
